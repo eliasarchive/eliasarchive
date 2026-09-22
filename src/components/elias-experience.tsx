@@ -158,6 +158,7 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
       <div key={current.image} className="cinematic-frame absolute inset-0">
         <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className="cinematic-image h-full w-full object-cover" />
       </div>
+      {scene === 0 && <div className="rain-field pointer-events-none absolute inset-0" aria-hidden="true"><span className="rain-layer rain-far" /><span className="rain-layer rain-mid" /><span className="rain-layer rain-near" /><span className="rain-mist" /></div>}
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
         <div className="max-w-md border-l border-primary/60 pl-5">
@@ -359,11 +360,11 @@ function AppearanceDossier({ tone }: { tone: (frequency?: number, duration?: num
           <p className="text-[8px] uppercase tracking-[.3em] text-muted-foreground">Basic record</p>
           {[['Name', elias.name], ['Pronouns', elias.pronouns], ['Height', elias.height], ['Language', elias.language], ['School', elias.school], ['Background', elias.background], ['Programme', elias.programme]].map(([label, value]) => <div key={label} className="mt-5"><dt className="text-[8px] uppercase tracking-[.22em] text-primary">{label}</dt><dd className="mt-1 text-xs leading-5 text-foreground/80">{value}</dd></div>)}
         </aside>
-        <div className="appearance-enter relative order-1 mx-auto h-[65vh] min-h-[520px] w-full max-w-xl lg:order-2">
+        <div className="appearance-enter relative order-1 mx-auto h-[65vh] min-h-[520px] w-full max-w-xl overflow-hidden lg:order-2">
           <div className="absolute inset-x-[12%] bottom-0 top-[5%] bg-gradient-to-t from-forest/40 via-transparent to-transparent" />
-          <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)]" />
+          <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)] transition-[transform,filter] duration-700 ease-[cubic-bezier(.2,.8,.2,1)]" style={{ transformOrigin: selected ? `${selected.x}% ${selected.y}%` : "50% 50%", transform: selected ? "scale(1.38)" : "scale(1)", filter: selected ? "contrast(1.04) brightness(1.03)" : undefined }} />
           {appearanceFeatures.map((feature) => (
-            <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className="group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2" style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
+            <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className={`group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${active && active !== feature.id ? "scale-75 opacity-20" : "opacity-100"}`} style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
               <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-background transition group-hover:scale-150" />
               <span className={`hotspot-line absolute top-1/2 h-px w-12 bg-primary/60 ${feature.side === "left" ? "right-1/2 origin-right" : "left-1/2"}`} />
             </button>
