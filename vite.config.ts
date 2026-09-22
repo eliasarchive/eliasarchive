@@ -17,19 +17,12 @@ const base =
 
 export default defineConfig({
   vite: isGithubPages ? { base } : {},
-  ...(isGithubPages
-    ? {
-        nitro: {
-          preset: "static",
-          output: { dir: ".output", publicDir: ".output/public" },
-        } as const,
-      }
-    : {}),
+  // GitHub Pages serves plain files, so skip the server bundle and just prerender.
+  ...(isGithubPages ? { nitro: false as const } : {}),
   tanstackStart: isGithubPages
     ? {
         server: { entry: "server" },
         prerender: { enabled: true, crawlLinks: true },
-        spa: { enabled: true, prerender: { outputPath: "/404.html" } },
       }
     : {
         // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
@@ -37,3 +30,4 @@ export default defineConfig({
         server: { entry: "server" },
       },
 });
+
