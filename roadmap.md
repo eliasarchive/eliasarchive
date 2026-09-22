@@ -13,5 +13,5 @@
 - [x] Add smooth wheel and button zoom controls to the relationship chart.
 - [x] Add a focused cinematic image zoom when each Appearance marker is selected.
 - [x] Add layered realistic rain to the manor entrance only.
-- [ ] Add persistent bottom-center creator credit and rights notice.
-- [ ] Upgrade the manor entrance rain with visible ground contact, puddles, and splashes.
+- [x] Add persistent bottom-center creator credit and rights notice.
+- [x] Upgrade the manor entrance rain with visible ground contact, puddles, and splashes.
