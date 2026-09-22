@@ -67,47 +67,89 @@ function useSound(enabled: boolean) {
     gainRef.current = gain;
   }, [ensure]);
 
+  const beginRain = useCallback(() => {
+    const ctx = ensure();
+    if (!ctx || rainRef.current) return;
+    const length = Math.floor(ctx.sampleRate * 3);
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+    for (let index = 0; index < length; index += 1) {
+      const white = Math.random() * 2 - 1;
+      last = (last + 0.035 * white) / 1.035;
+      data[index] = last * 3.2 + white * 0.35;
+    }
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 430;
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = "lowpass";
+    lowpass.frequency.value = 5200;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.0001;
+    gain.gain.setTargetAtTime(0.11, ctx.currentTime, 1.2);
+    source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
+    source.start();
+    rainRef.current = { source, gain };
+  }, [ensure]);
+
+  const stopRain = useCallback(() => {
+    const ctx = contextRef.current;
+    const rain = rainRef.current;
+    if (!ctx || !rain) return;
+    rain.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
+    window.setTimeout(() => { try { rain.source.stop(); } catch { /* already stopped */ } }, 1600);
+    rainRef.current = null;
+  }, []);
+
   const beginJazz = useCallback(() => {
     const ctx = ensure();
     if (!ctx || jazzRef.current) return;
     const master = ctx.createGain();
-    master.gain.value = 0.018;
+    master.gain.value = 0.32;
     master.connect(ctx.destination);
     jazzGainRef.current = master;
-    const notes = [146.83, 174.61, 220, 261.63, 196, 164.81];
-    let step = 0;
-    const playChord = () => {
-      const root = notes[step % notes.length] ?? 146.83;
-      step += 1;
-      [1, 1.25, 1.5].forEach((ratio, index) => {
-        const oscillator = ctx.createOscillator();
-        const envelope = ctx.createGain();
-        oscillator.type = index === 0 ? "triangle" : "sine";
-        oscillator.frequency.value = root * ratio;
-        envelope.gain.setValueAtTime(0.0001, ctx.currentTime);
-        envelope.gain.exponentialRampToValueAtTime(0.025 / (index + 1), ctx.currentTime + .08);
-        envelope.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.8);
-        oscillator.connect(envelope).connect(master);
-        oscillator.start(); oscillator.stop(ctx.currentTime + 1.9);
-      });
+    // ii - V - I - vi in F, voiced as seventh chords
+    const chords = [[146.83, 174.61, 220, 261.63], [130.81, 164.81, 196, 233.08], [174.61, 220, 261.63, 329.63], [110, 130.81, 164.81, 196]];
+    const melodyScale = [349.23, 392, 440, 523.25, 587.33, 698.46];
+    let bar = 0;
+    const voice = (frequency: number, start: number, duration: number, volume: number, type: OscillatorType) => {
+      const oscillator = ctx.createOscillator();
+      const envelope = ctx.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, start);
+      envelope.gain.setValueAtTime(0.0001, start);
+      envelope.gain.exponentialRampToValueAtTime(volume, start + 0.06);
+      envelope.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(envelope).connect(master);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.05);
     };
-    playChord();
-    const timer = window.setInterval(playChord, 1900);
+    const playBar = () => {
+      const chord = chords[bar % chords.length] ?? chords[0]!;
+      const start = ctx.currentTime + 0.05;
+      chord.forEach((frequency, index) => voice(frequency * 2, start + index * 0.045, 2.1, 0.06 / (index * 0.5 + 1), "triangle"));
+      [0, 0.6, 1.2, 1.8].forEach((beat, index) => voice((chord[index % chord.length] ?? 146.83) / 2, start + beat, 0.5, 0.09, "sine"));
+      [0.3, 0.95, 1.5].forEach((beat) => voice(melodyScale[Math.floor(Math.random() * melodyScale.length)] ?? 440, start + beat, 0.45, 0.045, "sine"));
+      bar += 1;
+    };
+    playBar();
+    const timer = window.setInterval(playBar, 2400);
     jazzRef.current = { oscillators: [], timer };
   }, [ensure]);
 
   useEffect(() => {
-    if (!enabled && gainRef.current && contextRef.current) {
-      gainRef.current.gain.setTargetAtTime(0.0001, contextRef.current.currentTime, 0.08);
-    } else if (enabled && gainRef.current && contextRef.current) {
-      gainRef.current.gain.setTargetAtTime(0.008, contextRef.current.currentTime, 0.1);
-    }
-    if (jazzGainRef.current && contextRef.current) {
-      jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.018 : 0.0001, contextRef.current.currentTime, 0.1);
-    }
+    const ctx = contextRef.current;
+    if (!ctx) return;
+    if (gainRef.current) gainRef.current.gain.setTargetAtTime(enabled ? 0.008 : 0.0001, ctx.currentTime, 0.1);
+    if (jazzGainRef.current) jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.32 : 0.0001, ctx.currentTime, 0.12);
+    if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz };
+  return { tone, beginAmbience, beginJazz, beginRain, stopRain };
 }
 
 export function EliasExperience() {
