@@ -280,7 +280,7 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
     { id: "backstory", label: "Backstory", numeral: "03" },
   ];
   return (
-    <section className="archive-light archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
+    <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
       <header className="relative z-30 flex flex-col border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:flex-row md:items-center md:justify-between md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
           <p className="font-display text-2xl">Elias Archer</p>
