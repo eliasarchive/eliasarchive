@@ -104,7 +104,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
 .appearance-enter { animation: enter-right 1s cubic-bezier(.2,.8,.2,1) both; }
-.bedroom-terminal-view { transform-origin: 66% 47%; }
+.bedroom-terminal-view { transform-origin: 74% 46%; }
 .terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; }
 .archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) both; }
 .detail-reveal { animation: detail-reveal .35s cubic-bezier(.2,.8,.2,1) both; }
@@ -146,5 +146,5 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 }
 
 @media (min-width: 768px) {
-  .bedroom-terminal-view { transform-origin: 79% 44%; }
+  .bedroom-terminal-view { transform-origin: 87% 43%; }
 }
