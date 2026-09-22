@@ -17,13 +17,13 @@ import {
 export function ViewBadge({ views }: { views: number | null }) {
   if (views === null) return null;
   return (
-    <aside className="view-badge fixed left-0 top-44 z-[80] max-w-[15rem] border-y border-r border-primary/40 bg-background/80 py-3 pl-3 pr-4 backdrop-blur-md md:top-40 md:max-w-xs">
+    <aside className="view-badge group fixed bottom-14 left-0 z-[80] flex max-w-[52vw] items-center gap-2 border-y border-r border-primary/40 bg-background/80 py-1.5 pl-3 pr-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-auto md:top-40 md:block md:max-w-xs md:py-3 md:pr-4">
       <div className="flex items-center gap-2 text-primary">
-        <Eye className="h-4 w-4" strokeWidth={1.4} />
+        <Eye className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" strokeWidth={1.4} />
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">views</span>
       </div>
-      <p key={remarkForViews(views)} className="feature-swift mt-2 font-display text-[11px] italic leading-4 text-foreground/70">
+      <p key={remarkForViews(views)} className="feature-swift mt-0 min-w-0 truncate font-display text-[11px] italic leading-4 text-foreground/70 md:mt-2">
         “{remarkForViews(views)}”
       </p>
     </aside>
@@ -82,9 +82,9 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
 
   return (
     <>
-      <aside className="like-meter fixed right-0 top-1/2 z-[60] flex -translate-y-1/2 flex-col items-center gap-3 border-y border-l border-primary/35 bg-background/80 px-3 py-4 backdrop-blur-md" aria-label="Archive appreciation meter">
+      <aside className="like-meter group fixed bottom-24 right-0 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-20 md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">{total.toLocaleString()}</span>
-        <div className="relative h-40 w-2.5 overflow-hidden rounded-full border border-border bg-card md:h-52">
+        <div className="relative h-24 w-2 overflow-hidden rounded-full border border-border bg-card md:h-52 md:w-2.5">
           <div
             className="like-meter-fill absolute inset-x-0 bottom-0 rounded-full transition-[height] duration-[900ms] ease-out"
             style={{ height: `${Math.max(2, tier.progress * 100)}%`, background: color, boxShadow: `0 0 16px ${color}` }}
@@ -132,40 +132,50 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
 }
 
 export function DriftingNotes() {
-  const [notes, setNotes] = useState<ArchiveLike[]>([]);
+  const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState<Array<{ key: string; text: string; top: number; duration: number; reverse: boolean }>>([]);
   const counter = useRef(0);
+  const notesRef = useRef<ArchiveLike[]>([]);
 
   useEffect(() => {
     let active = true;
-    void fetchLikes().then((likes) => { if (active) setNotes(likes.filter((like) => like.message && like.message.trim().length > 0)); }).catch(() => undefined);
+    void fetchLikes()
+      .then((likes) => {
+        if (!active) return;
+        notesRef.current = likes.filter((like) => like.message && like.message.trim().length > 0);
+        setReady(true);
+      })
+      .catch(() => undefined);
     return () => { active = false; };
   }, []);
 
   const spawn = useCallback(() => {
-    setNotes((current) => {
-      if (current.length === 0) return current;
-      const pick = current[Math.floor(Math.random() * current.length)]!;
-      counter.current += 1;
-      const entry = {
-        key: `${pick.id}-${counter.current}`,
-        text: pick.message ?? "",
-        top: 12 + Math.random() * 70,
-        duration: 26 + Math.random() * 22,
-        reverse: Math.random() > 0.5,
-      };
-      setVisible((items) => [...items.slice(-5), entry]);
-      window.setTimeout(() => setVisible((items) => items.filter((item) => item.key !== entry.key)), entry.duration * 1000);
-      return current;
-    });
+    const current = notesRef.current;
+    if (current.length === 0) return;
+    const pick = current[Math.floor(Math.random() * current.length)]!;
+    counter.current += 1;
+    const entry = {
+      key: `${pick.id}-${counter.current}`,
+      text: pick.message ?? "",
+      top: 12 + Math.random() * 70,
+      duration: 26 + Math.random() * 22,
+      reverse: Math.random() > 0.5,
+    };
+    setVisible((items) => [...items.slice(-5), entry]);
+    window.setTimeout(() => setVisible((items) => items.filter((item) => item.key !== entry.key)), entry.duration * 1000);
   }, []);
 
   useEffect(() => {
-    if (notes.length === 0) return;
+    if (!ready) return;
     spawn();
-    const timer = window.setInterval(spawn, 6000 + Math.random() * 6000);
-    return () => window.clearInterval(timer);
-  }, [notes.length, spawn]);
+    let timer = 0;
+    const tick = () => {
+      spawn();
+      timer = window.setTimeout(tick, 6000 + Math.random() * 6000);
+    };
+    timer = window.setTimeout(tick, 6000 + Math.random() * 6000);
+    return () => window.clearTimeout(timer);
+  }, [ready, spawn]);
 
   const rendered = useMemo(() => visible, [visible]);
 
