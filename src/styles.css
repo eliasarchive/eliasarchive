@@ -186,3 +186,12 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 
 @keyframes profile-popover-in-desktop { from { opacity: 0; transform: translate(18px,-50%) scale(.96); } to { opacity: 1; transform: translate(0,-50%) scale(1); } }
 @keyframes profile-popover-out-desktop { from { opacity: 1; transform: translate(0,-50%) scale(1); } to { opacity: 0; transform: translate(18px,-50%) scale(.96); } }
+@keyframes drift-note-lr { from { transform: translateX(-30vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(105vw); opacity: 0; } }
+@keyframes drift-note-rl { from { transform: translateX(105vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(-30vw); opacity: 0; } }
+@keyframes meter-reveal { from { opacity: 0; transform: translate(24px,-50%); } to { opacity: 1; transform: translate(0,-50%); } }
+@keyframes badge-reveal { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+
+.drift-note { position: absolute; left: 0; white-space: nowrap; font-family: var(--font-display); font-size: clamp(1.2rem, 3vw, 2.4rem); font-style: italic; color: color-mix(in oklab, var(--brass-soft) 70%, transparent); opacity: 0; animation-name: drift-note-lr; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: both; }
+.drift-note-reverse { animation-name: drift-note-rl; }
+.like-meter { animation: meter-reveal .7s cubic-bezier(.16,1,.3,1) both; }
+.view-badge { animation: badge-reveal .7s cubic-bezier(.16,1,.3,1) both; }
