@@ -30,3 +30,4 @@
 - [x] Fix GitHub entrance rain audio unlocking on the visitor's first interaction
 - [x] Place the archive view counter at the top center, after the Elias Archer heading
 - [x] Move the relationship like meter to the middle-right without covering content
+- [x] Make the GitHub Pages rain graph ready before autoplay unlock and resume it on the first gesture
