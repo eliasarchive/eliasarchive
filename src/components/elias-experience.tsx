@@ -268,7 +268,7 @@ export function EliasExperience() {
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
-      {(stage === "welcome" || stage === "archive") && <ViewBadge views={views} />}
+      {stage === "archive" && <ViewBadge views={views} />}
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} needsSound={scene === 0 && !soundStarted && !muted} onStartSound={() => { resume(); beginRain(); beginAmbience(); setSoundStarted(true); }} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
