@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Maximize2, Move, Volume2, VolumeX, X } from "lucide-react";
+import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import manorEntrance from "@/assets/manor-entrance.jpg";
@@ -245,7 +245,34 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const [profileOpen, setProfileOpen] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const viewRef = useRef({ offset, zoom });
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  useEffect(() => { viewRef.current = { offset, zoom }; }, [offset, zoom]);
+  const changeZoom = useCallback((nextZoom: number, clientX?: number, clientY?: number) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const rect = viewport.getBoundingClientRect();
+    const current = viewRef.current;
+    const next = Math.min(2.5, Math.max(.55, nextZoom));
+    const px = (clientX ?? rect.left + rect.width / 2) - rect.left - rect.width / 2;
+    const py = (clientY ?? rect.top + rect.height / 2) - rect.top - rect.height / 2;
+    const ratio = next / current.zoom;
+    setOffset({ x: px - (px - current.offset.x) * ratio, y: py - (py - current.offset.y) * ratio });
+    setZoom(next);
+  }, []);
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 100 : 1);
+      changeZoom(viewRef.current.zoom * Math.exp(-delta * .0015), event.clientX, event.clientY);
+    };
+    viewport.addEventListener("wheel", onWheel, { passive: false });
+    return () => viewport.removeEventListener("wheel", onWheel);
+  }, [changeZoom]);
   useEffect(() => {
     const close = (event: KeyboardEvent) => event.key === "Escape" && (viewerOpen ? setViewerOpen(false) : setProfileOpen(false));
     window.addEventListener("keydown", close);
@@ -258,9 +285,13 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div><p className="text-[9px] uppercase tracking-[.35em] text-primary">Network index</p><h2 className="mt-2 font-display text-4xl md:text-6xl">Relationship Chart</h2></div>
         <p className="hidden max-w-xs text-right text-xs leading-6 text-muted-foreground md:block">Archive structure ready. No relationships are recorded.</p>
       </div>
-      <div className="relative mx-auto h-[44vh] min-h-80 max-w-5xl cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (drag.current) setOffset({ x: drag.current.ox + event.clientX - drag.current.x, y: drag.current.oy + event.clientY - drag.current.y }); }} onPointerUp={() => { drag.current = null; }}>
-        <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 text-[8px] uppercase tracking-[.22em] text-muted-foreground"><Move className="h-3 w-3" /> Drag to move</div>
-        <div className="absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px))` }}>
+      <div ref={viewportRef} className="relative mx-auto h-[44vh] min-h-80 max-w-5xl touch-none cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (drag.current) setOffset({ x: drag.current.ox + event.clientX - drag.current.x, y: drag.current.oy + event.clientY - drag.current.y }); }} onPointerUp={() => { drag.current = null; }}>
+        <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 text-[8px] uppercase tracking-[.22em] text-muted-foreground"><Move className="h-3 w-3" /> Drag · scroll to zoom</div>
+        <div className="absolute right-4 top-4 z-40 flex gap-1" onPointerDown={(event) => event.stopPropagation()}>
+          <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
+          <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
+        </div>
+        <div className="absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="absolute h-72 w-72 rounded-full border border-border/40 md:h-96 md:w-96" />
         <div className="absolute h-52 w-52 rounded-full border border-dashed border-primary/25 md:h-72 md:w-72" />
         <button onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_60px_color-mix(in_oklab,var(--primary)_15%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
