@@ -19,3 +19,4 @@
 - [x] Move the sound control clear of scene actions and hand rain into classical piano indoors.
 - [x] Refine the computer target, computer-style welcome screen, and archive crest treatment.
 - [x] Make profile dismissal animated and keep Appearance markers attached during smooth focus moves.
+- [x] Stabilize the animated manor rain so the building stays locked in place.
