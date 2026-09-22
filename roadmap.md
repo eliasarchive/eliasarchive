@@ -28,5 +28,5 @@
 - [x] Mobile: reposition/shrink view badge + like meter so they overlap nothing
 - [x] Remove "turn on the rain" button; rain auto-starts (fallback: first interaction anywhere)
 - [ ] Fix GitHub entrance rain audio unlocking on the visitor's first interaction
-- [ ] Lower the archive view counter so it stays clear of the relationship chart
+- [ ] Place the archive view counter at the top center, after the Elias Archer heading
 - [ ] Move the relationship like meter to the middle-right without covering content
