@@ -106,7 +106,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .appearance-enter { animation: enter-right 1s cubic-bezier(.2,.8,.2,1) both; }
 .bedroom-terminal-view { transform-origin: 74% 46%; }
 .terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; }
-.archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) both; }
+.archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) backwards; }
 .detail-reveal { animation: detail-reveal .35s cubic-bezier(.2,.8,.2,1) both; }
 .terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; }
 .rain-field { z-index: 2; overflow: hidden; background: linear-gradient(110deg, transparent 55%, color-mix(in oklab,var(--foreground) 5%,transparent)); }
