@@ -208,6 +208,7 @@ export function EliasExperience() {
   const [muted, setMuted] = useState(false);
   const [section, setSection] = useState<ArchiveSection>("relationships");
   const [computerZoom, setComputerZoom] = useState(false);
+  const [enteringRoom, setEnteringRoom] = useState(false);
   const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain } = useSound(!muted);
 
   useEffect(() => {
@@ -221,10 +222,14 @@ export function EliasExperience() {
 
   const advanceManor = () => {
     beginAmbience();
-    tone(scene === 0 ? 105 : 145, 0.22, 0.02);
+    tone(scene === 0 ? 165 : 205, 0.16, 0.025);
+    window.setTimeout(() => tone(scene === 0 ? 220 : 275, 0.22, 0.018), 85);
     if (scene === 0) { stopRain(); beginPiano(); }
     if (scene < manorScenes.length - 1) setScene((current) => current + 1);
-    else setStage("desk");
+    else {
+      setEnteringRoom(true);
+      window.setTimeout(() => setStage("desk"), 900);
+    }
   };
 
   const enterComputer = () => {
@@ -240,7 +245,7 @@ export function EliasExperience() {
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
-       {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
+       {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && (
@@ -260,16 +265,16 @@ function SoundControl({ muted, stage, onToggle }: { muted: boolean; stage: Exper
 }
 
 
-function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance: () => void; onSkip: () => void }) {
+function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: number; enteringRoom: boolean; onAdvance: () => void; onSkip: () => void }) {
   const current = manorScenes[scene];
   if (!current) return null;
   return (
-    <section className="grain relative h-dvh overflow-hidden bg-ink" aria-label="Journey through the manor">
+    <section className={`grain relative h-dvh overflow-hidden bg-ink ${enteringRoom ? "room-transition-out" : ""}`} aria-label="Journey through the manor">
       <div key={current.image} className="cinematic-frame absolute inset-0">
         {scene === 0 ? (
           <video src={manorEntranceRain} poster={manorEntrance} autoPlay loop muted playsInline preload="auto" aria-label="A dark manor entrance under animated rainfall" className="manor-rain-video h-full w-full object-cover" />
         ) : (
-          <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className="cinematic-image h-full w-full object-cover" />
+          <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
         )}
       </div>
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
@@ -279,7 +284,7 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
           <h1 className="font-display text-4xl font-medium md:text-6xl">{current.title}</h1>
           <p className="mt-3 text-xs uppercase tracking-[.28em] text-muted-foreground">{current.note}</p>
         </div>
-        <Button onClick={onAdvance} className="h-12 border border-primary/60 bg-background/55 px-6 uppercase tracking-[.22em] text-foreground backdrop-blur-md hover:bg-primary hover:text-primary-foreground">
+        <Button disabled={enteringRoom} onClick={onAdvance} className="h-12 border border-primary/60 bg-background/55 px-6 uppercase tracking-[.22em] text-foreground backdrop-blur-md transition-[transform,background-color,color] duration-300 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground disabled:pointer-events-none">
           {scene === manorScenes.length - 1 ? "Enter the room" : "Continue"}
         </Button>
       </div>
@@ -291,10 +296,10 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
 
 function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boolean }) {
   return (
-    <section className="grain relative h-dvh overflow-hidden bg-ink">
+    <section className="desk-scene-enter grain relative h-dvh overflow-hidden bg-ink">
       <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`bedroom-terminal-view h-full w-full object-cover object-right ${entering ? "terminal-zoom" : ""}`} />
       <div className="vignette absolute inset-0 bg-background/10" />
-      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className="terminal-hotspot terminal-target-open group absolute left-[64%] top-[40%] h-[12.5%] w-[17%] min-w-0 rounded-none border border-primary/40 bg-primary/5 p-0 shadow-[0_0_26px_color-mix(in_oklab,var(--primary)_18%,transparent)] transition-all duration-700 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_38px_color-mix(in_oklab,var(--primary)_32%,transparent)] focus-visible:outline-primary disabled:pointer-events-none md:left-auto md:right-[2.5%] md:top-[41%] md:h-[15%] md:w-[11%]">
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open group absolute left-[64%] top-[40%] h-[12.5%] w-[17%] min-w-0 rounded-none border border-primary/40 bg-primary/5 p-0 shadow-[0_0_26px_color-mix(in_oklab,var(--primary)_18%,transparent)] transition-colors duration-700 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_38px_color-mix(in_oklab,var(--primary)_32%,transparent)] focus-visible:outline-primary disabled:pointer-events-none md:left-auto md:right-[2.5%] md:top-[41%] md:h-[15%] md:w-[11%] ${entering ? "terminal-hotspot-entering" : ""}`}>
         <span className="terminal-corner terminal-corner-tl" /><span className="terminal-corner terminal-corner-tr" /><span className="terminal-corner terminal-corner-bl" /><span className="terminal-corner terminal-corner-br" />
         <span className="absolute inset-1 border border-primary/20 transition-all duration-500 group-hover:inset-0 group-hover:border-primary/60" />
         <span className="absolute left-1/2 top-[calc(100%+0.55rem)] -translate-x-1/2 whitespace-nowrap border border-primary/60 bg-background/90 px-3 py-1.5 text-[7px] uppercase tracking-[.2em] text-primary shadow-lg backdrop-blur-md md:px-4 md:py-2 md:text-[9px] md:tracking-[.28em]">Access terminal</span>
@@ -309,16 +314,22 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
 
 function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [leaving, setLeaving] = useState(false);
+  const continueToArchive = () => {
+    if (leaving) return;
+    setLeaving(true);
+    window.setTimeout(onEnter, 650);
+  };
   return (
-    <button onClick={onEnter} onPointerMove={(event) => setPosition({ x: event.clientX / window.innerWidth - .5, y: event.clientY / window.innerHeight - .5 })} className="grain relative flex h-dvh w-full cursor-pointer items-center justify-center overflow-hidden bg-ink text-center animate-in fade-in duration-700">
+    <button onClick={continueToArchive} onPointerMove={(event) => setPosition({ x: event.clientX / window.innerWidth - .5, y: event.clientY / window.innerHeight - .5 })} className={`grain relative flex h-dvh w-full cursor-pointer items-center justify-center overflow-hidden bg-ink text-center animate-in fade-in duration-700 ${leaving ? "welcome-transition-out" : ""}`}>
       <div className="computer-desktop absolute inset-0" style={{ transform: `translate(${position.x * -5}px, ${position.y * -5}px) scale(1.02)` }} />
       <div className="absolute inset-3 border border-primary/20 md:inset-8" />
       <div className="absolute inset-x-3 top-3 flex h-9 items-center justify-between border-b border-primary/20 bg-background/60 px-4 text-[7px] uppercase tracking-[.25em] text-muted-foreground backdrop-blur-md md:inset-x-8 md:top-8"><span>Archer OS</span><span>Private computer · Secure session</span></div>
       <div className="relative flex min-h-[28rem] w-[min(90vw,38rem)] flex-col items-center justify-center border border-primary/25 bg-background/65 px-5 py-10 shadow-2xl backdrop-blur-xl" style={{ transform: `translate(${position.x * 10}px, ${position.y * 8}px)` }}>
-        <div className="welcome-crest relative mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50">
+        <div className="welcome-crest relative mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
           <Leaf className="absolute -left-4 top-9 h-8 w-8 -rotate-45 text-primary/70" /><Leaf className="absolute -right-4 top-9 h-8 w-8 rotate-45 scale-x-[-1] text-primary/70" />
-          <span className="font-display text-4xl text-brass-soft">EA</span>
+          <Crown className="h-9 w-9 text-brass-soft" strokeWidth={1.15} />
         </div>
         <p className="mb-4 text-[9px] uppercase tracking-[.45em] text-primary">Private archive</p>
         <h1 className="font-display text-5xl font-medium md:text-7xl">Welcome Back</h1>
@@ -469,11 +480,11 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
     window.setTimeout(onClose, 240);
   };
   return (
-    <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute bottom-3 left-1/2 z-[60] w-[min(17rem,calc(100%-1.5rem))] -translate-x-1/2 md:bottom-auto md:left-auto md:right-5 md:top-1/2 md:-translate-x-0 md:-translate-y-1/2 ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
-      <div className="max-h-[calc(44vh-1.5rem)] overflow-y-auto border border-border bg-card p-3 shadow-xl md:max-h-[38rem] md:p-4">
+    <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
+      <div className="max-h-[calc(42vh-1rem)] overflow-y-auto border border-border bg-card/95 p-3 shadow-xl backdrop-blur-xl md:max-h-[25rem]">
         <div className="flex items-center justify-between"><p className="text-[8px] uppercase tracking-[.3em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8"><X /></Button></div>
-        <p className="mt-3 text-[10px] leading-5 text-muted-foreground">Elias Archer</p>
-        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative mt-2 flex h-32 w-full items-end justify-center overflow-hidden border border-border bg-background/50 md:h-48">
+        <p className="mt-2 text-[10px] leading-5 text-muted-foreground">Elias Archer</p>
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative mt-2 flex h-28 w-full items-end justify-center overflow-hidden border border-border bg-background/50 md:h-32">
           <img src={eliasRose} alt="Elias Archer holding a rose" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center border border-border bg-background/70 text-primary backdrop-blur-md"><Maximize2 className="h-4 w-4" /></span>
         </button>
