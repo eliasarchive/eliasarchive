@@ -365,6 +365,7 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
   ];
   return (
     <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
+      <DriftingNotes />
       <header className="relative z-30 flex flex-col border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:flex-row md:items-center md:justify-between md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
           <p className="font-display text-2xl">Elias Archer</p>
@@ -466,6 +467,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       </div>
       <RelationshipLegend />
+      <LikeMeter tone={tone} />
       {viewerOpen && <ImageViewer onClose={() => setViewerOpen(false)} />}
     </div>
   );
