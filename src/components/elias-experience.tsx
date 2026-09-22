@@ -274,13 +274,12 @@ export function EliasExperience() {
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
-      {stage === "archive" && <ViewBadge views={views} />}
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && (
-        <Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} />
+        <Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} views={views} />
       )}
     </main>
   );
@@ -373,7 +372,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
   );
 }
 
-function Archive({ section, onSection, tone }: { section: ArchiveSection; onSection: (section: ArchiveSection) => void; tone: (frequency?: number, duration?: number, volume?: number) => void }) {
+function Archive({ section, onSection, tone, views }: { section: ArchiveSection; onSection: (section: ArchiveSection) => void; tone: (frequency?: number, duration?: number, volume?: number) => void; views: number | null }) {
   const labels: Array<{ id: ArchiveSection; label: string; numeral: string }> = [
     { id: "relationships", label: "Relationship Chart", numeral: "01" },
     { id: "appearance", label: "Appearance", numeral: "02" },
@@ -382,12 +381,13 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
   return (
     <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
       <DriftingNotes />
-      <header className="relative z-30 flex flex-col border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:flex-row md:items-center md:justify-between md:px-10 md:pt-0">
+      <header className="relative z-30 grid border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:grid-cols-[1fr_auto_1fr] md:items-center md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
           <p className="font-display text-2xl">Elias Archer</p>
           <p className="text-[8px] uppercase tracking-[.35em] text-muted-foreground">Private record · Kitagawa High</p>
         </div>
-        <nav className="grid w-full grid-cols-3 gap-1 md:flex md:w-auto" aria-label="Archive sections">
+        <ViewBadge views={views} />
+        <nav className="grid w-full grid-cols-3 gap-1 md:flex md:w-auto md:justify-self-end" aria-label="Archive sections">
           {labels.map((item) => (
             <Button key={item.id} variant="ghost" onClick={() => onSection(item.id)} className={`h-auto min-w-0 whitespace-normal rounded-none border-b px-1 py-3 text-center text-[8px] uppercase tracking-[.12em] md:px-5 md:text-[9px] md:tracking-[.16em] ${section === item.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}>
               <span className="hidden md:inline">{item.numeral} · </span>{item.label}
