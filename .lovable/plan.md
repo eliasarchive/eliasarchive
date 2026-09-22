@@ -43,7 +43,8 @@ Create custom archive navigation with animated transitions among three sections:
 ### Appearance
 - Transition to a distinct luxury-dossier composition with the background-removed bowing image as the one and only character image, entering from the right and remaining visually dominant.
 - Add subtle, touch-friendly callouts for Hair, Eyes, Glasses, Skin tone, Face, Height, Body/build, Uniform, Prefect armband, Accessories, and Overall style.
-- Use only supplied or directly visible facts. Where the prompt provides no safe description, use a neutral “No additional details recorded” rather than inventing information.
+- Use only explicitly supplied appearance facts and details clearly visible in the bowing image. Where the prompt provides no safe description, use exactly “No additional details recorded.”
+- Keep all non-appearance facts out of these callouts, including Muay Thai, cologne, scent, brass knuckles, personality, family information, and biography.
 - Support hover previews, click/tap pinning, focus states, connecting lines, and labels positioned away from Elias’s face.
 
 ### Backstory
@@ -52,8 +53,11 @@ Create custom archive navigation with animated transitions among three sections:
 
 ## Content safeguards
 
-- Store Elias’s approved facts in one typed data file so display text stays consistent.
-- Include only: name, pronouns, height, English, London-born child heir of “Archer Bionat”, Muay Thai, the four supplied personality/prefect points, cologne interest, brass knuckles, vanilla-and-musk scent, and approved visible appearance details.
+- Store only the current version’s approved facts in one typed data file so display text stays consistent.
+- Current basic information is limited to: Elias Archer, He/Him, 6'2", English, Kitagawa High, London-born child heir of “Archer Bionat”, and part of the prefect programme.
+- Do not invent any grade, class, teachers, classmates, school history, activities, or other lore for Kitagawa High.
+- Do not display or otherwise use the following canonical but future-only details in the current build: Muay Thai, cologne interest, Madagascar vanilla and musk scent, brass knuckles, arrogance, polished personality, sharp-tongued personality, or the supplied personality context involving his sister.
+- Do not implement future Passion, Biography, additional-character, additional-lore, or similar sections yet; keep the architecture ready for them without exposing their content.
 - Never create or display an age, sister’s name, other characters, relationships, family details, extra locations, hobbies, abilities, traits, physical details, or backstory.
 - Treat the manor as atmosphere only, never as character biography.
 
@@ -68,4 +72,4 @@ Create custom archive navigation with animated transitions among three sections:
 - Split the experience into focused React components for the cinematic intro, desk, welcome screen, archive shell, relationship map, image viewer, appearance dossier, backstory placeholder, audio controller, and transition layer.
 - Use declarative stage/state transitions and data-driven character, relationship, legend, and hotspot definitions.
 - Add route-specific metadata for Elias Archer and remove all template branding.
-- Verify the complete flow on desktop and mobile, including image-role separation, hotspots, viewer close behavior, navigation, mute control, reduced motion, and the absence of prohibited/invented character facts.
+- Verify the complete flow on desktop and mobile, including image-role separation, hotspots, viewer close behavior, navigation, mute control, reduced motion, and the absence of age, future-only facts, or invented character information.
