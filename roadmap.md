@@ -10,3 +10,4 @@
 - [x] Restyle the archive with an elegant light palette and readable relationship colors.
 - [x] Add relationship-chart panning and a compact Elias profile popover.
 - [x] Revise Appearance facts, markers, and click-only animated details.
+- [ ] Add smooth wheel, pinch, and button zoom controls to the relationship chart.
