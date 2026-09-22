@@ -146,5 +146,5 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 }
 
 @media (min-width: 768px) {
-  .bedroom-terminal-view { transform-origin: 86% 49%; }
+  .bedroom-terminal-view { transform-origin: 92% 48%; }
 }
