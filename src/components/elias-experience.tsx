@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Crown, Diamond, Leaf, Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
+import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
+import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntrance from "@/assets/manor-entrance-rain.jpg";
 import manorEntranceRain from "@/assets/manor-entrance-rain.webm";
 import manorCorridor from "@/assets/manor-corridor.jpg";
@@ -249,12 +251,14 @@ export function EliasExperience() {
     stopPiano();
     beginJazz();
     setComputerZoom(true);
+    void registerView().then(setViews).catch(() => { void fetchViews().then(setViews).catch(() => undefined); });
     window.setTimeout(() => setStage("welcome"), 1250);
   };
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
+      {(stage === "welcome" || stage === "archive") && <ViewBadge views={views} />}
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
