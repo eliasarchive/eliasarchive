@@ -14,13 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      archive_likes: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      site_counters: {
+        Row: {
+          id: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          id: string
+          updated_at?: string
+          value?: number
+        }
+        Update: {
+          id?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_views: { Args: never; Returns: number }
     }
     Enums: {
       [_ in never]: never
