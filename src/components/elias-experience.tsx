@@ -227,7 +227,6 @@ export function EliasExperience() {
       resume();
       beginRain();
       beginAmbience();
-      if (isAudioRunning()) setSoundStarted(true);
     };
     start();
     const delayed = window.setTimeout(start, 400);
