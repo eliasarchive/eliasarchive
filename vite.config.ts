@@ -17,9 +17,14 @@ const base =
 
 export default defineConfig({
   vite: isGithubPages ? { base } : {},
-  nitro: isGithubPages
-    ? { preset: "static", output: { dir: ".output", publicDir: ".output/public" } }
-    : undefined,
+  ...(isGithubPages
+    ? {
+        nitro: {
+          preset: "static",
+          output: { dir: ".output", publicDir: ".output/public" },
+        } as const,
+      }
+    : {}),
   tanstackStart: isGithubPages
     ? {
         server: { entry: "server" },
