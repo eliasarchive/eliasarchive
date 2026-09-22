@@ -113,14 +113,25 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .rain-mid { opacity: .25; background-image: repeating-linear-gradient(104deg, transparent 0 41px, color-mix(in oklab,var(--foreground) 48%,transparent) 42px 43px, transparent 44px 89px); background-size: 96px 250px; animation: rain-fall .78s linear infinite; }
 .rain-near { opacity: .2; background-image: repeating-linear-gradient(103deg, transparent 0 83px, color-mix(in oklab,var(--foreground) 60%,transparent) 84px 86px, transparent 87px 151px); background-size: 158px 360px; animation: rain-fall .52s linear infinite; filter: blur(.7px); }
 .rain-mist { position: absolute; inset: auto -5% 0; height: 28%; background: linear-gradient(to top,color-mix(in oklab,var(--foreground) 13%,transparent),transparent); animation: rain-mist 5s ease-in-out infinite; }
-.archive-light { --background: oklch(0.965 0.012 82); --foreground: oklch(0.2 0.018 65); --card: oklch(0.99 0.006 82); --card-foreground: oklch(0.2 0.018 65); --muted: oklch(0.91 0.016 82); --muted-foreground: oklch(0.43 0.025 65); --primary: oklch(0.43 0.08 70); --primary-foreground: oklch(0.98 0.005 82); --border: oklch(0.5 0.04 72 / .28); --accent: oklch(0.87 0.035 60); --accent-foreground: oklch(0.24 0.03 60); --brass-soft: oklch(0.48 0.09 72); }
-.legend-swatch { height: 4px; border-radius: 999px; background: var(--legend-color); box-shadow: 0 0 10px color-mix(in oklab,var(--legend-color) 28%,transparent); }
-.legend-item:nth-child(6n+1) { --legend-color: var(--chart-red); }
-.legend-item:nth-child(6n+2) { --legend-color: var(--chart-blue); }
-.legend-item:nth-child(6n+3) { --legend-color: var(--chart-violet); }
-.legend-item:nth-child(6n+4) { --legend-color: var(--chart-green); }
-.legend-item:nth-child(6n+5) { --legend-color: var(--chart-rose); }
-.legend-item:nth-child(6n+6) { --legend-color: var(--chart-gold); }
+.legend-swatch { height: 4px; border-radius: 999px; background: var(--legend-color); box-shadow: 0 0 10px color-mix(in oklab,var(--legend-color) 32%,transparent); transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease; }
+.legend-item { transition: transform .35s cubic-bezier(.2,.8,.2,1), color .35s ease; }
+.legend-item:hover { transform: translateX(6px); color: var(--legend-color); }
+.legend-item:hover .legend-swatch { transform: scaleX(1.25); box-shadow: 0 0 18px color-mix(in oklab,var(--legend-color) 65%,transparent); }
+.legend-item:nth-child(1) { --legend-color: var(--legend-1); }
+.legend-item:nth-child(2) { --legend-color: var(--legend-2); }
+.legend-item:nth-child(3) { --legend-color: var(--legend-3); }
+.legend-item:nth-child(4) { --legend-color: var(--legend-4); }
+.legend-item:nth-child(5) { --legend-color: var(--legend-5); }
+.legend-item:nth-child(6) { --legend-color: var(--legend-6); }
+.legend-item:nth-child(7) { --legend-color: var(--legend-7); }
+.legend-item:nth-child(8) { --legend-color: var(--legend-8); }
+.legend-item:nth-child(9) { --legend-color: var(--legend-9); }
+.legend-item:nth-child(10) { --legend-color: var(--legend-10); }
+.legend-item:nth-child(11) { --legend-color: var(--legend-11); }
+.legend-item:nth-child(12) { --legend-color: var(--legend-12); }
+.crest-rotate { animation: crest-spin 26s linear infinite; }
+.crest-rotate-reverse { animation: crest-spin 40s linear infinite reverse; }
+.feature-swift { animation: feature-swift .5s cubic-bezier(.2,.9,.2,1) both; }
 .grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .12; mix-blend-mode: soft-light; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"); }
 .vignette { box-shadow: inset 0 0 16vw 5vw var(--ink); }
 .archive-grid { background-image: linear-gradient(color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px); background-size: 48px 48px; }
