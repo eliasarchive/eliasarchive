@@ -32,22 +32,22 @@ function useSound(enabled: boolean) {
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode } | null>(null);
 
 
-  const resume = useCallback(() => {
-    const ctx = contextRef.current;
-    if (ctx && ctx.state !== "running") void ctx.resume();
-  }, []);
-
-  const isAudioRunning = useCallback(() => contextRef.current?.state === "running", []);
-
   const ensure = useCallback(() => {
-    if (!enabled) return null;
     const AudioCtx = window.AudioContext ?? window.webkitAudioContext;
     if (!AudioCtx) return null;
     if (!contextRef.current) contextRef.current = new AudioCtx();
     const ctx = contextRef.current;
-    if (ctx.state === "suspended") void ctx.resume();
     return ctx;
-  }, [enabled]);
+  }, []);
+
+  const resume = useCallback(async () => {
+    const ctx = ensure();
+    if (!ctx) return false;
+    if (ctx.state !== "running") {
+      try { await ctx.resume(); } catch { return false; }
+    }
+    return ctx.state === "running";
+  }, [ensure]);
 
   const tone = useCallback((frequency = 180, duration = 0.13, volume = 0.025) => {
     const ctx = ensure();
@@ -101,7 +101,7 @@ function useSound(enabled: boolean) {
     lowpass.frequency.value = 5200;
     const gain = ctx.createGain();
     gain.gain.value = 0.0001;
-    gain.gain.setTargetAtTime(0.11, ctx.currentTime, 1.2);
+    gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 1.2);
     source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
     source.start();
     rainRef.current = { source, gain };
@@ -208,7 +208,7 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume, isAudioRunning };
+  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume };
 }
 
 export function EliasExperience() {
@@ -223,21 +223,29 @@ export function EliasExperience() {
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
-    const start = () => {
-      resume();
+    let active = true;
+    const start = async () => {
+      const running = await resume();
+      if (!active || !running) return;
       beginRain();
       beginAmbience();
     };
-    start();
-    const delayed = window.setTimeout(start, 400);
-    window.addEventListener("pointerdown", start);
-    window.addEventListener("keydown", start);
-    window.addEventListener("touchstart", start);
+    void start();
+    const delayed = window.setTimeout(() => void start(), 400);
+    const unlock = () => void start();
+    window.addEventListener("pointerdown", unlock, { capture: true });
+    window.addEventListener("keydown", unlock, { capture: true });
+    window.addEventListener("touchend", unlock, { capture: true });
+    window.addEventListener("pageshow", unlock);
+    document.addEventListener("visibilitychange", unlock);
     return () => {
+      active = false;
       window.clearTimeout(delayed);
-      window.removeEventListener("pointerdown", start);
-      window.removeEventListener("keydown", start);
-      window.removeEventListener("touchstart", start);
+      window.removeEventListener("pointerdown", unlock, { capture: true });
+      window.removeEventListener("keydown", unlock, { capture: true });
+      window.removeEventListener("touchend", unlock, { capture: true });
+      window.removeEventListener("pageshow", unlock);
+      document.removeEventListener("visibilitychange", unlock);
     };
   }, [stage, scene, beginRain, beginAmbience, resume]);
 
