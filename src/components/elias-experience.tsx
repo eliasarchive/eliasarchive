@@ -158,17 +158,28 @@ export function EliasExperience() {
   const [muted, setMuted] = useState(false);
   const [section, setSection] = useState<ArchiveSection>("relationships");
   const [computerZoom, setComputerZoom] = useState(false);
-  const { tone, beginAmbience, beginJazz } = useSound(!muted);
+  const { tone, beginAmbience, beginJazz, beginRain, stopRain } = useSound(!muted);
+
+  useEffect(() => {
+    if (stage !== "manor") return;
+    const start = () => { beginRain(); beginAmbience(); };
+    window.addEventListener("pointerdown", start, { once: true });
+    window.addEventListener("keydown", start, { once: true });
+    start();
+    return () => { window.removeEventListener("pointerdown", start); window.removeEventListener("keydown", start); };
+  }, [stage, beginRain, beginAmbience]);
 
   const advanceManor = () => {
+    beginRain();
     beginAmbience();
     tone(scene === 0 ? 105 : 145, 0.22, 0.02);
     if (scene < manorScenes.length - 1) setScene((current) => current + 1);
-    else setStage("desk");
+    else { stopRain(); setStage("desk"); }
   };
 
   const enterComputer = () => {
     tone(240, 0.5, 0.04);
+    stopRain();
     beginJazz();
     setComputerZoom(true);
     window.setTimeout(() => setStage("welcome"), 1250);
@@ -178,7 +189,7 @@ export function EliasExperience() {
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} onToggle={() => setMuted((value) => !value)} />
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
-      {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => setStage("desk")} />}
+      {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => { stopRain(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && (
