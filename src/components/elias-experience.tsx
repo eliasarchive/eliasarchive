@@ -207,86 +207,6 @@ function SoundControl({ muted, onToggle }: { muted: boolean; onToggle: () => voi
   );
 }
 
-function AnimatedRain() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    let frame = 0;
-    let width = 0;
-    let height = 0;
-    let drops: Array<{ x: number; y: number; speed: number; length: number; depth: number }> = [];
-    let splashes: Array<{ x: number; y: number; life: number; size: number }> = [];
-
-    const resetDrop = (drop: (typeof drops)[number], initial = false) => {
-      drop.x = Math.random() * width * 1.25;
-      drop.y = initial ? Math.random() * height : -Math.random() * height * 0.25;
-      drop.depth = 0.35 + Math.random() * 0.65;
-      drop.speed = (11 + Math.random() * 15) * drop.depth;
-      drop.length = (18 + Math.random() * 32) * drop.depth;
-    };
-    const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const bounds = canvas.getBoundingClientRect();
-      width = bounds.width || window.innerWidth;
-      height = bounds.height || window.innerHeight;
-      canvas.width = Math.round(width * ratio);
-      canvas.height = Math.round(height * ratio);
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      drops = Array.from({ length: Math.max(130, Math.round(width / 5)) }, () => ({ x: 0, y: 0, speed: 0, length: 0, depth: 0 }));
-      drops.forEach((drop) => resetDrop(drop, true));
-    };
-    const draw = () => {
-      context.clearRect(0, 0, width, height);
-      canvas.dataset["frame"] = String((Number(canvas.dataset["frame"] ?? "0") + 1) % 100000);
-      context.lineCap = "round";
-      drops.forEach((drop) => {
-        const ground = height * (0.58 + 0.34 * Math.min(1, Math.abs(drop.x - width * 0.5) / (width * 0.62)));
-        context.beginPath();
-        context.moveTo(drop.x, drop.y);
-        context.lineTo(drop.x - drop.length * 0.18, drop.y + drop.length);
-        context.strokeStyle = `rgba(220,230,228,${0.12 + drop.depth * 0.34})`;
-        context.lineWidth = 0.45 + drop.depth * 1.1;
-        context.stroke();
-        drop.x -= drop.speed * 0.16;
-        drop.y += drop.speed;
-        if (drop.y + drop.length >= ground) {
-          if (Math.random() > 0.34) splashes.push({ x: drop.x, y: ground, life: 1, size: 2 + drop.depth * 5 });
-          resetDrop(drop);
-        }
-      });
-      splashes.forEach((splash) => {
-        const spread = (1 - splash.life) * splash.size * 3.2;
-        context.strokeStyle = `rgba(225,235,232,${splash.life * 0.55})`;
-        context.lineWidth = 0.7;
-        context.beginPath();
-        context.ellipse(splash.x, splash.y, spread + 1, (spread + 1) * 0.24, 0, Math.PI, Math.PI * 2);
-        context.stroke();
-        for (let index = 0; index < 3; index += 1) {
-          const direction = index - 1;
-          context.beginPath();
-          context.moveTo(splash.x, splash.y);
-          context.lineTo(splash.x + direction * spread, splash.y - Math.sin((1 - splash.life) * Math.PI) * splash.size * 1.5);
-          context.stroke();
-        }
-        splash.life -= 0.065;
-      });
-      splashes = splashes.filter((splash) => splash.life > 0);
-      frame = window.requestAnimationFrame(draw);
-    };
-    resize();
-    window.addEventListener("resize", resize);
-    frame = window.requestAnimationFrame(draw);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-[2] h-full w-full" aria-hidden="true" />;
 }
 
 function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance: () => void; onSkip: () => void }) {
@@ -301,7 +221,6 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
           <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className="cinematic-image h-full w-full object-cover" />
         )}
       </div>
-      {scene === 0 && <AnimatedRain />}
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
         <div className="max-w-md border-l border-primary/60 pl-5">
