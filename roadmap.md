@@ -11,3 +11,4 @@
 - [x] Add relationship-chart panning and a compact Elias profile popover.
 - [x] Revise Appearance facts, markers, and click-only animated details.
 - [ ] Add smooth wheel, pinch, and button zoom controls to the relationship chart.
+- [ ] Add a focused cinematic image zoom when each Appearance marker is selected.
