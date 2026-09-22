@@ -17,7 +17,7 @@ import {
 export function ViewBadge({ views }: { views: number | null }) {
   if (views === null) return null;
   return (
-    <aside className="view-badge fixed left-0 top-16 z-[80] max-w-[15rem] border-y border-r border-primary/40 bg-background/80 py-3 pl-3 pr-4 backdrop-blur-md md:top-24 md:max-w-xs">
+    <aside className="view-badge fixed left-0 top-44 z-[80] max-w-[15rem] border-y border-r border-primary/40 bg-background/80 py-3 pl-3 pr-4 backdrop-blur-md md:top-40 md:max-w-xs">
       <div className="flex items-center gap-2 text-primary">
         <Eye className="h-4 w-4" strokeWidth={1.4} />
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
