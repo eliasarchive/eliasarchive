@@ -251,8 +251,9 @@ export function EliasExperience() {
 }
 
 function SoundControl({ muted, stage, onToggle }: { muted: boolean; stage: ExperienceStage; onToggle: () => void }) {
+  const position = stage === "manor" ? "right-4 top-4" : stage === "desk" ? "left-4 top-4" : "bottom-8 right-4";
   return (
-    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className={`fixed right-4 z-[70] h-8 w-8 border border-border bg-background/70 text-primary backdrop-blur-md hover:bg-card [&_svg]:h-3.5 [&_svg]:w-3.5 ${stage === "archive" ? "bottom-8" : "top-4"}`}>
+    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className={`fixed z-[70] h-8 w-8 border border-border bg-background/70 text-primary backdrop-blur-md hover:bg-card [&_svg]:h-3.5 [&_svg]:w-3.5 ${position}`}>
       {muted ? <VolumeX /> : <Volume2 />}
     </Button>
   );
