@@ -107,7 +107,7 @@ export function EliasExperience() {
 
 function SoundControl({ muted, onToggle }: { muted: boolean; onToggle: () => void }) {
   return (
-    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className="fixed right-4 top-4 z-[100] border border-border bg-background/60 text-primary backdrop-blur-md hover:bg-card">
+    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className="fixed bottom-4 right-4 z-40 border border-border bg-background/60 text-primary backdrop-blur-md hover:bg-card md:bottom-auto md:top-4">
       {muted ? <VolumeX /> : <Volume2 />}
     </Button>
   );
@@ -291,7 +291,7 @@ function AppearanceDossier({ tone }: { tone: (frequency?: number, duration?: num
           <div className="absolute inset-x-[12%] bottom-0 top-[5%] bg-gradient-to-t from-forest/40 via-transparent to-transparent" />
           <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)]" />
           {appearanceFeatures.map((feature) => (
-            <button key={feature.id} aria-label={`View ${feature.label} details`} onFocus={() => setActive(feature.id)} onMouseEnter={() => { tone(300, .06, .008); setActive(feature.id); }} onMouseLeave={() => setActive((value) => value === feature.id ? null : value)} onClick={() => setActive((value) => value === feature.id ? null : feature.id)} className="group absolute z-20 h-6 w-6 -translate-x-1/2 -translate-y-1/2" style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
+            <button key={feature.id} aria-label={`View ${feature.label} details`} onFocus={() => setActive(feature.id)} onMouseEnter={() => { tone(300, .06, .008); setActive(feature.id); }} onMouseLeave={() => setActive((value) => value === feature.id ? null : value)} onClick={() => setActive(feature.id)} className="group absolute z-20 h-6 w-6 -translate-x-1/2 -translate-y-1/2" style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
               <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-background transition group-hover:scale-150" />
               <span className={`hotspot-line absolute top-1/2 h-px w-12 bg-primary/60 ${feature.side === "left" ? "right-1/2 origin-right" : "left-1/2"}`} />
             </button>
