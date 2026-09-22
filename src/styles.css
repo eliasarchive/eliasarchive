@@ -33,6 +33,7 @@
   --color-chart-green: var(--chart-green);
   --color-chart-rose: var(--chart-rose);
   --color-chart-gold: var(--chart-gold);
+  --font-crest: "Cormorant Garamond", serif;
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
   --radius-lg: 0.375rem;
