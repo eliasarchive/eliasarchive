@@ -207,7 +207,6 @@ function SoundControl({ muted, onToggle }: { muted: boolean; onToggle: () => voi
   );
 }
 
-}
 
 function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance: () => void; onSkip: () => void }) {
   const current = manorScenes[scene];
