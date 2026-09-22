@@ -25,6 +25,8 @@ function useSound(enabled: boolean) {
   const gainRef = useRef<GainNode | null>(null);
   const jazzGainRef = useRef<GainNode | null>(null);
   const jazzRef = useRef<{ oscillators: OscillatorNode[]; timer: number } | null>(null);
+  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode } | null>(null);
+
 
   const ensure = useCallback(() => {
     if (!enabled) return null;
