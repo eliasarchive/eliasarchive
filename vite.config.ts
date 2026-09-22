@@ -6,10 +6,29 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// GitHub Pages builds set GITHUB_PAGES=true in the workflow. In that mode the site
+// is prerendered to plain static files (no server) and served from
+// https://<user>.github.io/<repo>/, so the asset base must include the repo name.
+const isGithubPages = process.env["GITHUB_PAGES"] === "true";
+const repo = (process.env["GITHUB_REPOSITORY"] ?? "").split("/")[1] ?? "";
+const base =
+  process.env["BASE_PATH"] ??
+  (isGithubPages && repo && !repo.endsWith(".github.io") ? `/${repo}/` : "/");
+
 export default defineConfig({
-  tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
-    server: { entry: "server" },
-  },
+  vite: isGithubPages ? { base } : {},
+  nitro: isGithubPages
+    ? { preset: "static", output: { dir: ".output", publicDir: ".output/public" } }
+    : undefined,
+  tanstackStart: isGithubPages
+    ? {
+        server: { entry: "server" },
+        prerender: { enabled: true, crawlLinks: true },
+        spa: { enabled: true, prerender: { outputPath: "/404.html" } },
+      }
+    : {
+        // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
+        // nitro/vite builds from this
+        server: { entry: "server" },
+      },
 });
