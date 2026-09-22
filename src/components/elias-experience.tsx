@@ -197,7 +197,7 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
           ))}
         </nav>
       </header>
-      <div className="relative z-10">
+      <div className="relative z-30">
         {section === "relationships" && <RelationshipChart tone={tone} />}
         {section === "appearance" && <AppearanceDossier tone={tone} />}
         {section === "backstory" && <Backstory />}
