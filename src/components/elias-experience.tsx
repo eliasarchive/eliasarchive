@@ -201,7 +201,7 @@ export function EliasExperience() {
 
 function SoundControl({ muted, onToggle }: { muted: boolean; onToggle: () => void }) {
   return (
-    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className="fixed bottom-4 right-4 z-40 border border-border bg-background/60 text-primary backdrop-blur-md hover:bg-card md:bottom-auto md:top-4">
+    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className="fixed bottom-8 right-4 z-40 h-8 w-8 border border-border bg-background/60 text-primary backdrop-blur-md hover:bg-card [&_svg]:h-3.5 [&_svg]:w-3.5">
       {muted ? <VolumeX /> : <Volume2 />}
     </Button>
   );
