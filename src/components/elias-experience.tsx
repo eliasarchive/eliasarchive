@@ -221,17 +221,24 @@ export function EliasExperience() {
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
-    const start = () => { resume(); beginRain(); beginAmbience(); };
+    const start = () => {
+      resume();
+      beginRain();
+      beginAmbience();
+      if (isAudioRunning()) setSoundStarted(true);
+    };
     start();
+    const delayed = window.setTimeout(start, 400);
     window.addEventListener("pointerdown", start);
     window.addEventListener("keydown", start);
     window.addEventListener("touchstart", start);
     return () => {
+      window.clearTimeout(delayed);
       window.removeEventListener("pointerdown", start);
       window.removeEventListener("keydown", start);
       window.removeEventListener("touchstart", start);
     };
-  }, [stage, scene, beginRain, beginAmbience, resume]);
+  }, [stage, scene, beginRain, beginAmbience, resume, isAudioRunning]);
 
   const advanceManor = () => {
     beginAmbience();
