@@ -76,6 +76,7 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
       await submitLike(getVisitorId(), message.trim().slice(0, 160));
       window.localStorage.setItem("elias-archive-liked", "yes");
       setLiked(true);
+      setComposing(false);
       setMyNote(message.trim().slice(0, 160) || null);
       setTotal((value) => (value ?? 0) + 1);
       tone(520, .22, .03);
