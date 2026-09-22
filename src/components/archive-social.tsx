@@ -17,7 +17,7 @@ import {
 export function ViewBadge({ views }: { views: number | null }) {
   if (views === null) return null;
   return (
-    <aside className="view-badge group fixed left-0 top-44 z-[80] max-w-[15rem] border-y border-r border-primary/40 bg-background/80 py-3 pl-3 pr-4 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:top-40 md:max-w-xs">
+    <aside className="view-badge group fixed bottom-40 left-0 z-[80] max-w-[11rem] border-y border-r border-primary/40 bg-background/80 py-2 pl-3 pr-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-auto md:top-40 md:max-w-xs md:py-3 md:pr-4">
       <div className="flex items-center gap-2 text-primary">
         <Eye className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" strokeWidth={1.4} />
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
@@ -82,9 +82,9 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
 
   return (
     <>
-      <aside className="like-meter group fixed bottom-16 right-0 z-[60] flex flex-col items-center gap-3 border-y border-l border-primary/35 bg-background/80 px-3 py-4 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-20" aria-label="Archive appreciation meter">
+      <aside className="like-meter group fixed bottom-24 right-0 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-20 md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">{total.toLocaleString()}</span>
-        <div className="relative h-40 w-2.5 overflow-hidden rounded-full border border-border bg-card md:h-52">
+        <div className="relative h-24 w-2 overflow-hidden rounded-full border border-border bg-card md:h-52 md:w-2.5">
           <div
             className="like-meter-fill absolute inset-x-0 bottom-0 rounded-full transition-[height] duration-[900ms] ease-out"
             style={{ height: `${Math.max(2, tier.progress * 100)}%`, background: color, boxShadow: `0 0 16px ${color}` }}
