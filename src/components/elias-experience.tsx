@@ -23,6 +23,7 @@ const manorScenes = [
 
 function useSound(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
+  const enabledRef = useRef(enabled);
   const droneRef = useRef<OscillatorNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
   const jazzGainRef = useRef<GainNode | null>(null);
@@ -101,7 +102,7 @@ function useSound(enabled: boolean) {
     lowpass.frequency.value = 5200;
     const gain = ctx.createGain();
     gain.gain.value = 0.0001;
-    gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 1.2);
+    gain.gain.setTargetAtTime(enabledRef.current ? 0.11 : 0.0001, ctx.currentTime, 1.2);
     source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
     source.start();
     rainRef.current = { source, gain };
@@ -200,6 +201,7 @@ function useSound(enabled: boolean) {
   }, [ensure]);
 
   useEffect(() => {
+    enabledRef.current = enabled;
     const ctx = contextRef.current;
     if (!ctx) return;
     if (gainRef.current) gainRef.current.gain.setTargetAtTime(enabled ? 0.008 : 0.0001, ctx.currentTime, 0.1);
@@ -224,6 +226,11 @@ export function EliasExperience() {
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
     let active = true;
+    // Schedule the entrance sound while the context is suspended. GitHub Pages
+    // cannot receive autoplay delegation like the Lovable preview, so the first
+    // browser-approved gesture only has to resume an already-playing graph.
+    beginRain();
+    beginAmbience();
     const start = async () => {
       const running = await resume();
       if (!active || !running) return;
@@ -234,16 +241,18 @@ export function EliasExperience() {
     const delayed = window.setTimeout(() => void start(), 400);
     const unlock = () => void start();
     window.addEventListener("pointerdown", unlock, { capture: true });
+    window.addEventListener("click", unlock, { capture: true });
     window.addEventListener("keydown", unlock, { capture: true });
-    window.addEventListener("touchend", unlock, { capture: true });
+    window.addEventListener("touchstart", unlock, { capture: true });
     window.addEventListener("pageshow", unlock);
     document.addEventListener("visibilitychange", unlock);
     return () => {
       active = false;
       window.clearTimeout(delayed);
       window.removeEventListener("pointerdown", unlock, { capture: true });
+      window.removeEventListener("click", unlock, { capture: true });
       window.removeEventListener("keydown", unlock, { capture: true });
-      window.removeEventListener("touchend", unlock, { capture: true });
+      window.removeEventListener("touchstart", unlock, { capture: true });
       window.removeEventListener("pageshow", unlock);
       document.removeEventListener("visibilitychange", unlock);
     };
