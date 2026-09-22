@@ -184,14 +184,14 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
   ];
   return (
     <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background">
-      <header className="relative z-30 flex min-h-20 items-center justify-between border-b border-border bg-background/85 px-5 backdrop-blur-xl md:px-10">
-        <div>
+      <header className="relative z-30 flex flex-col border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:flex-row md:items-center md:justify-between md:px-10 md:pt-0">
+        <div className="pb-3 md:pb-0">
           <p className="font-display text-2xl">Elias Archer</p>
           <p className="text-[8px] uppercase tracking-[.35em] text-muted-foreground">Private record · Kitagawa High</p>
         </div>
-        <nav className="flex gap-1" aria-label="Archive sections">
+        <nav className="grid w-full grid-cols-3 gap-1 md:flex md:w-auto" aria-label="Archive sections">
           {labels.map((item) => (
-            <Button key={item.id} variant="ghost" onClick={() => onSection(item.id)} className={`h-auto rounded-none border-b px-3 py-3 text-[9px] uppercase tracking-[.16em] md:px-5 ${section === item.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}>
+            <Button key={item.id} variant="ghost" onClick={() => onSection(item.id)} className={`h-auto min-w-0 whitespace-normal rounded-none border-b px-1 py-3 text-center text-[8px] uppercase tracking-[.12em] md:px-5 md:text-[9px] md:tracking-[.16em] ${section === item.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}>
               <span className="hidden md:inline">{item.numeral} · </span>{item.label}
             </Button>
           ))}
