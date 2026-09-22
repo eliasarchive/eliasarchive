@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Maximize2, Move, Volume2, VolumeX, X } from "lucide-react";
+import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
-import manorEntrance from "@/assets/manor-entrance.jpg";
+import manorEntrance from "@/assets/manor-entrance-rain.jpg";
 import manorCorridor from "@/assets/manor-corridor.jpg";
 import manorTurn from "@/assets/manor-turn.jpg";
 import eliasBedroom from "@/assets/elias-bedroom.jpg";
@@ -132,6 +132,7 @@ export function EliasExperience() {
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} onToggle={() => setMuted((value) => !value)} />
+      <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
       {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => setStage("desk")} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
@@ -158,6 +159,7 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
       <div key={current.image} className="cinematic-frame absolute inset-0">
         <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className="cinematic-image h-full w-full object-cover" />
       </div>
+      {scene === 0 && <div className="rain-field pointer-events-none absolute inset-0" aria-hidden="true"><span className="rain-layer rain-far" /><span className="rain-layer rain-mid" /><span className="rain-layer rain-near" /><span className="rain-mist" /></div>}
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
         <div className="max-w-md border-l border-primary/60 pl-5">
@@ -178,12 +180,12 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
 function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boolean }) {
   return (
     <section className="grain relative h-dvh overflow-hidden bg-ink">
-      <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`h-full w-full object-cover ${entering ? "terminal-zoom" : "animate-[slow-drift_10s_ease-in-out_both]"}`} />
+      <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`bedroom-terminal-view h-full w-full object-cover object-right ${entering ? "terminal-zoom" : ""}`} />
       <div className="vignette absolute inset-0 bg-background/10" />
-      <button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} className="terminal-hotspot group absolute left-[10%] top-[29%] h-[27%] w-[25%] cursor-pointer border border-primary/40 bg-background/5 transition-all duration-700 hover:bg-primary/10 focus-visible:border-primary disabled:pointer-events-none md:left-[9%] md:top-[28%] md:w-[26%]">
-        <span className="absolute inset-2 border border-primary/25 transition-all duration-500 group-hover:inset-1" />
-        <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap border border-primary/40 bg-background/75 px-4 py-2 text-[9px] uppercase tracking-[.28em] text-primary backdrop-blur-md">Access terminal</span>
-      </button>
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className="terminal-hotspot group absolute left-[56%] top-[40.5%] h-[12.5%] w-[18%] min-w-0 rounded-none border border-primary/55 bg-background/5 p-0 transition-all duration-700 hover:bg-primary/10 focus-visible:border-primary disabled:pointer-events-none md:left-[73%] md:top-[36.5%] md:h-[14%] md:w-[12%]">
+        <span className="absolute inset-1 border border-primary/30 transition-all duration-500 group-hover:inset-0" />
+        <span className="absolute left-1/2 top-[calc(100%+0.75rem)] -translate-x-1/2 whitespace-nowrap border border-primary/40 bg-background/80 px-4 py-2 text-[9px] uppercase tracking-[.28em] text-primary backdrop-blur-md">Access terminal</span>
+      </Button>
       <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
         <p className="font-display text-2xl text-foreground/80">The room settles into silence.</p>
         <p className="mt-2 text-[9px] uppercase tracking-[.28em] text-muted-foreground">The computer is waiting</p>
@@ -245,7 +247,34 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const [profileOpen, setProfileOpen] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const viewRef = useRef({ offset, zoom });
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  useEffect(() => { viewRef.current = { offset, zoom }; }, [offset, zoom]);
+  const changeZoom = useCallback((nextZoom: number, clientX?: number, clientY?: number) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const rect = viewport.getBoundingClientRect();
+    const current = viewRef.current;
+    const next = Math.min(2.5, Math.max(.55, nextZoom));
+    const px = (clientX ?? rect.left + rect.width / 2) - rect.left - rect.width / 2;
+    const py = (clientY ?? rect.top + rect.height / 2) - rect.top - rect.height / 2;
+    const ratio = next / current.zoom;
+    setOffset({ x: px - (px - current.offset.x) * ratio, y: py - (py - current.offset.y) * ratio });
+    setZoom(next);
+  }, []);
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 100 : 1);
+      changeZoom(viewRef.current.zoom * Math.exp(-delta * .0015), event.clientX, event.clientY);
+    };
+    viewport.addEventListener("wheel", onWheel, { passive: false });
+    return () => viewport.removeEventListener("wheel", onWheel);
+  }, [changeZoom]);
   useEffect(() => {
     const close = (event: KeyboardEvent) => event.key === "Escape" && (viewerOpen ? setViewerOpen(false) : setProfileOpen(false));
     window.addEventListener("keydown", close);
@@ -258,9 +287,13 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div><p className="text-[9px] uppercase tracking-[.35em] text-primary">Network index</p><h2 className="mt-2 font-display text-4xl md:text-6xl">Relationship Chart</h2></div>
         <p className="hidden max-w-xs text-right text-xs leading-6 text-muted-foreground md:block">Archive structure ready. No relationships are recorded.</p>
       </div>
-      <div className="relative mx-auto h-[44vh] min-h-80 max-w-5xl cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (drag.current) setOffset({ x: drag.current.ox + event.clientX - drag.current.x, y: drag.current.oy + event.clientY - drag.current.y }); }} onPointerUp={() => { drag.current = null; }}>
-        <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 text-[8px] uppercase tracking-[.22em] text-muted-foreground"><Move className="h-3 w-3" /> Drag to move</div>
-        <div className="absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px))` }}>
+      <div ref={viewportRef} className="relative mx-auto h-[44vh] min-h-80 max-w-5xl touch-none cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (drag.current) setOffset({ x: drag.current.ox + event.clientX - drag.current.x, y: drag.current.oy + event.clientY - drag.current.y }); }} onPointerUp={() => { drag.current = null; }}>
+        <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 text-[8px] uppercase tracking-[.22em] text-muted-foreground"><Move className="h-3 w-3" /> Drag · scroll to zoom</div>
+        <div className="absolute right-4 top-4 z-40 flex gap-1" onPointerDown={(event) => event.stopPropagation()}>
+          <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
+          <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
+        </div>
+        <div className="absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="absolute h-72 w-72 rounded-full border border-border/40 md:h-96 md:w-96" />
         <div className="absolute h-52 w-52 rounded-full border border-dashed border-primary/25 md:h-72 md:w-72" />
         <button onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_60px_color-mix(in_oklab,var(--primary)_15%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
@@ -328,11 +361,11 @@ function AppearanceDossier({ tone }: { tone: (frequency?: number, duration?: num
           <p className="text-[8px] uppercase tracking-[.3em] text-muted-foreground">Basic record</p>
           {[['Name', elias.name], ['Pronouns', elias.pronouns], ['Height', elias.height], ['Language', elias.language], ['School', elias.school], ['Background', elias.background], ['Programme', elias.programme]].map(([label, value]) => <div key={label} className="mt-5"><dt className="text-[8px] uppercase tracking-[.22em] text-primary">{label}</dt><dd className="mt-1 text-xs leading-5 text-foreground/80">{value}</dd></div>)}
         </aside>
-        <div className="appearance-enter relative order-1 mx-auto h-[65vh] min-h-[520px] w-full max-w-xl lg:order-2">
+        <div className="appearance-enter relative order-1 mx-auto h-[65vh] min-h-[520px] w-full max-w-xl overflow-hidden lg:order-2">
           <div className="absolute inset-x-[12%] bottom-0 top-[5%] bg-gradient-to-t from-forest/40 via-transparent to-transparent" />
-          <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)]" />
+          <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)] transition-[transform,filter] duration-700 ease-[cubic-bezier(.2,.8,.2,1)]" style={{ transformOrigin: selected ? `${selected.x}% ${selected.y}%` : "50% 50%", transform: selected ? "scale(1.38)" : "scale(1)", filter: selected ? "contrast(1.04) brightness(1.03)" : undefined }} />
           {appearanceFeatures.map((feature) => (
-            <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className="group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2" style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
+            <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className={`group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${active && active !== feature.id ? "scale-75 opacity-20" : "opacity-100"}`} style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
               <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-background transition group-hover:scale-150" />
               <span className={`hotspot-line absolute top-1/2 h-px w-12 bg-primary/60 ${feature.side === "left" ? "right-1/2 origin-right" : "left-1/2"}`} />
             </button>

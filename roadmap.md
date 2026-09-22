@@ -10,3 +10,8 @@
 - [x] Restyle the archive with an elegant light palette and readable relationship colors.
 - [x] Add relationship-chart panning and a compact Elias profile popover.
 - [x] Revise Appearance facts, markers, and click-only animated details.
+- [x] Add smooth wheel and button zoom controls to the relationship chart.
+- [x] Add a focused cinematic image zoom when each Appearance marker is selected.
+- [x] Add layered realistic rain to the manor entrance only.
+- [x] Add persistent bottom-center creator credit and rights notice.
+- [x] Upgrade the manor entrance rain with visible ground contact, puddles, and splashes.

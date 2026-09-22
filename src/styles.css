@@ -79,18 +79,27 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes pulse-ring { 0%,100% { opacity: .35; transform: scale(1); } 50% { opacity: .8; transform: scale(1.08); } }
 @keyframes line-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes enter-right { from { opacity: 0; transform: translateX(8vw); } to { opacity: 1; transform: translateX(0); } }
-@keyframes terminal-zoom { 0% { transform: scale(1); filter: brightness(1); } 65% { transform: scale(1.8) translate3d(22%,-8%,0); filter: brightness(.75); } 100% { transform: scale(4) translate3d(22%,-8%,0); filter: brightness(2) blur(3px); opacity: 0; } }
+@keyframes terminal-zoom { 0% { transform: scale(1); filter: brightness(1); } 65% { transform: scale(2.4); filter: brightness(.75); } 100% { transform: scale(8); filter: brightness(2) blur(3px); opacity: 0; } }
 @keyframes archive-enter { from { opacity: 0; transform: translateY(18px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes detail-reveal { 0% { opacity: 0; transform: translateX(18px); clip-path: inset(0 100% 0 0); } 100% { opacity: 1; transform: none; clip-path: inset(0); } }
 @keyframes terminal-glow { 0%,100% { box-shadow: 0 0 0 1px color-mix(in oklab,var(--brass) 45%,transparent), 0 0 25px color-mix(in oklab,var(--brass) 12%,transparent); } 50% { box-shadow: 0 0 0 1px var(--brass), 0 0 45px color-mix(in oklab,var(--brass) 28%,transparent); } }
+@keyframes rain-fall { from { background-position: 0 -180px; } to { background-position: -38px 420px; } }
+@keyframes rain-mist { 0%,100% { opacity: .08; transform: translateX(-2%); } 50% { opacity: .18; transform: translateX(2%); } }
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
 .appearance-enter { animation: enter-right 1s cubic-bezier(.2,.8,.2,1) both; }
-.terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; transform-origin: 22% 47%; }
+.bedroom-terminal-view { transform-origin: 66% 47%; }
+.terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; }
 .archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) both; }
 .detail-reveal { animation: detail-reveal .35s cubic-bezier(.2,.8,.2,1) both; }
 .terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; }
+.rain-field { z-index: 2; overflow: hidden; background: linear-gradient(110deg, transparent 55%, color-mix(in oklab,var(--foreground) 5%,transparent)); }
+.rain-layer { position: absolute; inset: -20%; transform: skewX(-6deg); background-repeat: repeat; }
+.rain-far { opacity: .16; background-image: repeating-linear-gradient(105deg, transparent 0 24px, color-mix(in oklab,var(--foreground) 38%,transparent) 25px 26px, transparent 27px 55px); background-size: 68px 180px; animation: rain-fall 1.15s linear infinite; filter: blur(.45px); }
+.rain-mid { opacity: .25; background-image: repeating-linear-gradient(104deg, transparent 0 41px, color-mix(in oklab,var(--foreground) 48%,transparent) 42px 43px, transparent 44px 89px); background-size: 96px 250px; animation: rain-fall .78s linear infinite; }
+.rain-near { opacity: .2; background-image: repeating-linear-gradient(103deg, transparent 0 83px, color-mix(in oklab,var(--foreground) 60%,transparent) 84px 86px, transparent 87px 151px); background-size: 158px 360px; animation: rain-fall .52s linear infinite; filter: blur(.7px); }
+.rain-mist { position: absolute; inset: auto -5% 0; height: 28%; background: linear-gradient(to top,color-mix(in oklab,var(--foreground) 13%,transparent),transparent); animation: rain-mist 5s ease-in-out infinite; }
 .archive-light { --background: oklch(0.965 0.012 82); --foreground: oklch(0.2 0.018 65); --card: oklch(0.99 0.006 82); --card-foreground: oklch(0.2 0.018 65); --muted: oklch(0.91 0.016 82); --muted-foreground: oklch(0.43 0.025 65); --primary: oklch(0.43 0.08 70); --primary-foreground: oklch(0.98 0.005 82); --border: oklch(0.5 0.04 72 / .28); --accent: oklch(0.87 0.035 60); --accent-foreground: oklch(0.24 0.03 60); --brass-soft: oklch(0.48 0.09 72); }
 .legend-swatch { height: 4px; border-radius: 999px; background: var(--legend-color); box-shadow: 0 0 10px color-mix(in oklab,var(--legend-color) 28%,transparent); }
 .legend-item:nth-child(6n+1) { --legend-color: var(--chart-red); }
@@ -108,4 +117,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+@media (min-width: 768px) {
+  .bedroom-terminal-view { transform-origin: 79% 44%; }
 }
