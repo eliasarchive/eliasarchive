@@ -188,7 +188,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes profile-popover-out-desktop { from { opacity: 1; transform: translate(0,-50%) scale(1); } to { opacity: 0; transform: translate(18px,-50%) scale(.96); } }
 @keyframes drift-note-lr { from { transform: translateX(-30vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(105vw); opacity: 0; } }
 @keyframes drift-note-rl { from { transform: translateX(105vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(-30vw); opacity: 0; } }
-@keyframes meter-reveal { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes meter-reveal { from { opacity: 0; transform: translate(28px,-50%); } to { opacity: 1; transform: translate(0,-50%); } }
 @keyframes badge-reveal { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
 
 .drift-note { position: absolute; left: 0; white-space: nowrap; font-family: var(--font-display); font-size: clamp(0.7rem, 1.6vw, 1.2rem); font-style: italic; color: color-mix(in oklab, var(--brass-soft) 70%, transparent); opacity: 0; animation-name: drift-note-lr; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: both; }

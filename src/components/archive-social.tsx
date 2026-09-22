@@ -82,7 +82,7 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
 
   return (
     <>
-      <aside className="like-meter group fixed bottom-24 right-0 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-20 md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
+      <aside className="like-meter group fixed right-0 top-1/2 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">{total.toLocaleString()}</span>
         <div className="relative h-24 w-2 overflow-hidden rounded-full border border-border bg-card md:h-52 md:w-2.5">
           <div
