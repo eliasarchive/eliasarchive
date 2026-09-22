@@ -27,3 +27,5 @@
 - [x] Drifting notes: hardened spawn logic (state-in-updater bug); user confirmed they appear
 - [x] Mobile: reposition/shrink view badge + like meter so they overlap nothing
 - [x] Remove "turn on the rain" button; rain auto-starts (fallback: first interaction anywhere)
+- [ ] Fix GitHub entrance rain audio unlocking on the visitor's first interaction
+- [ ] Lower the archive view counter so it stays clear of the relationship chart
