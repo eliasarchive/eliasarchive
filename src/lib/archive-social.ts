@@ -35,6 +35,15 @@ export async function fetchLikes() {
   return (data ?? []) as ArchiveLike[];
 }
 
+export async function fetchVisitorLike(visitorId: string) {
+  const { data } = await supabase
+    .from("archive_likes")
+    .select("id, message, created_at")
+    .eq("visitor_id", visitorId)
+    .maybeSingle();
+  return (data ?? null) as ArchiveLike | null;
+}
+
 export async function hasVisitorLiked(visitorId: string) {
   const { data } = await supabase.from("archive_likes").select("id").eq("visitor_id", visitorId).maybeSingle();
   return Boolean(data);

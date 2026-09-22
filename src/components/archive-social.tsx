@@ -16,16 +16,23 @@ import {
 
 export function ViewBadge({ views }: { views: number | null }) {
   if (views === null) return null;
+  const remark = remarkForViews(views);
   return (
-    <aside className="view-badge group mx-auto mb-2 flex max-w-[min(100%,20rem)] items-center justify-center gap-2 border-x border-primary/40 bg-background/80 px-3 py-1.5 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:mb-0 md:max-w-xs md:px-4 md:py-2">
+    <aside className="view-badge group relative mx-auto mb-2 flex max-w-[min(100%,20rem)] items-center justify-center gap-2 border-x border-primary/40 bg-background/80 px-3 py-1.5 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:mb-0 md:max-w-xs md:px-4 md:py-2">
       <div className="flex items-center gap-2 text-primary">
         <Eye className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" strokeWidth={1.4} />
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">views</span>
       </div>
-      <p key={remarkForViews(views)} className="feature-swift mt-0 min-w-0 max-w-48 truncate font-display text-[11px] italic leading-4 text-foreground/70">
-        “{remarkForViews(views)}”
+      <p key={remark} className="feature-swift mt-0 min-w-0 max-w-48 truncate font-display text-[11px] italic leading-4 text-foreground/70">
+        “{remark}”
       </p>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute left-1/2 top-full z-[70] mt-2 w-max max-w-[min(90vw,22rem)] -translate-x-1/2 translate-y-1 border border-primary/40 bg-ink/95 px-4 py-2 text-center font-display text-[11px] italic leading-5 text-foreground/85 opacity-0 shadow-[0_0_28px_-8px_var(--primary)] backdrop-blur-md transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+      >
+        “{remark}”
+      </span>
     </aside>
   );
 }
