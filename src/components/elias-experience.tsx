@@ -37,6 +37,8 @@ function useSound(enabled: boolean) {
     if (ctx && ctx.state !== "running") void ctx.resume();
   }, []);
 
+  const isAudioRunning = useCallback(() => contextRef.current?.state === "running", []);
+
   const ensure = useCallback(() => {
     if (!enabled) return null;
     const AudioCtx = window.AudioContext ?? window.webkitAudioContext;
@@ -206,7 +208,7 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume };
+  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume, isAudioRunning };
 }
 
 export function EliasExperience() {
@@ -217,21 +219,29 @@ export function EliasExperience() {
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
   const [views, setViews] = useState<number | null>(null);
-  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
+  const [soundStarted, setSoundStarted] = useState(false);
+  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume, isAudioRunning } = useSound(!muted);
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
-    const start = () => { resume(); beginRain(); beginAmbience(); };
+    const start = () => {
+      resume();
+      beginRain();
+      beginAmbience();
+      if (isAudioRunning()) setSoundStarted(true);
+    };
     start();
+    const delayed = window.setTimeout(start, 400);
     window.addEventListener("pointerdown", start);
     window.addEventListener("keydown", start);
     window.addEventListener("touchstart", start);
     return () => {
+      window.clearTimeout(delayed);
       window.removeEventListener("pointerdown", start);
       window.removeEventListener("keydown", start);
       window.removeEventListener("touchstart", start);
     };
-  }, [stage, scene, beginRain, beginAmbience, resume]);
+  }, [stage, scene, beginRain, beginAmbience, resume, isAudioRunning]);
 
   const advanceManor = () => {
     beginAmbience();
@@ -260,7 +270,7 @@ export function EliasExperience() {
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
       {(stage === "welcome" || stage === "archive") && <ViewBadge views={views} />}
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
-       {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
+       {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} needsSound={scene === 0 && !soundStarted && !muted} onStartSound={() => { resume(); beginRain(); beginAmbience(); setSoundStarted(true); }} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && (
@@ -280,7 +290,7 @@ function SoundControl({ muted, stage, onToggle }: { muted: boolean; stage: Exper
 }
 
 
-function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: number; enteringRoom: boolean; onAdvance: () => void; onSkip: () => void }) {
+function ManorSequence({ scene, enteringRoom, needsSound, onStartSound, onAdvance, onSkip }: { scene: number; enteringRoom: boolean; needsSound: boolean; onStartSound: () => void; onAdvance: () => void; onSkip: () => void }) {
   const current = manorScenes[scene];
   if (!current) return null;
   return (
@@ -303,6 +313,11 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
           {scene === manorScenes.length - 1 ? "Enter the room" : "Continue"}
         </Button>
       </div>
+      {needsSound && (
+        <button type="button" onClick={onStartSound} className="absolute right-4 top-4 z-30 flex items-center gap-2 border border-primary/60 bg-background/70 px-3 py-2 text-[9px] uppercase tracking-[.24em] text-primary backdrop-blur-md transition-colors duration-300 hover:bg-primary hover:text-primary-foreground">
+          <Volume2 className="h-3 w-3" /> Turn on the rain
+        </button>
+      )}
       <Button onClick={onSkip} variant="ghost" className="absolute left-4 top-4 z-20 text-[10px] uppercase tracking-[.24em] text-muted-foreground hover:bg-background/50 hover:text-foreground">Skip passage</Button>
       <div className="absolute bottom-0 left-0 z-20 h-px bg-primary transition-all duration-1000" style={{ width: `${((scene + 1) / manorScenes.length) * 100}%` }} />
     </section>
