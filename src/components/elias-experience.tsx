@@ -25,6 +25,8 @@ function useSound(enabled: boolean) {
   const gainRef = useRef<GainNode | null>(null);
   const jazzGainRef = useRef<GainNode | null>(null);
   const jazzRef = useRef<{ oscillators: OscillatorNode[]; timer: number } | null>(null);
+  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode } | null>(null);
+
 
   const ensure = useCallback(() => {
     if (!enabled) return null;
@@ -65,47 +67,89 @@ function useSound(enabled: boolean) {
     gainRef.current = gain;
   }, [ensure]);
 
+  const beginRain = useCallback(() => {
+    const ctx = ensure();
+    if (!ctx || rainRef.current) return;
+    const length = Math.floor(ctx.sampleRate * 3);
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+    for (let index = 0; index < length; index += 1) {
+      const white = Math.random() * 2 - 1;
+      last = (last + 0.035 * white) / 1.035;
+      data[index] = last * 3.2 + white * 0.35;
+    }
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 430;
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = "lowpass";
+    lowpass.frequency.value = 5200;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.0001;
+    gain.gain.setTargetAtTime(0.11, ctx.currentTime, 1.2);
+    source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
+    source.start();
+    rainRef.current = { source, gain };
+  }, [ensure]);
+
+  const stopRain = useCallback(() => {
+    const ctx = contextRef.current;
+    const rain = rainRef.current;
+    if (!ctx || !rain) return;
+    rain.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
+    window.setTimeout(() => { try { rain.source.stop(); } catch { /* already stopped */ } }, 1600);
+    rainRef.current = null;
+  }, []);
+
   const beginJazz = useCallback(() => {
     const ctx = ensure();
     if (!ctx || jazzRef.current) return;
     const master = ctx.createGain();
-    master.gain.value = 0.018;
+    master.gain.value = 0.32;
     master.connect(ctx.destination);
     jazzGainRef.current = master;
-    const notes = [146.83, 174.61, 220, 261.63, 196, 164.81];
-    let step = 0;
-    const playChord = () => {
-      const root = notes[step % notes.length] ?? 146.83;
-      step += 1;
-      [1, 1.25, 1.5].forEach((ratio, index) => {
-        const oscillator = ctx.createOscillator();
-        const envelope = ctx.createGain();
-        oscillator.type = index === 0 ? "triangle" : "sine";
-        oscillator.frequency.value = root * ratio;
-        envelope.gain.setValueAtTime(0.0001, ctx.currentTime);
-        envelope.gain.exponentialRampToValueAtTime(0.025 / (index + 1), ctx.currentTime + .08);
-        envelope.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.8);
-        oscillator.connect(envelope).connect(master);
-        oscillator.start(); oscillator.stop(ctx.currentTime + 1.9);
-      });
+    // ii - V - I - vi in F, voiced as seventh chords
+    const chords = [[146.83, 174.61, 220, 261.63], [130.81, 164.81, 196, 233.08], [174.61, 220, 261.63, 329.63], [110, 130.81, 164.81, 196]];
+    const melodyScale = [349.23, 392, 440, 523.25, 587.33, 698.46];
+    let bar = 0;
+    const voice = (frequency: number, start: number, duration: number, volume: number, type: OscillatorType) => {
+      const oscillator = ctx.createOscillator();
+      const envelope = ctx.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, start);
+      envelope.gain.setValueAtTime(0.0001, start);
+      envelope.gain.exponentialRampToValueAtTime(volume, start + 0.06);
+      envelope.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(envelope).connect(master);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.05);
     };
-    playChord();
-    const timer = window.setInterval(playChord, 1900);
+    const playBar = () => {
+      const chord = chords[bar % chords.length] ?? chords[0]!;
+      const start = ctx.currentTime + 0.05;
+      chord.forEach((frequency, index) => voice(frequency * 2, start + index * 0.045, 2.1, 0.06 / (index * 0.5 + 1), "triangle"));
+      [0, 0.6, 1.2, 1.8].forEach((beat, index) => voice((chord[index % chord.length] ?? 146.83) / 2, start + beat, 0.5, 0.09, "sine"));
+      [0.3, 0.95, 1.5].forEach((beat) => voice(melodyScale[Math.floor(Math.random() * melodyScale.length)] ?? 440, start + beat, 0.45, 0.045, "sine"));
+      bar += 1;
+    };
+    playBar();
+    const timer = window.setInterval(playBar, 2400);
     jazzRef.current = { oscillators: [], timer };
   }, [ensure]);
 
   useEffect(() => {
-    if (!enabled && gainRef.current && contextRef.current) {
-      gainRef.current.gain.setTargetAtTime(0.0001, contextRef.current.currentTime, 0.08);
-    } else if (enabled && gainRef.current && contextRef.current) {
-      gainRef.current.gain.setTargetAtTime(0.008, contextRef.current.currentTime, 0.1);
-    }
-    if (jazzGainRef.current && contextRef.current) {
-      jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.018 : 0.0001, contextRef.current.currentTime, 0.1);
-    }
+    const ctx = contextRef.current;
+    if (!ctx) return;
+    if (gainRef.current) gainRef.current.gain.setTargetAtTime(enabled ? 0.008 : 0.0001, ctx.currentTime, 0.1);
+    if (jazzGainRef.current) jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.32 : 0.0001, ctx.currentTime, 0.12);
+    if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz };
+  return { tone, beginAmbience, beginJazz, beginRain, stopRain };
 }
 
 export function EliasExperience() {
@@ -114,17 +158,28 @@ export function EliasExperience() {
   const [muted, setMuted] = useState(false);
   const [section, setSection] = useState<ArchiveSection>("relationships");
   const [computerZoom, setComputerZoom] = useState(false);
-  const { tone, beginAmbience, beginJazz } = useSound(!muted);
+  const { tone, beginAmbience, beginJazz, beginRain, stopRain } = useSound(!muted);
+
+  useEffect(() => {
+    if (stage !== "manor") return;
+    const start = () => { beginRain(); beginAmbience(); };
+    window.addEventListener("pointerdown", start, { once: true });
+    window.addEventListener("keydown", start, { once: true });
+    start();
+    return () => { window.removeEventListener("pointerdown", start); window.removeEventListener("keydown", start); };
+  }, [stage, beginRain, beginAmbience]);
 
   const advanceManor = () => {
+    beginRain();
     beginAmbience();
     tone(scene === 0 ? 105 : 145, 0.22, 0.02);
     if (scene < manorScenes.length - 1) setScene((current) => current + 1);
-    else setStage("desk");
+    else { stopRain(); setStage("desk"); }
   };
 
   const enterComputer = () => {
     tone(240, 0.5, 0.04);
+    stopRain();
     beginJazz();
     setComputerZoom(true);
     window.setTimeout(() => setStage("welcome"), 1250);
@@ -134,7 +189,7 @@ export function EliasExperience() {
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} onToggle={() => setMuted((value) => !value)} />
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
-      {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => setStage("desk")} />}
+      {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => { stopRain(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && (
@@ -146,93 +201,12 @@ export function EliasExperience() {
 
 function SoundControl({ muted, onToggle }: { muted: boolean; onToggle: () => void }) {
   return (
-    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className="fixed bottom-4 right-4 z-40 border border-border bg-background/60 text-primary backdrop-blur-md hover:bg-card md:bottom-auto md:top-4">
+    <Button aria-label={muted ? "Unmute sound" : "Mute sound"} title={muted ? "Unmute sound" : "Mute sound"} onClick={onToggle} variant="ghost" size="icon" className="fixed bottom-8 right-4 z-40 h-8 w-8 border border-border bg-background/60 text-primary backdrop-blur-md hover:bg-card [&_svg]:h-3.5 [&_svg]:w-3.5">
       {muted ? <VolumeX /> : <Volume2 />}
     </Button>
   );
 }
 
-function AnimatedRain() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    let frame = 0;
-    let width = 0;
-    let height = 0;
-    let drops: Array<{ x: number; y: number; speed: number; length: number; depth: number }> = [];
-    let splashes: Array<{ x: number; y: number; life: number; size: number }> = [];
-
-    const resetDrop = (drop: (typeof drops)[number], initial = false) => {
-      drop.x = Math.random() * width * 1.25;
-      drop.y = initial ? Math.random() * height : -Math.random() * height * 0.25;
-      drop.depth = 0.35 + Math.random() * 0.65;
-      drop.speed = (11 + Math.random() * 15) * drop.depth;
-      drop.length = (18 + Math.random() * 32) * drop.depth;
-    };
-    const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const bounds = canvas.getBoundingClientRect();
-      width = bounds.width || window.innerWidth;
-      height = bounds.height || window.innerHeight;
-      canvas.width = Math.round(width * ratio);
-      canvas.height = Math.round(height * ratio);
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      drops = Array.from({ length: Math.max(130, Math.round(width / 5)) }, () => ({ x: 0, y: 0, speed: 0, length: 0, depth: 0 }));
-      drops.forEach((drop) => resetDrop(drop, true));
-    };
-    const draw = () => {
-      context.clearRect(0, 0, width, height);
-      canvas.dataset["frame"] = String((Number(canvas.dataset["frame"] ?? "0") + 1) % 100000);
-      context.lineCap = "round";
-      drops.forEach((drop) => {
-        const ground = height * (0.58 + 0.34 * Math.min(1, Math.abs(drop.x - width * 0.5) / (width * 0.62)));
-        context.beginPath();
-        context.moveTo(drop.x, drop.y);
-        context.lineTo(drop.x - drop.length * 0.18, drop.y + drop.length);
-        context.strokeStyle = `rgba(220,230,228,${0.12 + drop.depth * 0.34})`;
-        context.lineWidth = 0.45 + drop.depth * 1.1;
-        context.stroke();
-        drop.x -= drop.speed * 0.16;
-        drop.y += drop.speed;
-        if (drop.y + drop.length >= ground) {
-          if (Math.random() > 0.34) splashes.push({ x: drop.x, y: ground, life: 1, size: 2 + drop.depth * 5 });
-          resetDrop(drop);
-        }
-      });
-      splashes.forEach((splash) => {
-        const spread = (1 - splash.life) * splash.size * 3.2;
-        context.strokeStyle = `rgba(225,235,232,${splash.life * 0.55})`;
-        context.lineWidth = 0.7;
-        context.beginPath();
-        context.ellipse(splash.x, splash.y, spread + 1, (spread + 1) * 0.24, 0, Math.PI, Math.PI * 2);
-        context.stroke();
-        for (let index = 0; index < 3; index += 1) {
-          const direction = index - 1;
-          context.beginPath();
-          context.moveTo(splash.x, splash.y);
-          context.lineTo(splash.x + direction * spread, splash.y - Math.sin((1 - splash.life) * Math.PI) * splash.size * 1.5);
-          context.stroke();
-        }
-        splash.life -= 0.065;
-      });
-      splashes = splashes.filter((splash) => splash.life > 0);
-      frame = window.requestAnimationFrame(draw);
-    };
-    resize();
-    window.addEventListener("resize", resize);
-    frame = window.requestAnimationFrame(draw);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-[2] h-full w-full" aria-hidden="true" />;
-}
 
 function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance: () => void; onSkip: () => void }) {
   const current = manorScenes[scene];
@@ -246,7 +220,6 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
           <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className="cinematic-image h-full w-full object-cover" />
         )}
       </div>
-      {scene === 0 && <AnimatedRain />}
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
         <div className="max-w-md border-l border-primary/60 pl-5">
