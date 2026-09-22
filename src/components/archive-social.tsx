@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import {
   containsSlur,
   fetchLikes,
+  fetchVisitorLike,
   fetchViews,
   getVisitorId,
-  hasVisitorLiked,
   likeThresholds,
   likeTier,
   remarkForViews,
@@ -16,16 +16,23 @@ import {
 
 export function ViewBadge({ views }: { views: number | null }) {
   if (views === null) return null;
+  const remark = remarkForViews(views);
   return (
-    <aside className="view-badge group mx-auto mb-2 flex max-w-[min(100%,20rem)] items-center justify-center gap-2 border-x border-primary/40 bg-background/80 px-3 py-1.5 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:mb-0 md:max-w-xs md:px-4 md:py-2">
+    <aside className="view-badge group relative mx-auto mb-2 flex max-w-[min(100%,20rem)] items-center justify-center gap-2 border-x border-primary/40 bg-background/80 px-3 py-1.5 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:mb-0 md:max-w-xs md:px-4 md:py-2">
       <div className="flex items-center gap-2 text-primary">
         <Eye className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" strokeWidth={1.4} />
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">views</span>
       </div>
-      <p key={remarkForViews(views)} className="feature-swift mt-0 min-w-0 max-w-48 truncate font-display text-[11px] italic leading-4 text-foreground/70">
-        “{remarkForViews(views)}”
+      <p key={remark} className="feature-swift mt-0 min-w-0 max-w-48 truncate font-display text-[11px] italic leading-4 text-foreground/70">
+        “{remark}”
       </p>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute left-1/2 top-full z-[70] mt-2 w-max max-w-[min(90vw,22rem)] -translate-x-1/2 translate-y-1 border border-primary/40 bg-ink/95 px-4 py-2 text-center font-display text-[11px] italic leading-5 text-foreground/85 opacity-0 shadow-[0_0_28px_-8px_var(--primary)] backdrop-blur-md transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+      >
+        “{remark}”
+      </span>
     </aside>
   );
 }
@@ -39,16 +46,18 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [myNote, setMyNote] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
     const visitorId = getVisitorId();
     void (async () => {
       try {
-        const [likes, already] = await Promise.all([fetchLikes(), hasVisitorLiked(visitorId)]);
+        const [likes, mine] = await Promise.all([fetchLikes(), fetchVisitorLike(visitorId)]);
         if (!active) return;
         setTotal(likes.length);
-        setLiked(already || window.localStorage.getItem("elias-archive-liked") === "yes");
+        setMyNote(mine?.message?.trim() || null);
+        setLiked(Boolean(mine) || window.localStorage.getItem("elias-archive-liked") === "yes");
       } catch {
         if (active) setTotal(0);
       }
@@ -68,6 +77,7 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
       window.localStorage.setItem("elias-archive-liked", "yes");
       setLiked(true);
       setComposing(false);
+      setMyNote(message.trim().slice(0, 160) || null);
       setTotal((value) => (value ?? 0) + 1);
       tone(520, .22, .03);
     } catch {
@@ -83,6 +93,22 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
   return (
     <>
       <aside className="like-meter group fixed right-0 top-1/2 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
+        {liked && (
+          <span
+            role="tooltip"
+            className="pointer-events-none absolute right-full top-1/2 z-[70] mr-3 w-max max-w-[15rem] -translate-y-1/2 translate-x-2 border border-primary/40 bg-ink/95 px-4 py-2.5 text-center opacity-0 shadow-[0_0_28px_-8px_var(--primary)] backdrop-blur-md transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+          >
+            <span className="block text-[8px] uppercase tracking-[.3em] text-primary">You already commented</span>
+            {myNote && (
+              <span className="mt-1.5 block break-words font-display text-[11px] italic leading-5 text-foreground/80">“{myNote}”</span>
+            )}
+          </span>
+        )}
+        {!liked && (
+          <span className="pointer-events-none absolute right-full top-1/2 z-[70] mr-3 w-max max-w-[13rem] -translate-y-1/2 translate-x-2 border border-primary/40 bg-ink/95 px-4 py-2 text-center text-[8px] uppercase tracking-[.3em] text-foreground/80 opacity-0 shadow-[0_0_28px_-8px_var(--primary)] backdrop-blur-md transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+            One like, one note — per visitor
+          </span>
+        )}
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">{total.toLocaleString()}</span>
         <div className="relative h-24 w-2 overflow-hidden rounded-full border border-border bg-card md:h-52 md:w-2.5">
           <div
