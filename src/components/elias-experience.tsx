@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
-import manorEntrance from "@/assets/manor-entrance.jpg";
+import manorEntrance from "@/assets/manor-entrance-rain.jpg";
 import manorCorridor from "@/assets/manor-corridor.jpg";
 import manorTurn from "@/assets/manor-turn.jpg";
 import eliasBedroom from "@/assets/elias-bedroom.jpg";
@@ -132,6 +132,7 @@ export function EliasExperience() {
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} onToggle={() => setMuted((value) => !value)} />
+      <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
       {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => setStage("desk")} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
