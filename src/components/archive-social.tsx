@@ -132,40 +132,50 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
 }
 
 export function DriftingNotes() {
-  const [notes, setNotes] = useState<ArchiveLike[]>([]);
+  const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState<Array<{ key: string; text: string; top: number; duration: number; reverse: boolean }>>([]);
   const counter = useRef(0);
+  const notesRef = useRef<ArchiveLike[]>([]);
 
   useEffect(() => {
     let active = true;
-    void fetchLikes().then((likes) => { if (active) setNotes(likes.filter((like) => like.message && like.message.trim().length > 0)); }).catch(() => undefined);
+    void fetchLikes()
+      .then((likes) => {
+        if (!active) return;
+        notesRef.current = likes.filter((like) => like.message && like.message.trim().length > 0);
+        setReady(true);
+      })
+      .catch(() => undefined);
     return () => { active = false; };
   }, []);
 
   const spawn = useCallback(() => {
-    setNotes((current) => {
-      if (current.length === 0) return current;
-      const pick = current[Math.floor(Math.random() * current.length)]!;
-      counter.current += 1;
-      const entry = {
-        key: `${pick.id}-${counter.current}`,
-        text: pick.message ?? "",
-        top: 12 + Math.random() * 70,
-        duration: 26 + Math.random() * 22,
-        reverse: Math.random() > 0.5,
-      };
-      setVisible((items) => [...items.slice(-5), entry]);
-      window.setTimeout(() => setVisible((items) => items.filter((item) => item.key !== entry.key)), entry.duration * 1000);
-      return current;
-    });
+    const current = notesRef.current;
+    if (current.length === 0) return;
+    const pick = current[Math.floor(Math.random() * current.length)]!;
+    counter.current += 1;
+    const entry = {
+      key: `${pick.id}-${counter.current}`,
+      text: pick.message ?? "",
+      top: 12 + Math.random() * 70,
+      duration: 26 + Math.random() * 22,
+      reverse: Math.random() > 0.5,
+    };
+    setVisible((items) => [...items.slice(-5), entry]);
+    window.setTimeout(() => setVisible((items) => items.filter((item) => item.key !== entry.key)), entry.duration * 1000);
   }, []);
 
   useEffect(() => {
-    if (notes.length === 0) return;
+    if (!ready) return;
     spawn();
-    const timer = window.setInterval(spawn, 6000 + Math.random() * 6000);
-    return () => window.clearInterval(timer);
-  }, [notes.length, spawn]);
+    let timer = 0;
+    const tick = () => {
+      spawn();
+      timer = window.setTimeout(tick, 6000 + Math.random() * 6000);
+    };
+    timer = window.setTimeout(tick, 6000 + Math.random() * 6000);
+    return () => window.clearTimeout(timer);
+  }, [ready, spawn]);
 
   const rendered = useMemo(() => visible, [visible]);
 
