@@ -409,7 +409,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-        <div className="absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+        <div className="chart-orbit absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="crest-rotate absolute h-72 w-72 rounded-full border border-dashed border-primary/30 md:h-96 md:w-96" />
         <div className="crest-rotate-reverse absolute h-60 w-60 rounded-full border border-primary/15 md:h-80 md:w-80">
           {[0, 90, 180, 270].map((angle) => (
@@ -417,6 +417,10 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           ))}
         </div>
         <div className="absolute h-52 w-52 rounded-full border border-primary/25 md:h-72 md:w-72" />
+        <Crown className="crest-float absolute -top-36 h-8 w-8 text-primary/70 md:-top-48" />
+        <Leaf className="crest-float absolute -left-36 h-9 w-9 -rotate-45 text-primary/55 md:-left-48" />
+        <Leaf className="crest-float absolute -right-36 h-9 w-9 rotate-45 scale-x-[-1] text-primary/55 md:-right-48" />
+        <Diamond className="crest-float absolute -bottom-36 h-5 w-5 rotate-45 text-primary/60 md:-bottom-48" />
         <button onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_70px_color-mix(in_oklab,var(--primary)_22%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
           <span className="absolute inset-2 rounded-full border border-primary/25 animate-[pulse-ring_3s_ease-in-out_infinite]" />
           <span className="absolute inset-[-0.6rem] rounded-full border border-primary/15" />
@@ -427,12 +431,12 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <span className="px-4 text-center">
             <span className="block text-[7px] uppercase tracking-[.42em] text-primary">Central file</span>
             <span className="mx-auto my-2 block h-px w-10 bg-primary/50" />
-            <span className="block font-display text-2xl italic leading-tight tracking-wide text-brass-soft md:text-3xl">Elias<br />Archer</span>
+            <span className="elias-signature block font-display text-2xl italic leading-tight text-brass-soft md:text-3xl"><span className="text-4xl not-italic md:text-5xl">E</span>lias<br /><span className="text-4xl not-italic md:text-5xl">A</span>rcher</span>
             <span className="mx-auto mt-2 block h-px w-6 bg-primary/40" />
           </span>
         </button>
-        {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
         </div>
+        {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       </div>
       <RelationshipLegend />
       {viewerOpen && <ImageViewer onClose={() => setViewerOpen(false)} />}
@@ -457,16 +461,22 @@ function RelationshipLegend() {
 }
 
 function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: () => void }) {
+  const [leaving, setLeaving] = useState(false);
+  const closeAnimated = () => {
+    if (leaving) return;
+    setLeaving(true);
+    window.setTimeout(onClose, 240);
+  };
   return (
-    <div onPointerDown={(event) => event.stopPropagation()} className="absolute left-1/2 top-[calc(50%+6rem)] z-[60] w-64 -translate-x-1/2 animate-in slide-in-from-left-3 fade-in duration-300 md:left-[calc(50%+5rem)] md:top-1/2 md:-translate-x-0 md:-translate-y-1/2" role="dialog" aria-label="Elias Archer profile">
-      <div className="border border-border bg-card p-4 shadow-xl">
-        <div className="flex items-center justify-between"><p className="text-[9px] uppercase tracking-[.35em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); onClose(); }} aria-label="Close profile"><X /></Button></div>
+    <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute bottom-3 left-1/2 z-[60] w-[min(17rem,calc(100%-1.5rem))] -translate-x-1/2 md:bottom-auto md:left-auto md:right-5 md:top-1/2 md:-translate-x-0 md:-translate-y-1/2 ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
+      <div className="max-h-[calc(44vh-1.5rem)] overflow-y-auto border border-border bg-card p-3 shadow-xl md:max-h-[38rem] md:p-4">
+        <div className="flex items-center justify-between"><p className="text-[8px] uppercase tracking-[.3em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8"><X /></Button></div>
         <p className="mt-3 text-[10px] leading-5 text-muted-foreground">Elias Archer</p>
-        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative mt-3 flex h-48 w-full items-end justify-center overflow-hidden border border-border bg-background/50">
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative mt-2 flex h-32 w-full items-end justify-center overflow-hidden border border-border bg-background/50 md:h-48">
           <img src={eliasRose} alt="Elias Archer holding a rose" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center border border-border bg-background/70 text-primary backdrop-blur-md"><Maximize2 className="h-4 w-4" /></span>
         </button>
-        <blockquote className="mt-4 border-l border-primary pl-3 font-display text-sm leading-snug">“This is me, what the fuck do you want me to add onto that”</blockquote>
+        <blockquote className="mt-3 border-l border-primary pl-3 font-display text-xs leading-snug md:text-sm">“This is me, what the fuck do you want me to add onto that”</blockquote>
       </div>
     </div>
   );
@@ -494,13 +504,15 @@ function AppearanceDossier({ tone }: { tone: (frequency?: number, duration?: num
         </aside>
         <div className="appearance-enter relative order-1 mx-auto h-[65vh] min-h-[520px] w-full max-w-xl overflow-hidden lg:order-2">
           <div className="absolute inset-x-[12%] bottom-0 top-[5%] bg-gradient-to-t from-forest/40 via-transparent to-transparent" />
-          <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)] transition-[transform,filter] duration-700 ease-[cubic-bezier(.2,.8,.2,1)]" style={{ transformOrigin: selected ? `${selected.x}% ${selected.y}%` : "50% 50%", transform: selected ? "scale(1.38)" : "scale(1)", filter: selected ? "contrast(1.04) brightness(1.03)" : undefined }} />
-          {appearanceFeatures.map((feature) => (
-            <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className={`group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${active && active !== feature.id ? "scale-75 opacity-20" : "opacity-100"}`} style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
-              <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-background transition group-hover:scale-150" />
-              <span className={`hotspot-line absolute top-1/2 h-px w-12 bg-primary/60 ${feature.side === "left" ? "right-1/2 origin-right" : "left-1/2"}`} />
-            </button>
-          ))}
+          <div className="absolute inset-0 transition-[transform,filter] duration-700 ease-[cubic-bezier(.16,1,.3,1)]" style={{ transform: selected ? `translate(${(50 - selected.x) * .38}%, ${(50 - selected.y) * .38}%) scale(1.38)` : "translate(0, 0) scale(1)", filter: selected ? "contrast(1.04) brightness(1.03)" : undefined }}>
+            <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)]" />
+            {appearanceFeatures.map((feature) => (
+              <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className={`group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 ${active && active !== feature.id ? "opacity-20" : "opacity-100"}`} style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
+                <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-background transition group-hover:scale-150" />
+                <span className={`hotspot-line absolute top-1/2 h-px w-12 bg-primary/60 ${feature.side === "left" ? "right-1/2 origin-right" : "left-1/2"}`} />
+              </button>
+            ))}
+          </div>
         </div>
         <aside className="order-3 min-h-40 border-t border-border pt-6 lg:border-r lg:border-t-0 lg:pr-5 lg:pt-8">
           <p className="text-[8px] uppercase tracking-[.3em] text-muted-foreground">Selected detail</p>
