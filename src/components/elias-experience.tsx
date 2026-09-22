@@ -267,7 +267,7 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
     <section className="grain relative h-dvh overflow-hidden bg-ink" aria-label="Journey through the manor">
       <div key={current.image} className="cinematic-frame absolute inset-0">
         {scene === 0 ? (
-          <video src={manorEntranceRain} poster={manorEntrance} autoPlay loop muted playsInline aria-label="A dark manor entrance under animated rainfall" className="h-full w-full object-cover" />
+          <video src={manorEntranceRain} poster={manorEntrance} autoPlay loop muted playsInline preload="auto" aria-label="A dark manor entrance under animated rainfall" className="manor-rain-video h-full w-full object-cover" />
         ) : (
           <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className="cinematic-image h-full w-full object-cover" />
         )}
