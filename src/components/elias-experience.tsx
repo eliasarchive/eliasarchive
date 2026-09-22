@@ -353,11 +353,26 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
         <div className="absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
-        <div className="absolute h-72 w-72 rounded-full border border-border/40 md:h-96 md:w-96" />
-        <div className="absolute h-52 w-52 rounded-full border border-dashed border-primary/25 md:h-72 md:w-72" />
-        <button onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_60px_color-mix(in_oklab,var(--primary)_15%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
-          <span className="absolute inset-2 rounded-full border border-primary/20 animate-[pulse-ring_3s_ease-in-out_infinite]" />
-          <span><span className="block text-[8px] uppercase tracking-[.3em] text-primary">Central file</span><span className="mt-2 block font-display text-2xl">Elias Archer</span></span>
+        <div className="crest-rotate absolute h-72 w-72 rounded-full border border-dashed border-primary/30 md:h-96 md:w-96" />
+        <div className="crest-rotate-reverse absolute h-60 w-60 rounded-full border border-primary/15 md:h-80 md:w-80">
+          {[0, 90, 180, 270].map((angle) => (
+            <span key={angle} className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rotate-45 border border-primary/70 bg-background" style={{ transform: `rotate(${angle}deg) translateY(-50%) translate(0, -7.5rem)` }} />
+          ))}
+        </div>
+        <div className="absolute h-52 w-52 rounded-full border border-primary/25 md:h-72 md:w-72" />
+        <button onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_70px_color-mix(in_oklab,var(--primary)_22%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
+          <span className="absolute inset-2 rounded-full border border-primary/25 animate-[pulse-ring_3s_ease-in-out_infinite]" />
+          <span className="absolute inset-[-0.6rem] rounded-full border border-primary/15" />
+          <span className="absolute left-1/2 top-2 h-3 w-px -translate-x-1/2 bg-primary/60" />
+          <span className="absolute bottom-2 left-1/2 h-3 w-px -translate-x-1/2 bg-primary/60" />
+          <span className="absolute left-2 top-1/2 h-px w-3 -translate-y-1/2 bg-primary/60" />
+          <span className="absolute right-2 top-1/2 h-px w-3 -translate-y-1/2 bg-primary/60" />
+          <span className="px-4 text-center">
+            <span className="block text-[7px] uppercase tracking-[.42em] text-primary">Central file</span>
+            <span className="mx-auto my-2 block h-px w-10 bg-primary/50" />
+            <span className="block font-display text-2xl italic leading-tight tracking-wide text-brass-soft md:text-3xl">Elias<br />Archer</span>
+            <span className="mx-auto mt-2 block h-px w-6 bg-primary/40" />
+          </span>
         </button>
         {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
         </div>
