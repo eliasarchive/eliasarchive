@@ -5,18 +5,24 @@
 Build the entire experience at `/` as a cinematic state-driven journey:
 
 ```text
-Manor entrance → corridor → left turn → interior → left turn → garden-facing desk
+Manor entrance → corridor → first left turn → interior → second left turn
+→ Elias Archer’s private bedroom → room reveal → bedroom desk/computer
 → interactive computer → Welcome Back screen → private archive
 ```
 
 - Create a continuous-feeling first-person manor sequence using cinematic manor artwork, layered depth, controlled camera pans/zooms, light shifts, and seamless match transitions rather than separate webpage slides.
-- End on an interactive desk scene with a clearly discoverable computer. Clicking it plays the interaction, pushes the camera into the screen, and transitions into the archive.
+- Make the bedroom a spatially believable continuation of the same manor, never a generic office, hotel room, standalone desk room, or disconnected page.
+- Establish the bedroom through one controlled camera move that progressively reveals the bed, dark-wood furniture, trophy shelves, perfume display, garden-facing windows, polished desk, and finally the clearly interactive computer.
+- Keep the room luxurious but lived-in through subtle personal objects and decoration. Include several elegant trophies with one understated Muay Thai competition trophy, plus several curated perfume bottles on a separate shelf or display area.
+- Treat the trophy and perfume bottles as silent environmental foreshadowing only: add no explanatory labels, Appearance references, Passion section, biography, or inferred lore.
+- End with the desk/computer as the final visual focal point. Clicking it plays the interaction, pushes the camera into the screen, and transitions into the archive.
 - Add a restrained mouse-reactive welcome screen containing exactly “Welcome Back”, “Elias Archer”, and “Click anywhere to continue”.
 - Respect reduced-motion settings with an elegant shortened version, and provide an unobtrusive skip option for repeat visits.
 
 ## Visual production
 
-- Generate a cohesive set of dark, aristocratic manor environments: entrance, connected corridors, two left turns, and a polished desk facing a garden through large windows.
+- Generate a cohesive set of dark, aristocratic manor environments: entrance, connected corridors, two left turns, and Elias’s private bedroom with a bed, shelves, dark-wood furniture, garden-facing windows, and polished computer desk.
+- Maintain continuous architecture, materials, charcoal/forest-green/muted-burgundy/warm-ivory color, restrained brass, and cinematic lighting across every manor view.
 - Remove the backgrounds from both supplied Elias images while preserving the character’s recognizable face, hair, glasses, clothing, pose, proportions, and armband.
 - Keep the images strictly separated:
   - Rose image: relationship profile and its enlarged viewer only.
