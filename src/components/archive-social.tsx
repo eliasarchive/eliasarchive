@@ -93,6 +93,22 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
   return (
     <>
       <aside className="like-meter group fixed right-0 top-1/2 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
+        {liked && (
+          <span
+            role="tooltip"
+            className="pointer-events-none absolute right-full top-1/2 z-[70] mr-3 w-max max-w-[15rem] -translate-y-1/2 translate-x-2 border border-primary/40 bg-ink/95 px-4 py-2.5 text-center opacity-0 shadow-[0_0_28px_-8px_var(--primary)] backdrop-blur-md transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+          >
+            <span className="block text-[8px] uppercase tracking-[.3em] text-primary">You already commented</span>
+            {myNote && (
+              <span className="mt-1.5 block break-words font-display text-[11px] italic leading-5 text-foreground/80">“{myNote}”</span>
+            )}
+          </span>
+        )}
+        {!liked && (
+          <span className="pointer-events-none absolute right-full top-1/2 z-[70] mr-3 w-max max-w-[13rem] -translate-y-1/2 translate-x-2 border border-primary/40 bg-ink/95 px-4 py-2 text-center text-[8px] uppercase tracking-[.3em] text-foreground/80 opacity-0 shadow-[0_0_28px_-8px_var(--primary)] backdrop-blur-md transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+            One like, one note — per visitor
+          </span>
+        )}
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">{total.toLocaleString()}</span>
         <div className="relative h-24 w-2 overflow-hidden rounded-full border border-border bg-card md:h-52 md:w-2.5">
           <div
