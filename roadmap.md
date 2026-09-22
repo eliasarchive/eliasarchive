@@ -20,4 +20,4 @@
 - [x] Refine the computer target, computer-style welcome screen, and archive crest treatment.
 - [x] Make profile dismissal animated and keep Appearance markers attached during smooth focus moves.
 - [x] Rebuild the entrance animation from a fixed manor frame so only rain and splashes move.
-- [x] Smooth the room and archive transitions, expand the computer target, and compact the Elias profile.
+- [x] Smooth the room and archive transitions, expand the computer target, and compact the Elias profile.- [x] Fix rain audio autostart, add global view counter with arrogant milestones, one-per-visitor like meter with comments, and drifting background notes.
