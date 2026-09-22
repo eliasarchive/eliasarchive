@@ -26,3 +26,4 @@
 - [ ] Fix: published like messages never drift in background (check GitHub Pages build env + fetchLikes)
 - [x] Drifting notes: hardened spawn logic (state-in-updater bug); user confirmed they appear
 - [ ] Mobile: reposition/shrink view badge + like meter so they overlap nothing
+- [ ] Remove "turn on the rain" button; rain auto-starts (fallback: first interaction anywhere)
