@@ -52,10 +52,11 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
     const visitorId = getVisitorId();
     void (async () => {
       try {
-        const [likes, already] = await Promise.all([fetchLikes(), hasVisitorLiked(visitorId)]);
+        const [likes, mine] = await Promise.all([fetchLikes(), fetchVisitorLike(visitorId)]);
         if (!active) return;
         setTotal(likes.length);
-        setLiked(already || window.localStorage.getItem("elias-archive-liked") === "yes");
+        setMyNote(mine?.message?.trim() || null);
+        setLiked(Boolean(mine) || window.localStorage.getItem("elias-archive-liked") === "yes");
       } catch {
         if (active) setTotal(0);
       }
