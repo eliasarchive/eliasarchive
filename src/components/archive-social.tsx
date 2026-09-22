@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import {
   containsSlur,
   fetchLikes,
+  fetchVisitorLike,
   fetchViews,
   getVisitorId,
-  hasVisitorLiked,
   likeThresholds,
   likeTier,
   remarkForViews,
