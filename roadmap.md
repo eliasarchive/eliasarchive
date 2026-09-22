@@ -15,4 +15,4 @@
 - [x] Add layered realistic rain to the manor entrance only.
 - [x] Add persistent bottom-center creator credit and rights notice.
 - [x] Upgrade the manor entrance rain with visible ground contact, puddles, and splashes.
-- [ ] Replace the static entrance rain with a seamless animated rain scene with visible ground splashes.
+- [x] Replace the static entrance rain with a seamless animated rain scene with visible ground splashes.
