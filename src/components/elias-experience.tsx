@@ -390,7 +390,7 @@ function RelationshipLegend() {
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 md:grid-cols-4 lg:grid-cols-6">
         {relationshipTypes.map((type, index) => (
           <div key={type} className="legend-item flex items-center gap-3 text-[9px] text-foreground/75">
-             <span className="legend-swatch w-8 shrink-0" style={{ opacity: .72 + (index % 3) * .12 }} />
+             <span className="legend-swatch w-8 shrink-0" />
             <span>{type}</span>
           </div>
         ))}
