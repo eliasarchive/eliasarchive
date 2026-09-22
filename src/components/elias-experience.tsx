@@ -208,7 +208,7 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume };
+  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume, isAudioRunning };
 }
 
 export function EliasExperience() {
@@ -219,7 +219,8 @@ export function EliasExperience() {
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
   const [views, setViews] = useState<number | null>(null);
-  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
+  const [soundStarted, setSoundStarted] = useState(false);
+  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume, isAudioRunning } = useSound(!muted);
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
