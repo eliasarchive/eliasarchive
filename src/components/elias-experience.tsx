@@ -37,6 +37,8 @@ function useSound(enabled: boolean) {
     if (ctx && ctx.state !== "running") void ctx.resume();
   }, []);
 
+  const isAudioRunning = useCallback(() => contextRef.current?.state === "running", []);
+
   const ensure = useCallback(() => {
     if (!enabled) return null;
     const AudioCtx = window.AudioContext ?? window.webkitAudioContext;
