@@ -178,12 +178,12 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
 function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boolean }) {
   return (
     <section className="grain relative h-dvh overflow-hidden bg-ink">
-      <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`h-full w-full object-cover ${entering ? "terminal-zoom" : "animate-[slow-drift_10s_ease-in-out_both]"}`} />
+      <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`bedroom-terminal-view h-full w-full object-cover object-right ${entering ? "terminal-zoom" : ""}`} />
       <div className="vignette absolute inset-0 bg-background/10" />
-      <button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} className="terminal-hotspot group absolute left-[10%] top-[29%] h-[27%] w-[25%] cursor-pointer border border-primary/40 bg-background/5 transition-all duration-700 hover:bg-primary/10 focus-visible:border-primary disabled:pointer-events-none md:left-[9%] md:top-[28%] md:w-[26%]">
-        <span className="absolute inset-2 border border-primary/25 transition-all duration-500 group-hover:inset-1" />
-        <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap border border-primary/40 bg-background/75 px-4 py-2 text-[9px] uppercase tracking-[.28em] text-primary backdrop-blur-md">Access terminal</span>
-      </button>
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className="terminal-hotspot group absolute left-[56%] top-[40.5%] h-[12.5%] w-[18%] min-w-0 rounded-none border border-primary/55 bg-background/5 p-0 transition-all duration-700 hover:bg-primary/10 focus-visible:border-primary disabled:pointer-events-none md:left-[50%] md:w-[19%]">
+        <span className="absolute inset-1 border border-primary/30 transition-all duration-500 group-hover:inset-0" />
+        <span className="absolute left-1/2 top-[calc(100%+0.75rem)] -translate-x-1/2 whitespace-nowrap border border-primary/40 bg-background/80 px-4 py-2 text-[9px] uppercase tracking-[.28em] text-primary backdrop-blur-md">Access terminal</span>
+      </Button>
       <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
         <p className="font-display text-2xl text-foreground/80">The room settles into silence.</p>
         <p className="mt-2 text-[9px] uppercase tracking-[.28em] text-muted-foreground">The computer is waiting</p>
