@@ -219,7 +219,7 @@ export function EliasExperience() {
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
   const [views, setViews] = useState<number | null>(null);
-  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume, isAudioRunning } = useSound(!muted);
+  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
@@ -239,7 +239,7 @@ export function EliasExperience() {
       window.removeEventListener("keydown", start);
       window.removeEventListener("touchstart", start);
     };
-  }, [stage, scene, beginRain, beginAmbience, resume, isAudioRunning]);
+  }, [stage, scene, beginRain, beginAmbience, resume]);
 
   const advanceManor = () => {
     beginAmbience();
