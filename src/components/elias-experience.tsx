@@ -22,6 +22,7 @@ function useSound(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
   const droneRef = useRef<OscillatorNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
+  const jazzGainRef = useRef<GainNode | null>(null);
   const jazzRef = useRef<{ oscillators: OscillatorNode[]; timer: number } | null>(null);
 
   const ensure = useCallback(() => {
@@ -69,6 +70,7 @@ function useSound(enabled: boolean) {
     const master = ctx.createGain();
     master.gain.value = 0.018;
     master.connect(ctx.destination);
+    jazzGainRef.current = master;
     const notes = [146.83, 174.61, 220, 261.63, 196, 164.81];
     let step = 0;
     const playChord = () => {
@@ -96,6 +98,9 @@ function useSound(enabled: boolean) {
       gainRef.current.gain.setTargetAtTime(0.0001, contextRef.current.currentTime, 0.08);
     } else if (enabled && gainRef.current && contextRef.current) {
       gainRef.current.gain.setTargetAtTime(0.008, contextRef.current.currentTime, 0.1);
+    }
+    if (jazzGainRef.current && contextRef.current) {
+      jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.018 : 0.0001, contextRef.current.currentTime, 0.1);
     }
   }, [enabled]);
 
@@ -289,7 +294,7 @@ function RelationshipLegend() {
 
 function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: () => void }) {
   return (
-    <div className="absolute left-[calc(50%+5rem)] top-1/2 z-30 w-64 -translate-y-1/2 animate-in slide-in-from-left-3 fade-in duration-300" role="dialog" aria-label="Elias Archer profile">
+    <div className="absolute left-1/2 top-[calc(50%+6rem)] z-30 w-64 -translate-x-1/2 animate-in slide-in-from-left-3 fade-in duration-300 md:left-[calc(50%+5rem)] md:top-1/2 md:-translate-x-0 md:-translate-y-1/2" role="dialog" aria-label="Elias Archer profile">
       <div className="border border-border bg-card p-4 shadow-xl">
         <div className="flex items-center justify-between"><p className="text-[9px] uppercase tracking-[.35em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={onClose} aria-label="Close profile"><X /></Button></div>
         <p className="mt-3 text-[10px] leading-5 text-muted-foreground">Elias Archer</p>
