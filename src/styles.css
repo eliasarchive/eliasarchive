@@ -98,6 +98,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes terminal-glow { 0%,100% { box-shadow: 0 0 0 1px color-mix(in oklab,var(--brass) 45%,transparent), 0 0 25px color-mix(in oklab,var(--brass) 12%,transparent); } 50% { box-shadow: 0 0 0 1px var(--brass), 0 0 45px color-mix(in oklab,var(--brass) 28%,transparent); } }
 @keyframes rain-fall { from { background-position: 0 -180px; } to { background-position: -38px 420px; } }
 @keyframes rain-mist { 0%,100% { opacity: .08; transform: translateX(-2%); } 50% { opacity: .18; transform: translateX(2%); } }
+@keyframes crest-spin { to { transform: rotate(360deg); } }
+@keyframes feature-swift { 0% { opacity: 0; transform: translateX(26px) skewX(-6deg); filter: blur(6px); } 60% { opacity: 1; filter: blur(0); } 100% { opacity: 1; transform: none; }  }
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
