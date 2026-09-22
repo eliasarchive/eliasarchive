@@ -17,13 +17,13 @@ import {
 export function ViewBadge({ views }: { views: number | null }) {
   if (views === null) return null;
   return (
-    <aside className="view-badge group fixed bottom-40 left-0 z-[80] max-w-[11rem] border-y border-r border-primary/40 bg-background/80 py-2 pl-3 pr-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-auto md:top-40 md:max-w-xs md:py-3 md:pr-4">
+    <aside className="view-badge group fixed bottom-14 left-0 z-[80] flex max-w-[70vw] items-center gap-2 border-y border-r border-primary/40 bg-background/80 py-1.5 pl-3 pr-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-auto md:top-40 md:block md:max-w-xs md:py-3 md:pr-4">
       <div className="flex items-center gap-2 text-primary">
         <Eye className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" strokeWidth={1.4} />
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">views</span>
       </div>
-      <p key={remarkForViews(views)} className="feature-swift mt-2 font-display text-[11px] italic leading-4 text-foreground/70">
+      <p key={remarkForViews(views)} className="feature-swift mt-0 truncate font-display text-[11px] italic leading-4 text-foreground/70 md:mt-2">
         “{remarkForViews(views)}”
       </p>
     </aside>
