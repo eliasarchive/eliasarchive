@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Maximize2, Volume2, VolumeX, X } from "lucide-react";
+import { Maximize2, Move, Volume2, VolumeX, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import manorEntrance from "@/assets/manor-entrance.jpg";
@@ -22,6 +22,8 @@ function useSound(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
   const droneRef = useRef<OscillatorNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
+  const jazzGainRef = useRef<GainNode | null>(null);
+  const jazzRef = useRef<{ oscillators: OscillatorNode[]; timer: number } | null>(null);
 
   const ensure = useCallback(() => {
     if (!enabled) return null;
@@ -62,15 +64,47 @@ function useSound(enabled: boolean) {
     gainRef.current = gain;
   }, [ensure]);
 
+  const beginJazz = useCallback(() => {
+    const ctx = ensure();
+    if (!ctx || jazzRef.current) return;
+    const master = ctx.createGain();
+    master.gain.value = 0.018;
+    master.connect(ctx.destination);
+    jazzGainRef.current = master;
+    const notes = [146.83, 174.61, 220, 261.63, 196, 164.81];
+    let step = 0;
+    const playChord = () => {
+      const root = notes[step % notes.length] ?? 146.83;
+      step += 1;
+      [1, 1.25, 1.5].forEach((ratio, index) => {
+        const oscillator = ctx.createOscillator();
+        const envelope = ctx.createGain();
+        oscillator.type = index === 0 ? "triangle" : "sine";
+        oscillator.frequency.value = root * ratio;
+        envelope.gain.setValueAtTime(0.0001, ctx.currentTime);
+        envelope.gain.exponentialRampToValueAtTime(0.025 / (index + 1), ctx.currentTime + .08);
+        envelope.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.8);
+        oscillator.connect(envelope).connect(master);
+        oscillator.start(); oscillator.stop(ctx.currentTime + 1.9);
+      });
+    };
+    playChord();
+    const timer = window.setInterval(playChord, 1900);
+    jazzRef.current = { oscillators: [], timer };
+  }, [ensure]);
+
   useEffect(() => {
     if (!enabled && gainRef.current && contextRef.current) {
       gainRef.current.gain.setTargetAtTime(0.0001, contextRef.current.currentTime, 0.08);
     } else if (enabled && gainRef.current && contextRef.current) {
       gainRef.current.gain.setTargetAtTime(0.008, contextRef.current.currentTime, 0.1);
     }
+    if (jazzGainRef.current && contextRef.current) {
+      jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.018 : 0.0001, contextRef.current.currentTime, 0.1);
+    }
   }, [enabled]);
 
-  return { tone, beginAmbience };
+  return { tone, beginAmbience, beginJazz };
 }
 
 export function EliasExperience() {
@@ -78,7 +112,8 @@ export function EliasExperience() {
   const [scene, setScene] = useState(0);
   const [muted, setMuted] = useState(false);
   const [section, setSection] = useState<ArchiveSection>("relationships");
-  const { tone, beginAmbience } = useSound(!muted);
+  const [computerZoom, setComputerZoom] = useState(false);
+  const { tone, beginAmbience, beginJazz } = useSound(!muted);
 
   const advanceManor = () => {
     beginAmbience();
@@ -89,14 +124,16 @@ export function EliasExperience() {
 
   const enterComputer = () => {
     tone(240, 0.5, 0.04);
-    setStage("welcome");
+    beginJazz();
+    setComputerZoom(true);
+    window.setTimeout(() => setStage("welcome"), 1250);
   };
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} onToggle={() => setMuted((value) => !value)} />
       {stage === "manor" && <ManorSequence scene={scene} onAdvance={advanceManor} onSkip={() => setStage("desk")} />}
-      {stage === "desk" && <DeskScene onEnter={enterComputer} />}
+       {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && (
         <Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} />
@@ -138,18 +175,14 @@ function ManorSequence({ scene, onAdvance, onSkip }: { scene: number; onAdvance:
   );
 }
 
-function DeskScene({ onEnter }: { onEnter: () => void }) {
+function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boolean }) {
   return (
     <section className="grain relative h-dvh overflow-hidden bg-ink">
-      <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className="h-full w-full object-cover animate-[slow-drift_10s_ease-in-out_both]" />
+      <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`h-full w-full object-cover ${entering ? "terminal-zoom" : "animate-[slow-drift_10s_ease-in-out_both]"}`} />
       <div className="vignette absolute inset-0 bg-background/10" />
-      <div className="absolute left-[8%] top-[13%] hidden max-w-52 border-l border-primary/40 pl-4 md:block">
-        <p className="font-display text-xl text-primary-foreground/80">Private room</p>
-        <p className="mt-1 text-[9px] uppercase tracking-[.25em] text-muted-foreground">Garden wing</p>
-      </div>
-      <button aria-label="Enter Elias Archer's computer" onClick={onEnter} className="group absolute right-[4%] top-[33%] h-[25%] w-[16%] cursor-pointer border border-primary/0 transition-all duration-700 hover:border-primary/40 focus-visible:border-primary md:right-[3%] md:top-[35%]">
-        <span className="absolute inset-[-10%] border border-primary/30 opacity-40 transition-all duration-700 group-hover:inset-[-16%] group-hover:opacity-100" />
-        <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] uppercase tracking-[.3em] text-primary opacity-70 group-hover:opacity-100">Access terminal</span>
+      <button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} className="terminal-hotspot group absolute left-[10%] top-[29%] h-[27%] w-[25%] cursor-pointer border border-primary/40 bg-background/5 transition-all duration-700 hover:bg-primary/10 focus-visible:border-primary disabled:pointer-events-none md:left-[9%] md:top-[28%] md:w-[26%]">
+        <span className="absolute inset-2 border border-primary/25 transition-all duration-500 group-hover:inset-1" />
+        <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap border border-primary/40 bg-background/75 px-4 py-2 text-[9px] uppercase tracking-[.28em] text-primary backdrop-blur-md">Access terminal</span>
       </button>
       <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
         <p className="font-display text-2xl text-foreground/80">The room settles into silence.</p>
@@ -162,9 +195,11 @@ function DeskScene({ onEnter }: { onEnter: () => void }) {
 function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   return (
-    <button onClick={onEnter} onPointerMove={(event) => setPosition({ x: event.clientX / window.innerWidth - .5, y: event.clientY / window.innerHeight - .5 })} className="grain relative flex h-dvh w-full cursor-pointer items-center justify-center overflow-hidden bg-ink text-center">
+    <button onClick={onEnter} onPointerMove={(event) => setPosition({ x: event.clientX / window.innerWidth - .5, y: event.clientY / window.innerHeight - .5 })} className="grain relative flex h-dvh w-full cursor-pointer items-center justify-center overflow-hidden bg-ink text-center animate-in fade-in duration-700">
       <div className="archive-grid absolute inset-0 opacity-30" style={{ transform: `translate(${position.x * -10}px, ${position.y * -10}px)` }} />
-      <div className="absolute inset-[6%] border border-border/60" />
+      <div className="absolute inset-[4%] border border-primary/40" />
+      <div className="absolute inset-x-[8%] top-[10%] flex justify-between border-b border-primary/20 pb-3 text-[8px] uppercase tracking-[.3em] text-primary"><span>Archer private terminal</span><span>System ready</span></div>
+      <div className="absolute bottom-[9%] left-[8%] h-2 w-2 bg-primary shadow-[0_0_16px_var(--primary)]" />
       <div className="relative" style={{ transform: `translate(${position.x * 16}px, ${position.y * 12}px)` }}>
         <p className="mb-5 text-[10px] uppercase tracking-[.5em] text-primary">Private archive</p>
         <h1 className="font-display text-6xl font-medium md:text-8xl">Welcome Back</h1>
@@ -183,7 +218,7 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
     { id: "backstory", label: "Backstory", numeral: "03" },
   ];
   return (
-    <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background">
+    <section className="archive-light archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
       <header className="relative z-30 flex flex-col border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:flex-row md:items-center md:justify-between md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
           <p className="font-display text-2xl">Elias Archer</p>
@@ -197,7 +232,7 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
           ))}
         </nav>
       </header>
-      <div className="relative z-30">
+      <div key={section} className="archive-enter relative z-30">
         {section === "relationships" && <RelationshipChart tone={tone} />}
         {section === "appearance" && <AppearanceDossier tone={tone} />}
         {section === "backstory" && <Backstory />}
@@ -209,6 +244,8 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
 function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: number, volume?: number) => void }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   useEffect(() => {
     const close = (event: KeyboardEvent) => event.key === "Escape" && (viewerOpen ? setViewerOpen(false) : setProfileOpen(false));
     window.addEventListener("keydown", close);
@@ -221,16 +258,19 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div><p className="text-[9px] uppercase tracking-[.35em] text-primary">Network index</p><h2 className="mt-2 font-display text-4xl md:text-6xl">Relationship Chart</h2></div>
         <p className="hidden max-w-xs text-right text-xs leading-6 text-muted-foreground md:block">Archive structure ready. No relationships are recorded.</p>
       </div>
-      <div className="relative mx-auto flex h-[40vh] min-h-80 max-w-5xl items-center justify-center">
+      <div className="relative mx-auto h-[44vh] min-h-80 max-w-5xl cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (drag.current) setOffset({ x: drag.current.ox + event.clientX - drag.current.x, y: drag.current.oy + event.clientY - drag.current.y }); }} onPointerUp={() => { drag.current = null; }}>
+        <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 text-[8px] uppercase tracking-[.22em] text-muted-foreground"><Move className="h-3 w-3" /> Drag to move</div>
+        <div className="absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px))` }}>
         <div className="absolute h-72 w-72 rounded-full border border-border/40 md:h-96 md:w-96" />
         <div className="absolute h-52 w-52 rounded-full border border-dashed border-primary/25 md:h-72 md:w-72" />
-        <button onMouseEnter={() => tone(275, .08, .012)} onClick={() => { tone(330, .18, .025); setProfileOpen(true); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_60px_color-mix(in_oklab,var(--primary)_15%,transparent)] transition duration-500 hover:scale-105 hover:shadow-[0_0_90px_color-mix(in_oklab,var(--primary)_28%,transparent)] md:h-44 md:w-44">
+        <button onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_60px_color-mix(in_oklab,var(--primary)_15%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
           <span className="absolute inset-2 rounded-full border border-primary/20 animate-[pulse-ring_3s_ease-in-out_infinite]" />
           <span><span className="block text-[8px] uppercase tracking-[.3em] text-primary">Central file</span><span className="mt-2 block font-display text-2xl">Elias Archer</span></span>
         </button>
+        {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
+        </div>
       </div>
       <RelationshipLegend />
-      {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       {viewerOpen && <ImageViewer onClose={() => setViewerOpen(false)} />}
     </div>
   );
@@ -242,8 +282,8 @@ function RelationshipLegend() {
       <div className="mb-4 flex items-end justify-between"><h3 className="font-display text-xl">Relationship legend</h3><p className="text-[8px] uppercase tracking-[.25em] text-muted-foreground">Future connection system</p></div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 md:grid-cols-4 lg:grid-cols-6">
         {relationshipTypes.map((type, index) => (
-          <div key={type} className="flex items-center gap-3 text-[9px] text-muted-foreground">
-            <span className={`relationship-line w-8 shrink-0 ${index % 3 === 0 ? "text-primary" : index % 3 === 1 ? "text-accent-foreground" : "text-muted-foreground"}`} style={{ opacity: .45 + (index % 4) * .14 }} />
+          <div key={type} className="legend-item flex items-center gap-3 text-[9px] text-foreground/75">
+             <span className="legend-swatch w-8 shrink-0" style={{ opacity: .72 + (index % 3) * .12 }} />
             <span>{type}</span>
           </div>
         ))}
@@ -254,14 +294,15 @@ function RelationshipLegend() {
 
 function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-end bg-background/55 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Elias Archer profile">
-      <div className="animate-in slide-in-from-right h-full w-full max-w-xl border-l border-border bg-card p-6 shadow-2xl duration-500 md:p-10">
+    <div className="absolute left-1/2 top-[calc(50%+6rem)] z-30 w-64 -translate-x-1/2 animate-in slide-in-from-left-3 fade-in duration-300 md:left-[calc(50%+5rem)] md:top-1/2 md:-translate-x-0 md:-translate-y-1/2" role="dialog" aria-label="Elias Archer profile">
+      <div className="border border-border bg-card p-4 shadow-xl">
         <div className="flex items-center justify-between"><p className="text-[9px] uppercase tracking-[.35em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={onClose} aria-label="Close profile"><X /></Button></div>
-        <button onClick={onExpand} className="group relative mt-8 flex h-[58vh] w-full items-end justify-center overflow-hidden border border-border bg-background/50">
+        <p className="mt-3 text-[10px] leading-5 text-muted-foreground">Elias Archer</p>
+        <button onClick={onExpand} className="group relative mt-3 flex h-48 w-full items-end justify-center overflow-hidden border border-border bg-background/50">
           <img src={eliasRose} alt="Elias Archer holding a rose" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center border border-border bg-background/70 text-primary backdrop-blur-md"><Maximize2 className="h-4 w-4" /></span>
         </button>
-        <blockquote className="mt-7 border-l border-primary pl-5 font-display text-2xl leading-tight">“This is me, what the fuck do you want me to add onto that”</blockquote>
+        <blockquote className="mt-4 border-l border-primary pl-3 font-display text-sm leading-snug">“This is me, what the fuck do you want me to add onto that”</blockquote>
       </div>
     </div>
   );
@@ -291,7 +332,7 @@ function AppearanceDossier({ tone }: { tone: (frequency?: number, duration?: num
           <div className="absolute inset-x-[12%] bottom-0 top-[5%] bg-gradient-to-t from-forest/40 via-transparent to-transparent" />
           <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="h-full w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)]" />
           {appearanceFeatures.map((feature) => (
-            <button key={feature.id} aria-label={`View ${feature.label} details`} onFocus={() => setActive(feature.id)} onMouseEnter={() => { tone(300, .06, .008); setActive(feature.id); }} onMouseLeave={() => setActive((value) => value === feature.id ? null : value)} onClick={() => setActive(feature.id)} className="group absolute z-20 h-6 w-6 -translate-x-1/2 -translate-y-1/2" style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
+            <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className="group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2" style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
               <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-background transition group-hover:scale-150" />
               <span className={`hotspot-line absolute top-1/2 h-px w-12 bg-primary/60 ${feature.side === "left" ? "right-1/2 origin-right" : "left-1/2"}`} />
             </button>
@@ -299,8 +340,8 @@ function AppearanceDossier({ tone }: { tone: (frequency?: number, duration?: num
         </div>
         <aside className="order-3 min-h-40 border-t border-border pt-6 lg:border-r lg:border-t-0 lg:pr-5 lg:pt-8">
           <p className="text-[8px] uppercase tracking-[.3em] text-muted-foreground">Selected detail</p>
-          {selected ? <div className="animate-in fade-in mt-8 duration-300"><p className="font-display text-3xl text-brass-soft">{selected.label}</p><p className="mt-4 max-w-xs text-sm leading-7 text-foreground/75">{selected.detail}</p></div> : <p className="mt-8 max-w-xs text-xs leading-6 text-muted-foreground">Select one of the fine markers around the visual record.</p>}
-          <div className="mt-10 grid grid-cols-2 gap-2 lg:grid-cols-1">{appearanceFeatures.map((feature) => <Button key={feature.id} variant="ghost" onClick={() => setActive(feature.id)} className={`h-auto justify-start rounded-none border-l px-3 py-2 text-left text-[9px] uppercase tracking-[.16em] ${active === feature.id ? "border-primary text-primary" : "border-border text-muted-foreground"}`}>{feature.label}</Button>)}</div>
+          {selected ? <div key={selected.id} className="detail-reveal mt-8"><p className="font-display text-3xl text-brass-soft">{selected.label}</p><p className="mt-4 max-w-xs text-sm leading-7 text-foreground/75">{selected.detail}</p></div> : <p className="mt-8 max-w-xs text-xs leading-6 text-muted-foreground">Select one of the fine markers around the visual record.</p>}
+          <div className="mt-10 grid grid-cols-2 gap-2 lg:grid-cols-1">{appearanceFeatures.map((feature) => <Button key={feature.id} variant="ghost" onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className={`h-auto justify-start rounded-none border-l px-3 py-2 text-left text-[9px] uppercase tracking-[.16em] transition-all duration-300 ${active === feature.id ? "translate-x-2 border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"}`}>{feature.label}</Button>)}</div>
         </aside>
       </div>
     </div>
