@@ -27,6 +27,12 @@
   --color-forest: var(--forest);
   --color-burgundy: var(--burgundy);
   --color-ink: var(--ink);
+  --color-chart-red: var(--chart-red);
+  --color-chart-blue: var(--chart-blue);
+  --color-chart-violet: var(--chart-violet);
+  --color-chart-green: var(--chart-green);
+  --color-chart-rose: var(--chart-rose);
+  --color-chart-gold: var(--chart-gold);
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
   --radius-lg: 0.375rem;
@@ -53,6 +59,12 @@
   --forest: oklch(0.25 0.04 148);
   --burgundy: oklch(0.31 0.075 24);
   --ink: oklch(0.075 0.008 70);
+  --chart-red: oklch(0.55 0.2 25);
+  --chart-blue: oklch(0.58 0.16 248);
+  --chart-violet: oklch(0.56 0.16 310);
+  --chart-green: oklch(0.54 0.14 150);
+  --chart-rose: oklch(0.64 0.17 355);
+  --chart-gold: oklch(0.67 0.14 78);
 }
 
 * { box-sizing: border-box; border-color: var(--border); }
@@ -67,10 +79,26 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes pulse-ring { 0%,100% { opacity: .35; transform: scale(1); } 50% { opacity: .8; transform: scale(1.08); } }
 @keyframes line-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes enter-right { from { opacity: 0; transform: translateX(8vw); } to { opacity: 1; transform: translateX(0); } }
+@keyframes terminal-zoom { 0% { transform: scale(1); filter: brightness(1); } 65% { transform: scale(1.8) translate3d(22%,-8%,0); filter: brightness(.75); } 100% { transform: scale(4) translate3d(22%,-8%,0); filter: brightness(2) blur(3px); opacity: 0; } }
+@keyframes archive-enter { from { opacity: 0; transform: translateY(18px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes detail-reveal { 0% { opacity: 0; transform: translateX(18px); clip-path: inset(0 100% 0 0); } 100% { opacity: 1; transform: none; clip-path: inset(0); } }
+@keyframes terminal-glow { 0%,100% { box-shadow: 0 0 0 1px color-mix(in oklab,var(--brass) 45%,transparent), 0 0 25px color-mix(in oklab,var(--brass) 12%,transparent); } 50% { box-shadow: 0 0 0 1px var(--brass), 0 0 45px color-mix(in oklab,var(--brass) 28%,transparent); } }
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
 .appearance-enter { animation: enter-right 1s cubic-bezier(.2,.8,.2,1) both; }
+.terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; transform-origin: 22% 47%; }
+.archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) both; }
+.detail-reveal { animation: detail-reveal .35s cubic-bezier(.2,.8,.2,1) both; }
+.terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; }
+.archive-light { --background: oklch(0.965 0.012 82); --foreground: oklch(0.2 0.018 65); --card: oklch(0.99 0.006 82); --card-foreground: oklch(0.2 0.018 65); --muted: oklch(0.91 0.016 82); --muted-foreground: oklch(0.43 0.025 65); --primary: oklch(0.43 0.08 70); --primary-foreground: oklch(0.98 0.005 82); --border: oklch(0.5 0.04 72 / .28); --accent: oklch(0.87 0.035 60); --accent-foreground: oklch(0.24 0.03 60); --brass-soft: oklch(0.48 0.09 72); }
+.legend-swatch { height: 4px; border-radius: 999px; background: var(--legend-color); box-shadow: 0 0 10px color-mix(in oklab,var(--legend-color) 28%,transparent); }
+.legend-item:nth-child(6n+1) { --legend-color: var(--chart-red); }
+.legend-item:nth-child(6n+2) { --legend-color: var(--chart-blue); }
+.legend-item:nth-child(6n+3) { --legend-color: var(--chart-violet); }
+.legend-item:nth-child(6n+4) { --legend-color: var(--chart-green); }
+.legend-item:nth-child(6n+5) { --legend-color: var(--chart-rose); }
+.legend-item:nth-child(6n+6) { --legend-color: var(--chart-gold); }
 .grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .12; mix-blend-mode: soft-light; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"); }
 .vignette { box-shadow: inset 0 0 16vw 5vw var(--ink); }
 .archive-grid { background-image: linear-gradient(color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px); background-size: 48px 48px; }
