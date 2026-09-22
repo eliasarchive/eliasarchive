@@ -211,13 +211,13 @@ export function EliasExperience() {
   const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain } = useSound(!muted);
 
   useEffect(() => {
-    if (stage !== "manor") return;
+    if (stage !== "manor" || scene !== 0) return;
     const start = () => { beginRain(); beginAmbience(); };
     window.addEventListener("pointerdown", start, { once: true });
     window.addEventListener("keydown", start, { once: true });
     start();
     return () => { window.removeEventListener("pointerdown", start); window.removeEventListener("keydown", start); };
-  }, [stage, beginRain, beginAmbience]);
+  }, [stage, scene, beginRain, beginAmbience]);
 
   const advanceManor = () => {
     beginAmbience();
