@@ -12,3 +12,4 @@
 - [x] Revise Appearance facts, markers, and click-only animated details.
 - [ ] Add smooth wheel, pinch, and button zoom controls to the relationship chart.
 - [ ] Add a focused cinematic image zoom when each Appearance marker is selected.
+- [ ] Add layered realistic rain to the manor entrance only.
