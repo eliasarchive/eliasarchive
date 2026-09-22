@@ -401,11 +401,11 @@ function RelationshipLegend() {
 
 function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: () => void }) {
   return (
-    <div className="absolute left-1/2 top-[calc(50%+6rem)] z-30 w-64 -translate-x-1/2 animate-in slide-in-from-left-3 fade-in duration-300 md:left-[calc(50%+5rem)] md:top-1/2 md:-translate-x-0 md:-translate-y-1/2" role="dialog" aria-label="Elias Archer profile">
+    <div onPointerDown={(event) => event.stopPropagation()} className="absolute left-1/2 top-[calc(50%+6rem)] z-[60] w-64 -translate-x-1/2 animate-in slide-in-from-left-3 fade-in duration-300 md:left-[calc(50%+5rem)] md:top-1/2 md:-translate-x-0 md:-translate-y-1/2" role="dialog" aria-label="Elias Archer profile">
       <div className="border border-border bg-card p-4 shadow-xl">
-        <div className="flex items-center justify-between"><p className="text-[9px] uppercase tracking-[.35em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={onClose} aria-label="Close profile"><X /></Button></div>
+        <div className="flex items-center justify-between"><p className="text-[9px] uppercase tracking-[.35em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); onClose(); }} aria-label="Close profile"><X /></Button></div>
         <p className="mt-3 text-[10px] leading-5 text-muted-foreground">Elias Archer</p>
-        <button onClick={onExpand} className="group relative mt-3 flex h-48 w-full items-end justify-center overflow-hidden border border-border bg-background/50">
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative mt-3 flex h-48 w-full items-end justify-center overflow-hidden border border-border bg-background/50">
           <img src={eliasRose} alt="Elias Archer holding a rose" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center border border-border bg-background/70 text-primary backdrop-blur-md"><Maximize2 className="h-4 w-4" /></span>
         </button>
