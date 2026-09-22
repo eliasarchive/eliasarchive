@@ -23,3 +23,4 @@
 - [x] Smooth the room and archive transitions, expand the computer target, and compact the Elias profile.- [x] Fix rain audio autostart, add global view counter with arrogant milestones, one-per-visitor like meter with comments, and drifting background notes.
 - [ ] Make drifting background messages smaller
 - [ ] Verify view badge + like meter appear only in archive, lower position, hover animations
+- [ ] Fix: published like messages never drift in background (check GitHub Pages build env + fetchLikes)
