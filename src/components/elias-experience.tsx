@@ -30,6 +30,11 @@ function useSound(enabled: boolean) {
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode } | null>(null);
 
 
+  const resume = useCallback(() => {
+    const ctx = contextRef.current;
+    if (ctx && ctx.state !== "running") void ctx.resume();
+  }, []);
+
   const ensure = useCallback(() => {
     if (!enabled) return null;
     const AudioCtx = window.AudioContext ?? window.webkitAudioContext;
@@ -199,7 +204,7 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain };
+  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume };
 }
 
 export function EliasExperience() {
@@ -209,16 +214,22 @@ export function EliasExperience() {
   const [section, setSection] = useState<ArchiveSection>("relationships");
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
-  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain } = useSound(!muted);
+  const [views, setViews] = useState<number | null>(null);
+  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
-    const start = () => { beginRain(); beginAmbience(); };
-    window.addEventListener("pointerdown", start, { once: true });
-    window.addEventListener("keydown", start, { once: true });
+    const start = () => { resume(); beginRain(); beginAmbience(); };
     start();
-    return () => { window.removeEventListener("pointerdown", start); window.removeEventListener("keydown", start); };
-  }, [stage, scene, beginRain, beginAmbience]);
+    window.addEventListener("pointerdown", start);
+    window.addEventListener("keydown", start);
+    window.addEventListener("touchstart", start);
+    return () => {
+      window.removeEventListener("pointerdown", start);
+      window.removeEventListener("keydown", start);
+      window.removeEventListener("touchstart", start);
+    };
+  }, [stage, scene, beginRain, beginAmbience, resume]);
 
   const advanceManor = () => {
     beginAmbience();
