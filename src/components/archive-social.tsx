@@ -46,6 +46,7 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [myNote, setMyNote] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
