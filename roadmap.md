@@ -29,3 +29,4 @@
 - [x] Remove "turn on the rain" button; rain auto-starts (fallback: first interaction anywhere)
 - [ ] Fix GitHub entrance rain audio unlocking on the visitor's first interaction
 - [ ] Lower the archive view counter so it stays clear of the relationship chart
+- [ ] Move the relationship like meter to the middle-right without covering content
