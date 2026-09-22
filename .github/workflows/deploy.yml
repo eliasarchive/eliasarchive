@@ -31,17 +31,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build
+      - name: Build static site
+        env:
+          GITHUB_PAGES: "true"
         run: npm run build
 
-      - name: Check build output
+      - name: Prepare Pages output
         run: |
-          echo "=== Build output ==="
-          ls -la
-          echo "=== .output ==="
-          ls -la .output || true
-          echo "=== .output/public ==="
-          ls -la .output/public || true
+          # GitHub Pages must not run Jekyll over the build output
+          touch dist/client/.nojekyll
+          # Single-page fallback so deep links and refreshes don't 404
+          cp dist/client/index.html dist/client/404.html
+          ls -la dist/client
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -49,7 +50,7 @@ jobs:
       - name: Upload build
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./.output/public
+          path: ./dist/client
 
   deploy:
     environment:
