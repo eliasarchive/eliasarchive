@@ -27,3 +27,6 @@
 - [x] Drifting notes: hardened spawn logic (state-in-updater bug); user confirmed they appear
 - [x] Mobile: reposition/shrink view badge + like meter so they overlap nothing
 - [x] Remove "turn on the rain" button; rain auto-starts (fallback: first interaction anywhere)
+- [x] Fix GitHub entrance rain audio unlocking on the visitor's first interaction
+- [x] Place the archive view counter at the top center, after the Elias Archer heading
+- [x] Move the relationship like meter to the middle-right without covering content

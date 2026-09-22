@@ -17,13 +17,13 @@ import {
 export function ViewBadge({ views }: { views: number | null }) {
   if (views === null) return null;
   return (
-    <aside className="view-badge group fixed bottom-14 left-0 z-[80] flex max-w-[52vw] items-center gap-2 border-y border-r border-primary/40 bg-background/80 py-1.5 pl-3 pr-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-auto md:top-40 md:block md:max-w-xs md:py-3 md:pr-4">
+    <aside className="view-badge group mx-auto mb-2 flex max-w-[min(100%,20rem)] items-center justify-center gap-2 border-x border-primary/40 bg-background/80 px-3 py-1.5 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/80 hover:shadow-[0_0_28px_-6px_var(--primary)] md:mb-0 md:max-w-xs md:px-4 md:py-2">
       <div className="flex items-center gap-2 text-primary">
         <Eye className="h-4 w-4 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" strokeWidth={1.4} />
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">views</span>
       </div>
-      <p key={remarkForViews(views)} className="feature-swift mt-0 min-w-0 truncate font-display text-[11px] italic leading-4 text-foreground/70 md:mt-2">
+      <p key={remarkForViews(views)} className="feature-swift mt-0 min-w-0 max-w-48 truncate font-display text-[11px] italic leading-4 text-foreground/70">
         “{remarkForViews(views)}”
       </p>
     </aside>
@@ -82,7 +82,7 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
 
   return (
     <>
-      <aside className="like-meter group fixed bottom-24 right-0 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:bottom-20 md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
+      <aside className="like-meter group fixed right-0 top-1/2 z-[60] flex flex-col items-center gap-2 border-y border-l border-primary/35 bg-background/80 px-2 py-3 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/75 hover:shadow-[0_0_28px_-6px_var(--primary)] md:gap-3 md:px-3 md:py-4" aria-label="Archive appreciation meter">
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">{total.toLocaleString()}</span>
         <div className="relative h-24 w-2 overflow-hidden rounded-full border border-border bg-card md:h-52 md:w-2.5">
           <div

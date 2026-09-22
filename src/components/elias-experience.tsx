@@ -32,22 +32,22 @@ function useSound(enabled: boolean) {
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode } | null>(null);
 
 
-  const resume = useCallback(() => {
-    const ctx = contextRef.current;
-    if (ctx && ctx.state !== "running") void ctx.resume();
-  }, []);
-
-  const isAudioRunning = useCallback(() => contextRef.current?.state === "running", []);
-
   const ensure = useCallback(() => {
-    if (!enabled) return null;
     const AudioCtx = window.AudioContext ?? window.webkitAudioContext;
     if (!AudioCtx) return null;
     if (!contextRef.current) contextRef.current = new AudioCtx();
     const ctx = contextRef.current;
-    if (ctx.state === "suspended") void ctx.resume();
     return ctx;
-  }, [enabled]);
+  }, []);
+
+  const resume = useCallback(async () => {
+    const ctx = ensure();
+    if (!ctx) return false;
+    if (ctx.state !== "running") {
+      try { await ctx.resume(); } catch { return false; }
+    }
+    return ctx.state === "running";
+  }, [ensure]);
 
   const tone = useCallback((frequency = 180, duration = 0.13, volume = 0.025) => {
     const ctx = ensure();
@@ -101,7 +101,7 @@ function useSound(enabled: boolean) {
     lowpass.frequency.value = 5200;
     const gain = ctx.createGain();
     gain.gain.value = 0.0001;
-    gain.gain.setTargetAtTime(0.11, ctx.currentTime, 1.2);
+    gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 1.2);
     source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
     source.start();
     rainRef.current = { source, gain };
@@ -208,7 +208,7 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume, isAudioRunning };
+  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume };
 }
 
 export function EliasExperience() {
@@ -223,21 +223,29 @@ export function EliasExperience() {
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
-    const start = () => {
-      resume();
+    let active = true;
+    const start = async () => {
+      const running = await resume();
+      if (!active || !running) return;
       beginRain();
       beginAmbience();
     };
-    start();
-    const delayed = window.setTimeout(start, 400);
-    window.addEventListener("pointerdown", start);
-    window.addEventListener("keydown", start);
-    window.addEventListener("touchstart", start);
+    void start();
+    const delayed = window.setTimeout(() => void start(), 400);
+    const unlock = () => void start();
+    window.addEventListener("pointerdown", unlock, { capture: true });
+    window.addEventListener("keydown", unlock, { capture: true });
+    window.addEventListener("touchend", unlock, { capture: true });
+    window.addEventListener("pageshow", unlock);
+    document.addEventListener("visibilitychange", unlock);
     return () => {
+      active = false;
       window.clearTimeout(delayed);
-      window.removeEventListener("pointerdown", start);
-      window.removeEventListener("keydown", start);
-      window.removeEventListener("touchstart", start);
+      window.removeEventListener("pointerdown", unlock, { capture: true });
+      window.removeEventListener("keydown", unlock, { capture: true });
+      window.removeEventListener("touchend", unlock, { capture: true });
+      window.removeEventListener("pageshow", unlock);
+      document.removeEventListener("visibilitychange", unlock);
     };
   }, [stage, scene, beginRain, beginAmbience, resume]);
 
@@ -266,13 +274,12 @@ export function EliasExperience() {
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
-      {stage === "archive" && <ViewBadge views={views} />}
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && (
-        <Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} />
+        <Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} views={views} />
       )}
     </main>
   );
@@ -365,7 +372,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
   );
 }
 
-function Archive({ section, onSection, tone }: { section: ArchiveSection; onSection: (section: ArchiveSection) => void; tone: (frequency?: number, duration?: number, volume?: number) => void }) {
+function Archive({ section, onSection, tone, views }: { section: ArchiveSection; onSection: (section: ArchiveSection) => void; tone: (frequency?: number, duration?: number, volume?: number) => void; views: number | null }) {
   const labels: Array<{ id: ArchiveSection; label: string; numeral: string }> = [
     { id: "relationships", label: "Relationship Chart", numeral: "01" },
     { id: "appearance", label: "Appearance", numeral: "02" },
@@ -374,12 +381,13 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
   return (
     <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
       <DriftingNotes />
-      <header className="relative z-30 flex flex-col border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:flex-row md:items-center md:justify-between md:px-10 md:pt-0">
+      <header className="relative z-30 grid border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:grid-cols-[1fr_auto_1fr] md:items-center md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
           <p className="font-display text-2xl">Elias Archer</p>
           <p className="text-[8px] uppercase tracking-[.35em] text-muted-foreground">Private record · Kitagawa High</p>
         </div>
-        <nav className="grid w-full grid-cols-3 gap-1 md:flex md:w-auto" aria-label="Archive sections">
+        <ViewBadge views={views} />
+        <nav className="grid w-full grid-cols-3 gap-1 md:flex md:w-auto md:justify-self-end" aria-label="Archive sections">
           {labels.map((item) => (
             <Button key={item.id} variant="ghost" onClick={() => onSection(item.id)} className={`h-auto min-w-0 whitespace-normal rounded-none border-b px-1 py-3 text-center text-[8px] uppercase tracking-[.12em] md:px-5 md:text-[9px] md:tracking-[.16em] ${section === item.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}>
               <span className="hidden md:inline">{item.numeral} · </span>{item.label}
