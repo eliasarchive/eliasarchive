@@ -181,7 +181,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
     <section className="grain relative h-dvh overflow-hidden bg-ink">
       <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`bedroom-terminal-view h-full w-full object-cover object-right ${entering ? "terminal-zoom" : ""}`} />
       <div className="vignette absolute inset-0 bg-background/10" />
-      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className="terminal-hotspot group absolute left-[56%] top-[40.5%] h-[12.5%] w-[18%] min-w-0 rounded-none border border-primary/55 bg-background/5 p-0 transition-all duration-700 hover:bg-primary/10 focus-visible:border-primary disabled:pointer-events-none md:left-[50%] md:w-[19%]">
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className="terminal-hotspot group absolute left-[56%] top-[40.5%] h-[12.5%] w-[18%] min-w-0 rounded-none border border-primary/55 bg-background/5 p-0 transition-all duration-700 hover:bg-primary/10 focus-visible:border-primary disabled:pointer-events-none md:left-[73%] md:top-[36.5%] md:h-[14%] md:w-[12%]">
         <span className="absolute inset-1 border border-primary/30 transition-all duration-500 group-hover:inset-0" />
         <span className="absolute left-1/2 top-[calc(100%+0.75rem)] -translate-x-1/2 whitespace-nowrap border border-primary/40 bg-background/80 px-4 py-2 text-[9px] uppercase tracking-[.28em] text-primary backdrop-blur-md">Access terminal</span>
       </Button>
