@@ -23,7 +23,7 @@ export function ViewBadge({ views }: { views: number | null }) {
         <span className="font-display text-xl leading-none text-brass-soft">{views.toLocaleString()}</span>
         <span className="text-[7px] uppercase tracking-[.3em] text-muted-foreground">views</span>
       </div>
-      <p key={remarkForViews(views)} className="feature-swift mt-0 truncate font-display text-[11px] italic leading-4 text-foreground/70 md:mt-2">
+      <p key={remarkForViews(views)} className="feature-swift mt-0 min-w-0 truncate font-display text-[11px] italic leading-4 text-foreground/70 md:mt-2">
         “{remarkForViews(views)}”
       </p>
     </aside>
