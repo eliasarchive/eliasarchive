@@ -16,6 +16,6 @@
 - [x] Add persistent bottom-center creator credit and rights notice.
 - [x] Upgrade the manor entrance rain with visible ground contact, puddles, and splashes.
 - [x] Replace the static entrance rain with a seamless animated rain scene with visible ground splashes.
-- [ ] Move the sound control clear of scene actions and hand rain into classical piano indoors.
-- [ ] Refine the computer target, computer-style welcome screen, and archive crest treatment.
-- [ ] Make profile dismissal animated and keep Appearance markers attached during smooth focus moves.
+- [x] Move the sound control clear of scene actions and hand rain into classical piano indoors.
+- [x] Refine the computer target, computer-style welcome screen, and archive crest treatment.
+- [x] Make profile dismissal animated and keep Appearance markers attached during smooth focus moves.
