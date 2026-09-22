@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Crown, Diamond, Leaf, Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
+import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
+import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntrance from "@/assets/manor-entrance-rain.jpg";
 import manorEntranceRain from "@/assets/manor-entrance-rain.webm";
 import manorCorridor from "@/assets/manor-corridor.jpg";
@@ -29,6 +31,11 @@ function useSound(enabled: boolean) {
   const pianoRef = useRef<number | null>(null);
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode } | null>(null);
 
+
+  const resume = useCallback(() => {
+    const ctx = contextRef.current;
+    if (ctx && ctx.state !== "running") void ctx.resume();
+  }, []);
 
   const ensure = useCallback(() => {
     if (!enabled) return null;
@@ -199,7 +206,7 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain };
+  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume };
 }
 
 export function EliasExperience() {
@@ -209,16 +216,22 @@ export function EliasExperience() {
   const [section, setSection] = useState<ArchiveSection>("relationships");
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
-  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain } = useSound(!muted);
+  const [views, setViews] = useState<number | null>(null);
+  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
-    const start = () => { beginRain(); beginAmbience(); };
-    window.addEventListener("pointerdown", start, { once: true });
-    window.addEventListener("keydown", start, { once: true });
+    const start = () => { resume(); beginRain(); beginAmbience(); };
     start();
-    return () => { window.removeEventListener("pointerdown", start); window.removeEventListener("keydown", start); };
-  }, [stage, scene, beginRain, beginAmbience]);
+    window.addEventListener("pointerdown", start);
+    window.addEventListener("keydown", start);
+    window.addEventListener("touchstart", start);
+    return () => {
+      window.removeEventListener("pointerdown", start);
+      window.removeEventListener("keydown", start);
+      window.removeEventListener("touchstart", start);
+    };
+  }, [stage, scene, beginRain, beginAmbience, resume]);
 
   const advanceManor = () => {
     beginAmbience();
@@ -238,12 +251,14 @@ export function EliasExperience() {
     stopPiano();
     beginJazz();
     setComputerZoom(true);
+    void registerView().then(setViews).catch(() => { void fetchViews().then(setViews).catch(() => undefined); });
     window.setTimeout(() => setStage("welcome"), 1250);
   };
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
+      {(stage === "welcome" || stage === "archive") && <ViewBadge views={views} />}
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
@@ -350,6 +365,7 @@ function Archive({ section, onSection, tone }: { section: ArchiveSection; onSect
   ];
   return (
     <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
+      <DriftingNotes />
       <header className="relative z-30 flex flex-col border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:flex-row md:items-center md:justify-between md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
           <p className="font-display text-2xl">Elias Archer</p>
@@ -451,6 +467,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       </div>
       <RelationshipLegend />
+      <LikeMeter tone={tone} />
       {viewerOpen && <ImageViewer onClose={() => setViewerOpen(false)} />}
     </div>
   );
