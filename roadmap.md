@@ -24,3 +24,4 @@
 - [ ] Make drifting background messages smaller
 - [ ] Verify view badge + like meter appear only in archive, lower position, hover animations
 - [ ] Fix: published like messages never drift in background (check GitHub Pages build env + fetchLikes)
+- [x] Drifting notes: hardened spawn logic (state-in-updater bug); user confirmed they appear
