@@ -14,7 +14,7 @@ import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
 import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
-import archiveRoseField from "@/assets/archive-rose-field.jpg.asset.json";
+import archiveRoseField from "@/assets/archive-red-field.png.asset.json";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg.asset.json";
@@ -671,7 +671,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         {profileOpen && (() => {
           const orbit = orbitRef.current;
           const w = orbit?.offsetWidth ?? 768, h = orbit?.offsetHeight ?? 480;
-          const cx = (orbit?.offsetLeft ?? 0) + offset.x, cy = (orbit?.offsetTop ?? 0) + offset.y;
+          const cx = (orbit?.offsetLeft ?? 0), cy = (orbit?.offsetTop ?? 0);
           const isN = profileOpen === "nanase";
           const md = w > 800;
           const ax = cx + (isN ? .27 * w : 0) * zoom, ay = cy + (isN ? -.28 * h : 0) * zoom;
