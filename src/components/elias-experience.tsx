@@ -707,8 +707,8 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
 
         </div>
          {profileOpen && typeof document !== "undefined" && createPortal(
-           <div className="profile-anchor" style={{ "--ax": `${profileAnchor.x}px`, "--ay": `${profileAnchor.y}px` } as React.CSSProperties}>
-             <ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />
+           <div className="profile-anchor">
+             <ProfilePanel key={profileOpen} anchor={profileAnchor} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />
            </div>,
            document.body,
          )}
@@ -736,13 +736,19 @@ function RelationshipLegend() {
   );
 }
 
-function ProfilePanel({ character, leaving, onClose, onExpand }: { character: "elias" | "nanase"; leaving: boolean; onClose: () => void; onExpand: () => void }) {
+function ProfilePanel({ character, anchor, leaving, onClose, onExpand }: { character: "elias" | "nanase"; anchor: { x: number; y: number }; leaving: boolean; onClose: () => void; onExpand: () => void }) {
   const isElias = character === "elias";
   const record = isElias ? elias : nanase;
   const portrait = isElias ? eliasRose : nanasePortrait;
   const closeAnimated = () => { if (!leaving) onClose(); };
   return (
-    <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover profile-popover-${character} absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label={`${record.name} profile`}>
+    <div
+      onPointerDown={(event) => event.stopPropagation()}
+      style={{ left: anchor.x, top: anchor.y }}
+      className={`profile-popover profile-popover-${character} fixed z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`}
+      role="dialog"
+      aria-label={`${record.name} profile`}
+    >
       <div className={`profile-card-shell relative border bg-card/95 px-5 pb-7 pt-5 shadow-2xl backdrop-blur-xl ${isElias ? "border-primary/75" : "border-chart-red/75"}`}>
         {isElias && <ProfileBotanicalFrame />}
         <div className="pointer-events-none absolute inset-0 z-[4] bg-card/95 backdrop-blur-xl" />
