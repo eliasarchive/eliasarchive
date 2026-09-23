@@ -572,6 +572,28 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const viewRef = useRef({ offset, zoom });
   const orbitRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  const anchorRef = useRef<{ key: string; x: number; y: number } | null>(null);
+  if (!profileOpen && anchorRef.current) anchorRef.current = null;
+  const rafRef = useRef<number | null>(null);
+  const pendingRef = useRef<{ x: number; y: number } | null>(null);
+  const onDragMove = (clientX: number, clientY: number) => {
+    const d = drag.current; if (!d) return;
+    pendingRef.current = { x: d.ox + clientX - d.x, y: d.oy + clientY - d.y };
+    if (rafRef.current != null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const p = pendingRef.current; const el = orbitRef.current;
+      if (!p || !el) return;
+      viewRef.current = { ...viewRef.current, offset: p };
+      el.style.transform = `translate(calc(-50% + ${p.x}px), calc(-50% + ${p.y}px)) scale(${viewRef.current.zoom})`;
+    });
+  };
+  const endDrag = () => {
+    if (!drag.current) return;
+    drag.current = null;
+    if (rafRef.current != null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    if (pendingRef.current) { const p = pendingRef.current; pendingRef.current = null; setOffset(p); }
+  };
   useEffect(() => {
     if (window.innerWidth < 768) setZoom(.68);
   }, []);
@@ -610,7 +632,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
       <div className="mx-auto flex max-w-7xl items-start justify-between gap-8">
         <div><p className="text-[9px] uppercase tracking-[.35em] text-primary">Network index</p><h2 className="mt-2 font-display text-4xl md:text-6xl">Relationship Chart</h2></div>
       </div>
-       <div ref={viewportRef} className="relative mx-auto h-[50vh] min-h-[420px] max-w-5xl touch-none cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { if ((event.target as HTMLElement).closest("button, [role='dialog']")) return; drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (drag.current) setOffset({ x: drag.current.ox + event.clientX - drag.current.x, y: drag.current.oy + event.clientY - drag.current.y }); }} onPointerUp={() => { drag.current = null; }}>
+       <div ref={viewportRef} className="relative mx-auto h-[50vh] min-h-[420px] max-w-5xl touch-none cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { if ((event.target as HTMLElement).closest("button, [role='dialog']")) return; drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => onDragMove(event.clientX, event.clientY)} onPointerUp={endDrag} onPointerCancel={endDrag}>
         <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 text-[8px] uppercase tracking-[.22em] text-muted-foreground"><Move className="h-3 w-3" /> Drag · scroll to zoom</div>
         <div className="absolute right-4 top-4 z-40 flex gap-1" onPointerDown={(event) => event.stopPropagation()}>
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
@@ -669,14 +691,17 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
 
         </div>
         {profileOpen && (() => {
-          const orbit = orbitRef.current;
-          const w = orbit?.offsetWidth ?? 768, h = orbit?.offsetHeight ?? 480;
-          const cx = (orbit?.offsetLeft ?? 0), cy = (orbit?.offsetTop ?? 0);
-          const isN = profileOpen === "nanase";
-          const md = w > 800;
-          const ax = cx + (isN ? .27 * w : 0) * zoom, ay = cy + (isN ? -.28 * h : 0) * zoom;
-          const r = (isN ? (md ? 56 : 48) + 12 : (md ? 104 : 80) + 16) * zoom;
-          return <div className="profile-anchor" style={{ "--ax": `${ax + r}px`, "--ay": `${ay}px` } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>;
+          if (!anchorRef.current || anchorRef.current.key !== profileOpen) {
+            const orbit = orbitRef.current;
+            const w = orbit?.offsetWidth ?? 768, h = orbit?.offsetHeight ?? 480;
+            const cx = (orbit?.offsetLeft ?? 0), cy = (orbit?.offsetTop ?? 0);
+            const isN = profileOpen === "nanase";
+            const md = w > 800;
+            const ax = cx + (isN ? .27 * w : 0) * zoom, ay = cy + (isN ? -.28 * h : 0) * zoom;
+            const r = (isN ? (md ? 56 : 48) + 12 : (md ? 104 : 80) + 16) * zoom;
+            anchorRef.current = { key: profileOpen, x: ax + r, y: ay };
+          }
+          return <div className="profile-anchor" style={{ "--ax": `${anchorRef.current.x}px`, "--ay": `${anchorRef.current.y}px` } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>;
         })()}
       </div>
       <RelationshipLegend />
