@@ -31,3 +31,6 @@
 - [x] Place the archive view counter at the top center, after the Elias Archer heading
 - [x] Move the relationship like meter to the middle-right without covering content
 - [x] Make the GitHub Pages rain graph ready before autoplay unlock and resume it on the first gesture
+- [x] Fix the mobile like-note popup so it stays centered and fully visible
+- [x] Preload the Relationship and Appearance character images before their first reveal
+- [x] Restyle the central relationship emblem with a floating gold laurel and subtle title drift
