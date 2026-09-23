@@ -11,6 +11,7 @@ import manorTurn from "@/assets/manor-turn.jpg";
 import eliasBedroom from "@/assets/elias-bedroom.jpg";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
+import profileRoseFrame from "@/assets/profile-rose-frame.png";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -578,22 +579,22 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-        <div className="laurel-hover pointer-events-none absolute inset-[14%]"><LaurelWreath /></div>
+        <div className="laurel-hover pointer-events-none absolute inset-[18%]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
-        <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-52 w-52 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-64 md:w-64">
+        <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-52 w-52 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-64 md:w-64">
           <span className="absolute inset-2 rounded-full border border-primary/30" />
           <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
-          <span className="elias-title-drift flex w-full flex-col items-center px-3 text-center">
+          <span className="elias-title-drift flex w-full flex-col items-center justify-center px-5 text-center">
             <span className="block text-[7px] uppercase tracking-[.48em] text-primary md:text-[8px]">Central file</span>
             <span className="mx-auto my-3 block h-px w-16 bg-primary/60 md:my-4 md:w-20" />
-            <span className="elias-signature block w-full font-display font-normal text-brass-soft">
-              <span className="block text-[2rem] uppercase leading-[.9] md:text-[2.7rem]"><span className="text-[1.38em]">E</span><span className="align-[.08em]">lias</span></span>
+            <span className="elias-signature grid w-full place-items-center font-display font-normal text-brass-soft">
+              <span className="block w-full text-center text-[1.45rem] uppercase leading-none md:text-[1.85rem]">Elias</span>
               <span className="relative my-1 block h-3 w-full md:my-2">
                 <span className="absolute left-1/2 top-1/2 h-px w-[74%] -translate-x-1/2 -translate-y-1/2 bg-primary/60" />
                 <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-card" />
               </span>
-              <span className="block text-[1.9rem] uppercase leading-[.9] md:text-[2.55rem]"><span className="text-[1.38em] italic">A</span><span className="align-[.08em]">rcher</span></span>
+              <span className="block w-full text-center text-[1.4rem] uppercase leading-none italic md:text-[1.8rem]">Archer</span>
             </span>
             <span className="mx-auto mt-4 block h-px w-14 bg-primary/55 md:mt-5 md:w-16" />
           </span>
@@ -633,20 +634,20 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
   };
   return (
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
-      <div className="profile-card-shell relative max-h-[calc(100dvh-7rem)] overflow-y-auto border border-primary/75 bg-card/95 px-5 py-5 shadow-2xl backdrop-blur-xl md:px-9 md:py-8">
-        <ProfileVines />
+      <div className="profile-card-shell relative max-h-[calc(100dvh-6rem)] overflow-y-auto border border-primary/75 bg-card/95 px-5 py-5 shadow-2xl backdrop-blur-xl md:px-6 md:py-6">
+        <img src={profileRoseFrame} alt="" className="profile-rose-frame pointer-events-none absolute -inset-7 z-20 h-[calc(100%+3.5rem)] w-[calc(100%+3.5rem)] object-fill" aria-hidden="true" />
         <div className="pointer-events-none absolute inset-2 border border-primary/25" />
         <div className="relative z-10 flex items-start justify-between">
           <div><p className="text-[8px] uppercase tracking-[.38em] text-primary md:text-[10px]">Central profile</p><span className="mt-3 block h-px w-16 bg-primary" /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-10 w-10 text-primary hover:bg-primary/10"><X className="h-6 w-6" /></Button>
         </div>
-        <p className="relative z-10 mt-7 font-display text-2xl text-brass-soft md:text-3xl">Elias Archer</p>
-        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative z-10 mt-5 flex h-52 w-full items-end justify-center overflow-hidden border border-primary/60 bg-background/50 md:h-64">
+        <p className="relative z-10 mt-5 font-display text-2xl text-brass-soft">Elias Archer</p>
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative z-10 mt-4 flex h-44 w-full items-end justify-center overflow-hidden border border-primary/60 bg-background/50 md:h-48">
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
           <img src={eliasRose} alt="Elias Archer holding a rose" loading="eager" fetchPriority="high" decoding="sync" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-4 right-4 grid h-11 w-11 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-4 w-4" /></span>
         </button>
-        <blockquote className="relative z-10 mt-7 border-l border-primary pl-5 font-display text-lg leading-relaxed text-foreground md:text-2xl">“This is me, what the fuck do you want me to add onto that”</blockquote>
+        <blockquote className="relative z-10 mt-5 border-l border-primary pl-4 font-display text-base leading-relaxed text-foreground md:text-lg">“This is me, what the fuck do you want me to add onto that”</blockquote>
       </div>
     </div>
   );
