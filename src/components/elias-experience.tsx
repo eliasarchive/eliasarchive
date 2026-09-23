@@ -682,8 +682,8 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              <span className="nanase-crosshair" aria-hidden="true" />
                <img src={nanaseClawLogo} alt="" className="nanase-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[78%] w-[66%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-55" />
               <span className="nanase-title-drift relative z-10 flex flex-col items-center justify-center">
-                 <span className="font-display text-xs uppercase leading-none md:text-sm">Nanase</span>
-                 <span className="mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Koji</span>
+                 <span className="nanase-profile-name font-display text-xs uppercase leading-none md:text-sm">Nanase</span>
+                 <span className="nanase-profile-name mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Koji</span>
              </span>
            </Button>
          </div>
