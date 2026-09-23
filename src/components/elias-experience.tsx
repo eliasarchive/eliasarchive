@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { fetchViews, registerView } from "@/lib/archive-social";
-import manorEntrance from "@/assets/manor-entrance-rain.jpg";
-import manorEntranceRain from "@/assets/manor-entrance-rain.webm";
-import manorCorridor from "@/assets/manor-corridor.jpg";
-import manorTurn from "@/assets/manor-turn.jpg";
-import eliasBedroom from "@/assets/elias-bedroom.jpg";
+import manorEntrance from "@/assets/manor-real-entrance.jpg";
+import manorStair from "@/assets/manor-real-stair.jpg";
+import manorGallery from "@/assets/manor-real-gallery.jpg";
+import manorStudy from "@/assets/manor-real-study.jpg";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -24,9 +23,9 @@ type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
-  { image: manorCorridor, chapter: "II", title: "Beyond the threshold", note: "First left" },
-  { image: manorTurn, chapter: "III", title: "The private wing", note: "Second left" },
-  { image: eliasBedroom, chapter: "IV", title: "The bedroom", note: "Enter" },
+  { image: manorStair, chapter: "II", title: "Beyond the threshold", note: "First left" },
+  { image: manorGallery, chapter: "III", title: "The private wing", note: "Second left" },
+  { image: manorStudy, chapter: "IV", title: "The room", note: "Enter" },
 ] as const;
 
 function LaurelWreath() {
@@ -344,7 +343,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
+    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -356,7 +355,6 @@ export function EliasExperience() {
       void image.decode().catch(() => undefined);
       warmedImages.push(image);
     });
-    void fetch(manorEntranceRain).catch(() => undefined);
   }, []);
 
 
@@ -446,13 +444,10 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
   const current = manorScenes[scene];
   if (!current) return null;
   return (
-    <section className={`grain relative h-dvh overflow-hidden bg-ink ${enteringRoom ? "room-transition-out" : ""}`} aria-label="Journey through the manor">
+    <section className={`relative h-dvh overflow-hidden bg-ink ${enteringRoom ? "room-transition-out" : ""}`} aria-label="Journey through the manor">
       <div key={current.image} className="cinematic-frame absolute inset-0">
-        {scene === 0 ? (
-          <video src={manorEntranceRain} poster={manorEntrance} autoPlay loop muted playsInline preload="auto" aria-label="A dark manor entrance under animated rainfall" className="manor-rain-video h-full w-full object-cover" />
-        ) : (
-          <img src={current.image} alt="A dark, elegant manor interior" width={1536} height={864} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
-        )}
+        <img src={current.image} alt={scene === 0 ? "The real front entrance of Harlaxton Manor" : "A real interior photograph of Harlaxton Manor"} width={1920} height={1262} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
+        {scene === 0 && <div className="rain-field pointer-events-none absolute inset-0" aria-hidden="true"><div className="rain-layer rain-far" /><div className="rain-layer rain-mid" /><div className="rain-layer rain-near" /><div className="rain-mist" /></div>}
       </div>
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
@@ -473,10 +468,11 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
 
 function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boolean }) {
   return (
-    <section className="desk-scene-enter grain relative h-dvh overflow-hidden bg-ink">
-      <img src={eliasBedroom} alt="A refined bedroom with a garden-facing desk" width={1536} height={864} className={`bedroom-terminal-view h-full w-full object-cover object-right ${entering ? "terminal-zoom" : ""}`} />
+    <section className="desk-scene-enter relative h-dvh overflow-hidden bg-ink">
+      <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={1024} height={683} className={`bedroom-terminal-view h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
       <div className="vignette absolute inset-0 bg-background/10" />
-      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open group absolute left-[64%] top-[40%] h-[12.5%] w-[17%] min-w-0 rounded-none border border-primary/40 bg-primary/5 p-0 shadow-[0_0_26px_color-mix(in_oklab,var(--primary)_18%,transparent)] transition-colors duration-700 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_38px_color-mix(in_oklab,var(--primary)_32%,transparent)] focus-visible:outline-primary disabled:pointer-events-none md:left-auto md:right-[2.5%] md:top-[41%] md:h-[15%] md:w-[11%] ${entering ? "terminal-hotspot-entering" : ""}`}>
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute min-w-0 rounded-none border border-primary/40 bg-ink/90 p-0 shadow-[0_0_26px_color-mix(in_oklab,var(--primary)_18%,transparent)] transition-colors duration-700 hover:border-primary hover:bg-ink hover:shadow-[0_0_38px_color-mix(in_oklab,var(--primary)_32%,transparent)] focus-visible:outline-primary disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
+        <span className="terminal-screen-lines absolute inset-0" aria-hidden="true" />
         <span className="terminal-corner terminal-corner-tl" /><span className="terminal-corner terminal-corner-tr" /><span className="terminal-corner terminal-corner-bl" /><span className="terminal-corner terminal-corner-br" />
         <span className="absolute inset-1 border border-primary/20 transition-all duration-500 group-hover:inset-0 group-hover:border-primary/60" />
         <span className="absolute left-1/2 top-[calc(100%+0.55rem)] -translate-x-1/2 whitespace-nowrap border border-primary/60 bg-background/90 px-3 py-1.5 text-[7px] uppercase tracking-[.2em] text-primary shadow-lg backdrop-blur-md md:px-4 md:py-2 md:text-[9px] md:tracking-[.28em]">Access terminal</span>

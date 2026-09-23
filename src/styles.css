@@ -131,11 +131,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
-.cinematic-bedroom { object-position: right center; transform: scale(1.01); }
-.manor-rain-video { display: block; transform: translateZ(0) scale(1.012); backface-visibility: hidden; will-change: transform; }
+.cinematic-bedroom { object-position: 72% center; transform: scale(1.01); }
 .appearance-glow { background: linear-gradient(to top, color-mix(in oklab, #6b0f14 40%, transparent), color-mix(in oklab, #6b0f14 16%, transparent) 45%, transparent); }
 .appearance-enter { animation: enter-right 1s cubic-bezier(.2,.8,.2,1) both; }
-.bedroom-terminal-view { transform-origin: 74% 46%; }
+.bedroom-terminal-view { object-position: 72% center; transform-origin: 76% 56%; }
 .terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; }
 .room-transition-out { animation: room-transition-out .9s cubic-bezier(.65,0,.35,1) both; }
 .room-transition-out::before { content: ""; position: absolute; inset: 0; z-index: 35; pointer-events: none; background: var(--ink); transform-origin: right; animation: room-curtain .9s cubic-bezier(.65,0,.35,1) both; }
@@ -145,6 +144,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) backwards; }
 .detail-reveal { animation: detail-reveal .35s cubic-bezier(.2,.8,.2,1) both; }
 .terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; }
+.terminal-monitor { left: 68%; top: 46%; width: clamp(5.8rem,18vw,8rem); aspect-ratio: 16 / 10; height: auto; transform-origin: center; }
+.terminal-monitor::before { content: ""; position: absolute; left: 45%; top: 100%; width: 10%; height: 26%; background: var(--ink); border-inline: 1px solid color-mix(in oklab,var(--primary) 38%,transparent); }
+.terminal-monitor::after { content: ""; position: absolute; left: 31%; top: 123%; width: 38%; height: 4px; background: var(--ink); border: 1px solid color-mix(in oklab,var(--primary) 38%,transparent); }
+.terminal-screen-lines { opacity: .45; background-image: repeating-linear-gradient(to bottom,transparent 0 4px,color-mix(in oklab,var(--primary) 12%,transparent) 4px 5px); }
 .rain-field { z-index: 2; overflow: hidden; background: linear-gradient(110deg, transparent 55%, color-mix(in oklab,var(--foreground) 5%,transparent)); }
 .rain-layer { position: absolute; inset: -20%; transform: skewX(-6deg); background-repeat: repeat; }
 .rain-far { opacity: .16; background-image: repeating-linear-gradient(105deg, transparent 0 24px, color-mix(in oklab,var(--foreground) 38%,transparent) 25px 26px, transparent 27px 55px); background-size: 68px 180px; animation: rain-fall 1.15s linear infinite; filter: blur(.45px); }
@@ -261,7 +264,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 }
 
 @media (min-width: 768px) {
-  .bedroom-terminal-view { transform-origin: 92% 48%; }
+  .bedroom-terminal-view { transform-origin: 76% 56%; }
+  .terminal-monitor { left: 72%; top: 47%; width: clamp(7rem,11vw,10rem); }
   .relationship-connection { --connection-angle: -31deg; left: calc(50% + 5.2rem); top: calc(50% - 3.18rem); width: 8.9rem; }
   .relationship-connection-elias { left: calc(50% + 5.5rem); top: calc(50% - 3.36rem); width: 8.6rem; }
   .relationship-connection-nanase { width: 8.75rem; }
