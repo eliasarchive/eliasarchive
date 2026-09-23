@@ -22,37 +22,47 @@ const manorScenes = [
 ] as const;
 
 function LaurelWreath() {
-  const leaves = Array.from({ length: 13 }, (_, index) => ({
-    y: 31 + index * 8.25,
-    rotation: -43 + index * 6.5,
-    scale: index < 2 || index > 10 ? 0.78 : 1,
-  }));
+  const branchAngles = Array.from({ length: 12 }, (_, index) => 96 + index * 14.2);
+  const leaves = branchAngles.map((angle) => {
+    const radians = angle * Math.PI / 180;
+    return {
+      angle,
+      x: 180 + 146 * Math.cos(radians),
+      y: 180 + 146 * Math.sin(radians),
+      tangent: angle + 90,
+    };
+  });
 
   return (
-    <svg viewBox="0 0 240 240" className="h-full w-full overflow-visible" aria-hidden="true">
+    <svg viewBox="0 0 360 360" className="h-full w-full overflow-visible" aria-hidden="true">
       <defs>
-        <linearGradient id="laurel-gold" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="laurel-gold" x1="0" y1="0" x2=".85" y2="1">
           <stop offset="0" stopColor="var(--brass-soft)" />
-          <stop offset="0.5" stopColor="var(--brass)" />
-          <stop offset="1" stopColor="var(--muted-foreground)" />
+          <stop offset=".32" stopColor="var(--primary)" />
+          <stop offset=".7" stopColor="var(--brass-soft)" />
+          <stop offset="1" stopColor="var(--brass)" />
         </linearGradient>
+        <g id="laurel-leaf">
+          <path d="M0 0C9-11 25-13 37-4C28 8 12 11 0 0Z" />
+          <path d="M3 0C14-2 25-3 33-4" fill="none" stroke="var(--brass-soft)" strokeWidth=".55" opacity=".58" />
+        </g>
       </defs>
-      <g fill="url(#laurel-gold)" stroke="var(--primary)" strokeWidth="0.55">
-        <path d="M112 213C54 196 29 147 42 88c5-24 18-45 37-61" fill="none" strokeWidth="1.5" opacity=".72" />
-        <path d="M128 213c58-17 83-66 70-125-5-24-18-45-37-61" fill="none" strokeWidth="1.5" opacity=".72" />
+      <g className="laurel-metal" fill="url(#laurel-gold)" stroke="var(--primary)" strokeWidth=".7" strokeLinejoin="round">
+        <path d="M180 331C91 301 42 228 54 143 61 91 91 49 137 23" fill="none" strokeWidth="2.2" opacity=".86" />
+        <path d="M180 331c89-30 138-103 126-188-7-52-37-94-83-120" fill="none" strokeWidth="2.2" opacity=".86" />
         {leaves.map((leaf, index) => (
-          <g key={`left-${index}`} transform={`translate(${49 + Math.sin(index * .28) * 15} ${leaf.y}) rotate(${leaf.rotation}) scale(${leaf.scale})`}>
-            <path d="M0 0C10-7 21-6 28 0 18 7 8 8 0 0Z" />
-            <path d="M3 2C13 4 20 3 26 0" fill="none" opacity=".55" />
+          <g key={`left-${index}`} transform={`translate(${leaf.x} ${leaf.y})`}>
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent - 39}) scale(${index < 2 || index > 9 ? .84 : 1})`} />
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent + 39}) scale(${index < 2 || index > 9 ? .8 : .94})`} opacity=".92" />
           </g>
         ))}
         {leaves.map((leaf, index) => (
-          <g key={`right-${index}`} transform={`translate(${191 - Math.sin(index * .28) * 15} ${leaf.y}) rotate(${-leaf.rotation}) scale(${-leaf.scale} ${leaf.scale})`}>
-            <path d="M0 0C10-7 21-6 28 0 18 7 8 8 0 0Z" />
-            <path d="M3 2C13 4 20 3 26 0" fill="none" opacity=".55" />
+          <g key={`right-${index}`} transform={`translate(${360 - leaf.x} ${leaf.y}) scale(-1 1)`}>
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent - 39}) scale(${index < 2 || index > 9 ? .84 : 1})`} />
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent + 39}) scale(${index < 2 || index > 9 ? .8 : .94})`} opacity=".92" />
           </g>
         ))}
-        <path d="m120 208 4 8 8 4-8 4-4 8-4-8-8-4 8-4Z" />
+        <path d="M180 329c-13-11-23-14-38-14 8 12 20 19 38 20 18-1 30-8 38-20-15 0-25 3-38 14Z" />
       </g>
     </svg>
   );
@@ -511,26 +521,21 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-        <div className="chart-orbit absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
-        <div className="crest-rotate absolute h-72 w-72 rounded-full border border-primary/20 md:h-96 md:w-96" />
-        <div className="crest-rotate-reverse absolute h-60 w-60 rounded-full border border-primary/15 md:h-80 md:w-80">
-          {[0, 90, 180, 270].map((angle) => (
-            <span key={angle} className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rotate-45 border border-primary/70 bg-background" style={{ transform: `rotate(${angle}deg) translateY(-50%) translate(0, -7.5rem)` }} />
-          ))}
-        </div>
-        <div className="absolute h-52 w-52 rounded-full border border-primary/25 md:h-72 md:w-72" />
-        <div className="laurel-hover pointer-events-none absolute h-64 w-64 md:h-80 md:w-80"><LaurelWreath /></div>
-        <span className="crest-star crest-star-top" aria-hidden="true" />
-        <span className="crest-star crest-star-bottom" aria-hidden="true" />
-        <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-36 w-36 place-items-center whitespace-normal rounded-full border border-primary/70 bg-card p-0 shadow-[0_0_70px_color-mix(in_oklab,var(--primary)_22%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
-          <span className="absolute inset-2 rounded-full border border-primary/25 animate-[pulse-ring_3s_ease-in-out_infinite]" />
-          <span className="absolute inset-[-0.6rem] rounded-full border border-primary/15" />
+        <div className="chart-orbit absolute left-1/2 top-1/2 flex h-[22rem] w-[22rem] items-center justify-center transition-transform duration-100 md:h-[27rem] md:w-[27rem]" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+        <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
+        <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
+        <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
+        <div className="laurel-hover pointer-events-none absolute inset-[1.5%]"><LaurelWreath /></div>
+        <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
+        <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-52 w-52 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-64 md:w-64">
+          <span className="absolute inset-2 rounded-full border border-primary/30" />
+          <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
           <span className="elias-title-drift px-4 text-center">
-            <span className="block text-[7px] uppercase tracking-[.42em] text-primary">Central file</span>
-            <span className="mx-auto my-2 block h-px w-10 bg-primary/50" />
-            <span className="elias-signature block font-display text-2xl font-normal uppercase leading-[.8] text-brass-soft md:text-3xl"><span className="text-4xl md:text-5xl">E</span>lias<br /><span className="text-4xl md:text-5xl">A</span>rcher</span>
-            <span className="mx-auto mt-2 block h-px w-6 bg-primary/40" />
+            <span className="block text-[7px] uppercase tracking-[.5em] text-primary md:text-[8px]">Central file</span>
+            <span className="mx-auto my-3 block h-px w-16 bg-primary/60" />
+            <span className="elias-signature block font-display text-3xl font-normal uppercase leading-[.82] text-brass-soft md:text-4xl"><span className="text-5xl md:text-6xl">E</span>lias<br /><span className="text-5xl md:text-6xl">A</span>rcher</span>
+            <span className="mx-auto mt-4 block h-px w-12 bg-primary/55" />
           </span>
         </Button>
         </div>
