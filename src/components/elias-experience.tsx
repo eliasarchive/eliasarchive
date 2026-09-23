@@ -74,7 +74,7 @@ function LaurelWreath() {
 
 function NanaseMark() {
   return (
-    <svg viewBox="0 0 120 112" className="nanase-mark h-20 w-20 md:h-24 md:w-24" aria-hidden="true">
+    <svg viewBox="0 0 120 112" className="nanase-mark h-20 w-20 shrink-0 md:h-24 md:w-24" aria-hidden="true">
       <path d="M30 92C20 70 23 39 42 11c-6 32-2 57 9 76L60 40l9 47c11-19 15-44 9-76 19 28 22 59 12 81L60 104Z" fill="none" stroke="currentColor" strokeWidth="3" />
       <path d="M42 82 31 59m20 28-5-34m23 34 5-34m4 29 11-23" fill="none" stroke="currentColor" strokeWidth="2" opacity=".72" />
     </svg>
@@ -139,7 +139,7 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
 
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute -inset-2 z-20 overflow-visible" aria-hidden="true">
+    <div className="profile-botanical-frame pointer-events-none absolute -inset-2 z-[3] overflow-visible" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-lm"><img src={profileRoseBloom} alt="" /></div>
