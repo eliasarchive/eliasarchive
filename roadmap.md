@@ -92,3 +92,4 @@
 - [x] Keep the photographed glass partly transparent so rain shows through its tint, with frames fully opaque.
 - [x] Rebuild the final-room exterior rain as optically softened depth layers and replace circular glass bubbles with organic water beads and trails.
 - [x] Remove reconstructed window/exterior layers and composite rain only through the exact pane mask over the untouched uploaded room photograph.
+- [x] Replace the enlarged derivative with the exact 1920×1004 upload and tighten rain to its photographed glass pixels only.
