@@ -14,10 +14,10 @@ import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
 import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
-import archiveRoseField from "@/assets/archive-red-field.png.asset.json";
+import archiveRoseField from "@/assets/archive-red-field.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
-import roseEmblem from "@/assets/real-rose-emblem.jpg.asset.json";
+import roseEmblem from "@/assets/real-rose-emblem.jpg";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -343,7 +343,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem.url, archiveRoseField.url];
+    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -423,7 +423,7 @@ export function EliasExperience() {
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
-      {stage === "archive" && <div className="archive-rose-field" aria-hidden="true"><img src={archiveRoseField.url} alt="" className="h-full w-full object-cover" /></div>}
+      {stage === "archive" && <div className="archive-rose-field" aria-hidden="true"><img src={archiveRoseField} alt="" className="h-full w-full object-cover" /></div>}
       {stage === "archive" && (
         <div className="relative z-[1]"><Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} views={views} /></div>
       )}
@@ -506,7 +506,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
         <div className="welcome-botanical-frame" aria-hidden="true" style={{ borderImageSource: `url(${welcomeFrameSquare})` }} />
         <div className="welcome-crest relative z-10 mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
-           <img src={roseEmblem.url} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 rounded-full object-cover" />
+           <img src={roseEmblem} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 rounded-full object-cover" />
         </div>
         <p className="mb-4 text-[9px] uppercase tracking-[.45em] text-primary">Private archive</p>
         <h1 className="font-display text-5xl font-medium md:text-7xl">Welcome Back</h1>
