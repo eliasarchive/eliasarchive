@@ -503,8 +503,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
         <div className="welcome-botanical-frame" aria-hidden="true" style={{ borderImageSource: `url(${welcomeFrameSquare})` }} />
         <div className="welcome-crest relative z-10 mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
-          <Leaf className="absolute -left-4 top-9 h-8 w-8 -rotate-45 text-primary/70" /><Leaf className="absolute -right-4 top-9 h-8 w-8 rotate-45 scale-x-[-1] text-primary/70" />
-          <Crown className="h-9 w-9 text-brass-soft" strokeWidth={1.15} />
+          <img src={roseEmblem} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 object-contain" />
         </div>
         <p className="mb-4 text-[9px] uppercase tracking-[.45em] text-primary">Private archive</p>
         <h1 className="font-display text-5xl font-medium md:text-7xl">Welcome Back</h1>
