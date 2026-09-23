@@ -22,8 +22,8 @@
 - [x] Rebuild the entrance animation from a fixed manor frame so only rain and splashes move.
 - [x] Smooth the room and archive transitions, expand the computer target, and compact the Elias profile.- [x] Fix rain audio autostart, add global view counter with arrogant milestones, one-per-visitor like meter with comments, and drifting background notes.
 - [ ] Make drifting background messages smaller
-- [ ] Verify view badge + like meter appear only in archive, lower position, hover animations
-- [ ] Fix: published like messages never drift in background (check GitHub Pages build env + fetchLikes)
+- [x] Verify view badge + like meter appear only in archive, lower position, hover animations
+- [x] Fix: published like messages never drift in background (check GitHub Pages build env + fetchLikes)
 - [x] Drifting notes: hardened spawn logic (state-in-updater bug); user confirmed they appear
 - [x] Mobile: reposition/shrink view badge + like meter so they overlap nothing
 - [x] Remove "turn on the rain" button; rain auto-starts (fallback: first interaction anywhere)
