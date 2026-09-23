@@ -17,9 +17,18 @@ export const nanase = {
   quote: "Nanase's pretty respectful and has standard manners, if not for the prefect programme I wouldn't have interacted at all.",
 } as const;
 
+export const ashley = {
+  id: "ashley",
+  name: "Ashley Archer",
+  status: "Student",
+  quote: "I always had immense respect for Sister, she's the one that inculpted me with the depiction of hate for people of lower estime..",
+  spoiler: "( I'm saying this so she doesn't scold me.. ).",
+} as const;
+
 export const directionalRelationships = [
   {
     id: "nanase-to-elias",
+    pair: "nanase",
     from: "Nanase Koji",
     to: "Elias Archer",
     direction: "left",
@@ -30,12 +39,37 @@ export const directionalRelationships = [
   },
   {
     id: "elias-to-nanase",
+    pair: "nanase",
     from: "Elias Archer",
     to: "Nanase Koji",
     direction: "right",
     portions: [
       { label: "Respect / Admiration", value: 30, color: "var(--legend-6)" },
       { label: "Friendship", value: 70, color: "var(--legend-2)" },
+    ],
+  },
+  {
+    id: "ashley-to-elias",
+    pair: "ashley",
+    from: "Ashley Archer",
+    to: "Elias Archer",
+    direction: "right",
+    portions: [
+      { label: "Family", value: 60, color: "var(--legend-7)" },
+      { label: "Distrust", value: 10, color: "var(--legend-8)" },
+      { label: "Respect / Admiration", value: 30, color: "var(--legend-6)" },
+    ],
+  },
+  {
+    id: "elias-to-ashley",
+    pair: "ashley",
+    from: "Elias Archer",
+    to: "Ashley Archer",
+    direction: "left",
+    portions: [
+      { label: "Family", value: 70, color: "var(--legend-7)" },
+      { label: "Respect / Admiration", value: 20, color: "var(--legend-6)" },
+      { label: "Rivalry", value: 10, color: "var(--legend-10)" },
     ],
   },
 ] as const;
