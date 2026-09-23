@@ -69,3 +69,5 @@
 - [x] Keep Nanase's profile box anchored to his circle while zooming, freeze Elias's rose frame animation, raise Nanase's name over the logo, add dark red to his name pulse
 - [x] Add a faint, nearly full-screen rose field behind the welcome back screen
 - [x] Use a real photo from the internet (not AI generated) for the welcome rose field
+- [x] Keep opened profile boxes the same visible size at every chart zoom level
+- [x] Replace the generated welcome rose emblem and favicon with a real internet photograph
