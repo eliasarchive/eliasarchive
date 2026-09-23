@@ -506,7 +506,7 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
       <div key={current.image} className="cinematic-frame absolute inset-0">
         {scene === 0 ? (
           <>
-            <img src={manorEntrance} alt="The manor in heavy rain" width={1200} height={600} className="h-full w-full object-cover" />
+            <img src={manorEntrance} alt="The manor in heavy rain" width={1376} height={768} className="h-full w-full object-cover" />
             <ManorRainCanvas />
           </>
         ) : (

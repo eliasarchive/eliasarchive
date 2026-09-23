@@ -145,7 +145,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .detail-reveal { animation: detail-reveal .35s cubic-bezier(.2,.8,.2,1) both; }
 .terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; border-color: color-mix(in oklab,var(--foreground) 58%,transparent); background: transparent; color: var(--foreground); }
 .terminal-hotspot:hover { border-color: color-mix(in oklab,var(--foreground) 84%,transparent); background: color-mix(in oklab,var(--foreground) 3%,transparent); }
-.terminal-monitor { left: 40.55%; top: 61.1%; width: 13.65%; aspect-ratio: 1.53 / 1; height: auto; transform-origin: center; }
+.terminal-monitor { left: 45.4%; top: 64.1%; width: 8.6%; aspect-ratio: 1.7 / 1; height: auto; transform-origin: center; }
 .manor-rain-canvas { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
 .window-rain-canvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 .terminal-screen-lines { opacity: .45; background-image: repeating-linear-gradient(to bottom,transparent 0 4px,color-mix(in oklab,var(--primary) 12%,transparent) 4px 5px); }

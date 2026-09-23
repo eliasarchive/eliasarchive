@@ -19,8 +19,8 @@ type Impact = {
   kind: "ripple" | "splash";
 };
 
-const SOURCE_WIDTH = 1200;
-const SOURCE_HEIGHT = 600;
+const SOURCE_WIDTH = 1376;
+const SOURCE_HEIGHT = 768;
 
 function imageCoordinates(x: number, y: number, width: number, height: number) {
   const scale = Math.max(width / SOURCE_WIDTH, height / SOURCE_HEIGHT);
@@ -34,8 +34,8 @@ function imageCoordinates(x: number, y: number, width: number, height: number) {
 
 function isDriveway(x: number, y: number, width: number, height: number) {
   const point = imageCoordinates(x, y, width, height);
-  if (point.y < 0.625 || point.y > 1.02) return false;
-  const depth = Math.min(1, Math.max(0, (point.y - 0.625) / 0.375));
+  if (point.y < 0.615 || point.y > 1.02) return false;
+  const depth = Math.min(1, Math.max(0, (point.y - 0.615) / 0.405));
   const halfWidth = 0.075 + depth * 0.44;
   const center = 0.5 + depth * 0.006;
   return point.x > center - halfWidth && point.x < center + halfWidth;
