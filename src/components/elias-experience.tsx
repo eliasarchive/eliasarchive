@@ -12,6 +12,7 @@ import eliasBedroom from "@/assets/elias-bedroom.jpg";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
+import welcomeBotanicalFrame from "@/assets/welcome-botanical-frame.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 
@@ -492,7 +493,8 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
       <div className="absolute inset-3 border border-primary/20 md:inset-8" />
       <div className="absolute inset-x-3 top-3 flex h-9 items-center justify-between border-b border-primary/20 bg-background/60 px-4 text-[7px] uppercase tracking-[.25em] text-muted-foreground backdrop-blur-md md:inset-x-8 md:top-8"><span>Archer OS</span><span>Private computer · Secure session</span></div>
       <div className="relative flex min-h-[28rem] w-[min(90vw,38rem)] flex-col items-center justify-center border border-primary/25 bg-background/65 px-5 py-10 shadow-2xl backdrop-blur-xl" style={{ transform: `translate(${position.x * 10}px, ${position.y * 8}px)` }}>
-        <div className="welcome-crest relative mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
+        <div className="welcome-botanical-frame" aria-hidden="true"><img src={welcomeBotanicalFrame} alt="" width={1536} height={1024} className="h-full w-full" /></div>
+        <div className="welcome-crest relative z-10 mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
           <Leaf className="absolute -left-4 top-9 h-8 w-8 -rotate-45 text-primary/70" /><Leaf className="absolute -right-4 top-9 h-8 w-8 rotate-45 scale-x-[-1] text-primary/70" />
           <Crown className="h-9 w-9 text-brass-soft" strokeWidth={1.15} />
@@ -697,7 +699,7 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
           <img src={portrait} alt={isElias ? "Elias Archer holding a rose" : "Nanase Koji"} loading="eager" fetchPriority="high" decoding="sync" className={`h-full w-full transition duration-700 group-hover:scale-[1.025] ${isElias ? "object-contain" : "object-cover"}`} />
           <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-3.5 w-3.5" /></span>
         </button>
-        <blockquote className={`relative z-10 mt-4 border-l pl-3 font-display text-sm leading-relaxed text-foreground ${isElias ? "border-primary" : "border-chart-red"}`}>“{isElias ? "This is me, what the fuck do you want me to add onto that" : nanase.quote}”</blockquote>
+        <blockquote className={`relative z-10 mb-2 mt-3 border-l pl-3 font-display text-sm italic leading-relaxed text-foreground ${isElias ? "border-primary" : "border-chart-red"}`}>“{isElias ? "This is me, what the fuck do you want me to add onto that" : nanase.quote}”</blockquote>
       </div>
     </div>
   );
