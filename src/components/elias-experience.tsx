@@ -528,7 +528,7 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
           <>
             <img src={manorEntrance} alt="The manor in heavy rain" width={1376} height={768} className="h-full w-full object-cover" />
             <LightningCanvas />
-            <img src={manorEntranceForeground} alt="" width={1376} height={768} className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
+            <img src={manorEntranceForeground} alt="" width={1376} height={768} className="manor-entrance-foreground pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
             <ManorRainCanvas />
           </>
         ) : (
