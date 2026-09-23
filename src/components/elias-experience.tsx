@@ -126,7 +126,7 @@ function ProfileVines() {
 
 function ProfileBotanicalFrame() {
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute -inset-x-9 -inset-y-8 z-20 overflow-visible" aria-hidden="true">
+    <div className="profile-botanical-frame pointer-events-none absolute -inset-x-9 -inset-y-8 z-0 overflow-visible" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-lm"><img src={profileRoseBloom} alt="" /></div>
@@ -653,7 +653,8 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
       <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-5 py-5 shadow-2xl backdrop-blur-xl">
         <ProfileBotanicalFrame />
-        <div className="pointer-events-none absolute inset-2 border border-primary/25" />
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-card/95 backdrop-blur-xl" />
+        <div className="pointer-events-none absolute inset-2 z-[2] border border-primary/25" />
         <div className="relative z-10 flex items-start justify-between">
           <div><p className="text-[7px] uppercase tracking-[.35em] text-primary md:text-[8px]">Central profile</p><span className="mt-2 block h-px w-14 bg-primary" /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
