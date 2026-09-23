@@ -101,10 +101,14 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes crest-spin { to { transform: rotate(360deg); } }
 @keyframes feature-swift { 0% { opacity: 0; transform: translateX(26px) skewX(-6deg); filter: blur(6px); } 60% { opacity: 1; filter: blur(0); } 100% { opacity: 1; transform: none; }  }
 @keyframes terminal-target-open { 0% { opacity: 0; clip-path: inset(48% 48% 48% 48%); transform: scale(.82); } 100% { opacity: 1; clip-path: inset(0); transform: scale(1); } }
-@keyframes room-camera-push { 0% { transform: scale(1); filter: brightness(1) blur(0); } 55% { filter: brightness(1.06) blur(0); } 100% { transform: scale(1.055); filter: brightness(.9) blur(.35px); } }
+@keyframes room-camera-push { 0% { transform: scale(1) translate3d(0,0,0); filter: brightness(1) blur(0); } 38% { transform: scale(1.018) translate3d(.15%,-.25%,0); filter: brightness(1.08) blur(0); } 72% { transform: scale(1.07) translate3d(.5%,-1.2%,0); filter: brightness(.96) blur(.15px); } 100% { transform: scale(1.115) translate3d(.8%,-2.1%,0); filter: brightness(.82) blur(.5px); } }
 @keyframes room-copy-leave { to { opacity: 0; transform: translateY(24px); filter: blur(4px); } }
-@keyframes desk-scene-enter { from { transform: scale(1.055); filter: brightness(.9) blur(.35px); } to { transform: scale(1); filter: brightness(1) blur(0); } }
-@keyframes dust-float { 0% { opacity: 0; transform: translate3d(0,8px,0) scale(.72); } 18% { opacity: .34; } 52% { opacity: .16; transform: translate3d(var(--dust-drift),-16px,0) scale(1); } 84% { opacity: .3; } 100% { opacity: 0; transform: translate3d(calc(var(--dust-drift) * -.35),-38px,0) scale(.8); } }
+@keyframes desk-scene-enter { from { transform: scale(1.115) translate3d(.8%,-2.1%,0); filter: brightness(.82) blur(.5px); } 45% { filter: brightness(1.08) blur(0); } to { transform: scale(1) translate3d(0,0,0); filter: brightness(1) blur(0); } }
+@keyframes dust-float { 0% { opacity: 0; transform: translate3d(0,16px,0) scale(.62); } 13% { opacity: calc(.42 * var(--dust-depth)); } 46% { opacity: calc(.72 * var(--dust-depth)); transform: translate3d(var(--dust-drift),-20px,0) scale(1); } 76% { opacity: calc(.48 * var(--dust-depth)); transform: translate3d(calc(var(--dust-drift) * -.3),-42px,0) scale(1.08); } 100% { opacity: 0; transform: translate3d(calc(var(--dust-drift) * .45),-72px,0) scale(.72); } }
+@keyframes room-focus-halo { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.35); } 35% { opacity: .34; } 100% { opacity: 0; transform: translate(-50%,-50%) scale(7); } }
+@keyframes room-focus-ring { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.55); } 24% { opacity: .8; } 100% { opacity: 0; transform: translate(-50%,-50%) scale(4.8); } }
+@keyframes room-focus-sweep { 0% { opacity: 0; transform: translate3d(-65%,-35%,0) rotate(-18deg); } 34% { opacity: .34; } 100% { opacity: 0; transform: translate3d(120%,65%,0) rotate(-18deg); } }
+@keyframes desk-arrival-glint { 0% { opacity: .38; background-size: 35% 35%; } 100% { opacity: 0; background-size: 180% 180%; } }
 @keyframes terminal-frame-expand { 0% { opacity: 1; transform: scale(1); } 48% { opacity: 1; transform: scale(1.55); border-color: var(--primary); } 100% { opacity: 0; transform: scale(8); } }
 @keyframes welcome-transition-out { 0% { opacity: 1; transform: scale(1); filter: blur(0); } 60% { opacity: 1; transform: scale(1.025); } 100% { opacity: 0; transform: scale(1.06); filter: blur(8px); } }
 @keyframes crest-float { 0%,100% { transform: translateY(0) rotate(-2deg); opacity: .55; } 50% { transform: translateY(-7px) rotate(2deg); opacity: .95; } }
@@ -139,13 +143,21 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; }
 .room-transition-out .room-passage-copy { animation: room-copy-leave .55s cubic-bezier(.4,0,.2,1) both; }
 .room-transition-out > button,.room-transition-out > div:last-child { transition: opacity .3s ease; opacity: 0; }
-.room-camera-push { transform-origin: 50% 64%; animation: room-camera-push 1.2s cubic-bezier(.22,.74,.2,1) both; }
-.desk-scene-enter { transform-origin: 50% 64%; animation: desk-scene-enter 1.05s cubic-bezier(.16,.82,.2,1) both; }
-.room-dust { pointer-events: none; position: absolute; inset: 0; z-index: 6; overflow: hidden; opacity: .62; }
-.room-dust span { position: absolute; left: var(--dust-x); top: var(--dust-y); width: var(--dust-size); height: var(--dust-size); border-radius: 999px; background: color-mix(in oklab,var(--brass-soft) 58%,transparent); box-shadow: 0 0 5px color-mix(in oklab,var(--brass-soft) 24%,transparent); animation: dust-float var(--dust-duration) ease-in-out var(--dust-delay) infinite; }
-.room-dust span:nth-child(3n) { filter: blur(.55px); opacity: .45; }
-.room-dust span:nth-child(4n) { filter: blur(1px); opacity: .3; }
-.room-dust-rush { transition: transform 1.2s cubic-bezier(.22,.74,.2,1), opacity .8s ease; transform: scale(1.18); opacity: .28; }
+.room-camera-push { transform-origin: 44.7% 62.1%; animation: room-camera-push 1.2s cubic-bezier(.16,.76,.16,1) both; }
+.desk-scene-enter { transform-origin: 44.7% 62.1%; animation: desk-scene-enter .95s cubic-bezier(.16,.82,.2,1) both; }
+.room-dust { pointer-events: none; position: absolute; inset: 0; z-index: 6; overflow: hidden; opacity: .9; }
+.room-dust span { position: absolute; left: var(--dust-x); top: var(--dust-y); width: var(--dust-size); height: var(--dust-size); border-radius: 47% 53% 58% 42%; background: color-mix(in oklab,var(--brass-soft) 76%,transparent); box-shadow: 0 0 7px color-mix(in oklab,var(--brass-soft) 38%,transparent); animation: dust-float var(--dust-duration) ease-in-out var(--dust-delay) infinite; }
+.room-dust span:nth-child(3n) { filter: blur(.45px); }
+.room-dust span:nth-child(4n) { filter: blur(1.1px); }
+.room-dust span:nth-child(5n) { width: calc(var(--dust-size) * 1.65); height: calc(var(--dust-size) * .7); filter: blur(.7px); }
+.room-dust-rush { transition: transform 1.2s cubic-bezier(.16,.76,.16,1), opacity .8s ease; transform: scale(1.55); transform-origin: 44.7% 62.1%; opacity: .96; }
+.room-threshold-transition { pointer-events: none; position: absolute; inset: 0; z-index: 9; overflow: hidden; }
+.room-focus-halo,.room-focus-ring { position: absolute; left: 44.7%; top: 62.1%; transform: translate(-50%,-50%); }
+.room-focus-halo { width: 5rem; aspect-ratio: 1; border-radius: 999px; background: radial-gradient(circle,color-mix(in oklab,var(--brass-soft) 26%,transparent),transparent 66%); mix-blend-mode: screen; animation: room-focus-halo 1.2s cubic-bezier(.16,.76,.16,1) both; }
+.room-focus-ring { width: 3.6rem; aspect-ratio: 1.45; border: 1px solid color-mix(in oklab,var(--brass-soft) 72%,transparent); box-shadow: 0 0 18px color-mix(in oklab,var(--brass-soft) 22%,transparent); animation: room-focus-ring 1.05s cubic-bezier(.16,.76,.16,1) .08s both; }
+.room-focus-ring-inner { width: 1.8rem; animation-delay: .18s; }
+.room-focus-sweep { position: absolute; inset: -40%; background: linear-gradient(100deg,transparent 45%,color-mix(in oklab,var(--brass-soft) 14%,transparent) 50%,transparent 55%); mix-blend-mode: screen; animation: room-focus-sweep 1.1s ease-out both; }
+.desk-arrival-glint { background: radial-gradient(ellipse at 44.7% 62.1%,color-mix(in oklab,var(--brass-soft) 22%,transparent),transparent 46%); background-position: 44.7% 62.1%; background-repeat: no-repeat; animation: desk-arrival-glint .8s ease-out both; }
 .terminal-hotspot-entering { animation: terminal-frame-expand 1.2s cubic-bezier(.65,0,.2,1) both !important; transform-origin: center; }
 .welcome-transition-out { animation: welcome-transition-out .65s cubic-bezier(.65,0,.2,1) both; pointer-events: none; }
 .archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) backwards; }
@@ -165,7 +177,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .rain-mid { opacity: .25; background-image: repeating-linear-gradient(104deg, transparent 0 41px, color-mix(in oklab,var(--foreground) 48%,transparent) 42px 43px, transparent 44px 89px); background-size: 96px 250px; animation: rain-fall .78s linear infinite; }
 .rain-near { opacity: .2; background-image: repeating-linear-gradient(103deg, transparent 0 83px, color-mix(in oklab,var(--foreground) 60%,transparent) 84px 86px, transparent 87px 151px); background-size: 158px 360px; animation: rain-fall .52s linear infinite; filter: blur(.7px); }
 .rain-mist { position: absolute; inset: auto -5% 0; height: 28%; background: linear-gradient(to top,color-mix(in oklab,var(--foreground) 13%,transparent),transparent); animation: rain-mist 5s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .manor-rain-canvas, .window-rain-canvas, .room-dust { display: none; } .room-camera-push,.desk-scene-enter { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .manor-rain-canvas, .window-rain-canvas, .room-dust,.room-threshold-transition,.desk-arrival-glint { display: none; } .room-camera-push,.desk-scene-enter { animation: none; } }
 .legend-swatch { height: 4px; border-radius: 999px; background: var(--legend-color); box-shadow: 0 0 10px color-mix(in oklab,var(--legend-color) 32%,transparent); transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease; }
 .legend-item { transition: transform .35s cubic-bezier(.2,.8,.2,1), color .35s ease; }
 .legend-item:hover { transform: translateX(6px); color: var(--legend-color); }

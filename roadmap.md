@@ -99,6 +99,6 @@
 - [x] Make last-room droplets clearly visible, individually varied, and gravity-driven with realistic sliding and trails.
 - [x] Replace the black switch after “Enter the room” with a seamless camera transition into the interactive desk view.
 - [x] Add faint, realistic floating dust to the last room without changing the uploaded photograph.
-- [ ] Make the room-to-desk transition more distinctive with layered depth and a MacBook-focused cinematic rush.
-- [ ] Increase dust visibility and distribute moving particles across the entire room.
-- [ ] Prevent the browser scrollbar from flashing during the room-to-desk transition.
+- [x] Make the room-to-desk transition more distinctive with layered depth and a MacBook-focused cinematic rush.
+- [x] Increase dust visibility and distribute moving particles across the entire room.
+- [x] Prevent the browser scrollbar from flashing during the room-to-desk transition.
