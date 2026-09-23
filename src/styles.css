@@ -146,6 +146,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; }
 .terminal-monitor { left: 45.4%; top: 64.1%; width: 8.6%; aspect-ratio: 1.7 / 1; height: auto; transform-origin: center; }
 .manor-rain-canvas { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
+.window-rain-canvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 .terminal-screen-lines { opacity: .45; background-image: repeating-linear-gradient(to bottom,transparent 0 4px,color-mix(in oklab,var(--primary) 12%,transparent) 4px 5px); }
 .rain-field { z-index: 2; overflow: hidden; background: linear-gradient(110deg, transparent 55%, color-mix(in oklab,var(--foreground) 5%,transparent)); }
 .rain-layer { position: absolute; inset: -20%; transform: skewX(-6deg); background-repeat: repeat; }
@@ -153,7 +154,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .rain-mid { opacity: .25; background-image: repeating-linear-gradient(104deg, transparent 0 41px, color-mix(in oklab,var(--foreground) 48%,transparent) 42px 43px, transparent 44px 89px); background-size: 96px 250px; animation: rain-fall .78s linear infinite; }
 .rain-near { opacity: .2; background-image: repeating-linear-gradient(103deg, transparent 0 83px, color-mix(in oklab,var(--foreground) 60%,transparent) 84px 86px, transparent 87px 151px); background-size: 158px 360px; animation: rain-fall .52s linear infinite; filter: blur(.7px); }
 .rain-mist { position: absolute; inset: auto -5% 0; height: 28%; background: linear-gradient(to top,color-mix(in oklab,var(--foreground) 13%,transparent),transparent); animation: rain-mist 5s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .manor-rain-canvas { display: none; } }
+@media (prefers-reduced-motion: reduce) { .manor-rain-canvas, .window-rain-canvas { display: none; } }
 .legend-swatch { height: 4px; border-radius: 999px; background: var(--legend-color); box-shadow: 0 0 10px color-mix(in oklab,var(--legend-color) 32%,transparent); transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease; }
 .legend-item { transition: transform .35s cubic-bezier(.2,.8,.2,1), color .35s ease; }
 .legend-item:hover { transform: translateX(6px); color: var(--legend-color); }

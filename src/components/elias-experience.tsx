@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { ManorRainCanvas } from "@/components/manor-rain-canvas";
+import { WindowRainCanvas } from "@/components/window-rain-canvas";
 import { fetchViews, registerView } from "@/lib/archive-social";
-import manorEntranceAsset from "@/assets/manor-rain.jpg.asset.json";
+import manorEntrance from "@/assets/manor-rain-clear.jpg";
 import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
 import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
 import manorStudyAsset from "@/assets/manor-final-room.png.asset.json";
@@ -22,15 +23,14 @@ import roseEmblem from "@/assets/real-rose-emblem.jpg";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
-const manorEntrance = manorEntranceAsset.url;
 const manorStair = manorStairAsset.url;
 const manorGallery = manorGalleryAsset.url;
 const manorStudy = manorStudyAsset.url;
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
-  { image: manorStair, chapter: "II", title: "Beyond the threshold", note: "First left" },
-  { image: manorGallery, chapter: "III", title: "The private wing", note: "Second left" },
+  { image: manorStair, chapter: "II", title: "The Main Hall", note: "Climbing the stairs" },
+  { image: manorGallery, chapter: "III", title: "The Top Floor", note: "Approaching the room" },
   { image: manorStudy, chapter: "IV", title: "The room", note: "Enter" },
 ] as const;
 
@@ -153,7 +153,7 @@ function useSound(enabled: boolean) {
   const jazzRef = useRef<{ oscillators: OscillatorNode[]; timer: number } | null>(null);
   const pianoGainRef = useRef<GainNode | null>(null);
   const pianoRef = useRef<number | null>(null);
-  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode } | null>(null);
+  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode; glassGain: GainNode; glassTimer: number } | null>(null);
 
 
   const ensure = useCallback(() => {
@@ -225,10 +225,31 @@ function useSound(enabled: boolean) {
     lowpass.frequency.value = 5600;
     const gain = ctx.createGain();
     gain.gain.value = 0.0001;
-    gain.gain.value = 0.0001;
     source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
     source.start();
-    rainRef.current = { source, gain, highpass, lowpass };
+    const glassGain = ctx.createGain();
+    glassGain.gain.value = 0.0001;
+    glassGain.connect(ctx.destination);
+    const glassTimer = window.setInterval(() => {
+      if (!enabledRef.current || glassGain.gain.value < 0.001) return;
+      const now = ctx.currentTime;
+      const tap = ctx.createOscillator();
+      const tapGain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      tap.type = "sine";
+      tap.frequency.setValueAtTime(1750 + Math.random() * 2900, now);
+      tap.frequency.exponentialRampToValueAtTime(650 + Math.random() * 700, now + .035);
+      filter.type = "bandpass";
+      filter.frequency.value = 2500 + Math.random() * 1800;
+      filter.Q.value = 1.2;
+      tapGain.gain.setValueAtTime(0.0001, now);
+      tapGain.gain.exponentialRampToValueAtTime(.018 + Math.random() * .032, now + .003);
+      tapGain.gain.exponentialRampToValueAtTime(0.0001, now + .045 + Math.random() * .055);
+      tap.connect(filter).connect(tapGain).connect(glassGain);
+      tap.start(now);
+      tap.stop(now + .12);
+    }, 42);
+    rainRef.current = { source, gain, highpass, lowpass, glassGain, glassTimer };
   }, [ensure]);
 
   const setRainScene = useCallback((scene: number) => {
@@ -237,15 +258,16 @@ function useSound(enabled: boolean) {
     const rain = rainRef.current;
     if (!ctx || !rain) return;
     const profiles = [
-      { volume: .11, high: 380, low: 5600 },
-      { volume: .085, high: 120, low: 2350 },
-      { volume: .135, high: 180, low: 4100 },
-      { volume: .105, high: 620, low: 6800 },
+      { volume: .11, glass: .0001, high: 380, low: 5600 },
+      { volume: .022, glass: .68, high: 850, low: 3900 },
+      { volume: .035, glass: 1.0, high: 950, low: 5000 },
+      { volume: .018, glass: .78, high: 1100, low: 5400 },
     ];
     const profile = profiles[Math.max(0, Math.min(scene, profiles.length - 1))] ?? profiles[0];
     if (!profile) return;
     const volume = enabledRef.current ? profile.volume : .0001;
     rain.gain.gain.setTargetAtTime(volume, ctx.currentTime, .28);
+    rain.glassGain.gain.setTargetAtTime(enabledRef.current ? profile.glass : .0001, ctx.currentTime, .28);
     rain.highpass.frequency.setTargetAtTime(profile.high, ctx.currentTime, .35);
     rain.lowpass.frequency.setTargetAtTime(profile.low, ctx.currentTime, .35);
   }, [prepareRain]);
@@ -257,6 +279,8 @@ function useSound(enabled: boolean) {
     const rain = rainRef.current;
     if (!ctx || !rain) return;
     rain.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
+    rain.glassGain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
+    window.clearInterval(rain.glassTimer);
     window.setTimeout(() => { try { rain.source.stop(); } catch { /* already stopped */ } }, 1600);
     rainRef.current = null;
   }, []);
@@ -352,6 +376,7 @@ function useSound(enabled: boolean) {
     if (jazzGainRef.current) jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.32 : 0.0001, ctx.currentTime, 0.12);
     if (pianoGainRef.current) pianoGainRef.current.gain.setTargetAtTime(enabled ? 0.18 : 0.0001, ctx.currentTime, 0.12);
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
+    if (rainRef.current) rainRef.current.glassGain.gain.setTargetAtTime(enabled ? (scene === 2 ? 1 : scene > 0 ? .72 : .0001) : .0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
   return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
@@ -483,7 +508,10 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
             <ManorRainCanvas />
           </>
         ) : (
-          <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
+          <>
+            <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
+            {scene === manorScenes.length - 1 && <WindowRainCanvas />}
+          </>
         )}
       </div>
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
@@ -507,6 +535,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
   return (
     <section className="desk-scene-enter relative h-dvh overflow-hidden bg-ink">
       <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={1024} height={683} className={`bedroom-terminal-view h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
+      <WindowRainCanvas />
       <div className="vignette absolute inset-0 bg-background/10" />
       <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute min-w-0 rounded-none border border-primary/40 bg-ink/90 p-0 shadow-[0_0_26px_color-mix(in_oklab,var(--primary)_18%,transparent)] transition-colors duration-700 hover:border-primary hover:bg-ink hover:shadow-[0_0_38px_color-mix(in_oklab,var(--primary)_32%,transparent)] focus-visible:outline-primary disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
         <span className="terminal-screen-lines absolute inset-0" aria-hidden="true" />
