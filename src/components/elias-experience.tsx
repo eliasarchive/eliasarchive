@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { ManorRainCanvas } from "@/components/manor-rain-canvas";
+import { LightningCanvas } from "@/components/lightning-canvas";
+import manorEntranceForeground from "@/assets/manor-entrance-foreground.png.asset.json";
 import { WindowRainCanvas } from "@/components/window-rain-canvas";
 import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntrance from "@/assets/manor-rain-clear.jpg";
@@ -421,7 +423,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
+    const sources = [manorEntrance, manorEntranceForeground.url, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -531,6 +533,8 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
         {scene === 0 ? (
           <>
             <img src={manorEntrance} alt="The manor in heavy rain" width={1376} height={768} className="h-full w-full object-cover" />
+            <LightningCanvas />
+            <img src={manorEntranceForeground.url} alt="" width={1376} height={768} className="pointer-events-none absolute inset-0 h-full w-full object-cover" aria-hidden="true" />
             <ManorRainCanvas />
           </>
         ) : (
