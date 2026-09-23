@@ -227,8 +227,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .relationship-line { height: 1px; background: currentColor; position: relative; overflow: hidden; }
 .relationship-line::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 7px, var(--background) 7px 11px); }
 .relationship-connection { --connection-angle: -32deg; left: calc(50% + 4.1rem); top: calc(50% - 2.55rem); width: 7.7rem; transform: rotate(var(--connection-angle)); transform-origin: left center; transition: left .35s cubic-bezier(.16,1,.3,1), top .35s cubic-bezier(.16,1,.3,1), width .35s cubic-bezier(.16,1,.3,1); }
-.relationship-connection-elias { left: calc(50% + 4.55rem); top: calc(50% - 2.85rem); width: 7.25rem; }
-.relationship-connection-nanase { width: 7.25rem; }
+.relationship-connection-elias { left: calc(50% + 4.3rem); top: calc(50% - 2.68rem); width: 7.5rem; }
+.relationship-connection-nanase { width: 7.55rem; }
 .directional-link { color: var(--foreground); cursor: help; }
 .directional-track { position: absolute; left: 0; right: 0; top: 50%; display: flex; height: 3px; overflow: hidden; transform: translateY(-50%); border: 1px solid color-mix(in oklab,var(--foreground) 35%,transparent); transition: height .28s cubic-bezier(.16,1,.3,1), filter .28s ease, box-shadow .28s ease; }
 .directional-segment { display: block; height: 100%; flex: none; }
@@ -262,8 +262,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @media (min-width: 768px) {
   .bedroom-terminal-view { transform-origin: 92% 48%; }
   .relationship-connection { --connection-angle: -31deg; left: calc(50% + 5.4rem); top: calc(50% - 3.3rem); width: 8.05rem; }
-  .relationship-connection-elias { left: calc(50% + 6rem); top: calc(50% - 3.65rem); width: 7.45rem; }
-  .relationship-connection-nanase { width: 7.6rem; }
+  .relationship-connection-elias { left: calc(50% + 5.65rem); top: calc(50% - 3.45rem); width: 7.8rem; }
+  .relationship-connection-nanase { width: 7.9rem; }
 }
 @keyframes drift-note-lr { from { transform: translateX(-30vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(105vw); opacity: 0; } }
 @keyframes drift-note-rl { from { transform: translateX(105vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(-30vw); opacity: 0; } }
