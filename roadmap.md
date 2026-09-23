@@ -78,3 +78,4 @@
 - [x] Keep profile boxes attached to their character while dragging, while preserving a constant on-screen box size at every zoom
 - [x] Replace every AI-generated opening manor image with a credited real Harlaxton Manor photo set, retain rain as an overlay, and move terminal access onto the final room's desk
 - [x] Replace the manor scenes with the four images from MANOR IMAGES, loop animated rain outside, stage roof/window rain indoors, preload media, and align terminal access to the MacBook.
+- [x] Replace the generated entrance clip with scripted rain whose splashes and ripples land only on the driveway.

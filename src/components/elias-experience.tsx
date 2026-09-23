@@ -4,12 +4,12 @@ import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
+import { ManorRainCanvas } from "@/components/manor-rain-canvas";
 import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntranceAsset from "@/assets/manor-rain.jpg.asset.json";
 import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
 import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
 import manorStudyAsset from "@/assets/manor-final-room.png.asset.json";
-import manorRainLoopAsset from "@/assets/manor-rain-loop.mp4.asset.json";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -26,7 +26,6 @@ const manorEntrance = manorEntranceAsset.url;
 const manorStair = manorStairAsset.url;
 const manorGallery = manorGalleryAsset.url;
 const manorStudy = manorStudyAsset.url;
-const manorRainLoop = manorRainLoopAsset.url;
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
@@ -383,10 +382,6 @@ export function EliasExperience() {
       void image.decode().catch(() => undefined);
       warmedImages.push(image);
     });
-    const video = document.createElement("video");
-    video.preload = "auto";
-    video.src = manorRainLoop;
-    video.load();
     prepareRain();
   }, [prepareRain]);
 
@@ -483,7 +478,10 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
     <section className={`relative h-dvh overflow-hidden bg-ink ${enteringRoom ? "room-transition-out" : ""}`} aria-label="Journey through the manor">
       <div key={current.image} className="cinematic-frame absolute inset-0">
         {scene === 0 ? (
-          <video src={manorRainLoop} poster={manorEntrance} autoPlay muted loop playsInline preload="auto" aria-label="The manor in heavy rain" className="cinematic-image h-full w-full object-cover" />
+          <>
+            <img src={manorEntrance} alt="The manor in heavy rain" width={1200} height={600} className="h-full w-full object-cover" />
+            <ManorRainCanvas />
+          </>
         ) : (
           <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
         )}
