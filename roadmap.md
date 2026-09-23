@@ -36,3 +36,4 @@
 - [x] Restyle the central relationship emblem with a floating gold laurel and subtle title drift
 
 - [x] Rebuild the relationship emblem to closely match the full classical laurel reference and verify it responsively.
+- [x] Match the emblem's centered two-line Elias Archer typography and reduce the surrounding laurel crown.
