@@ -123,6 +123,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes rose-frame-reveal { from { opacity: 0; transform: scale(.94); filter: blur(4px) brightness(.7); } to { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } }
 @keyframes botanical-grow { 0% { clip-path: inset(0 48% 94% 48%); opacity: 0; transform: scale(.97); } 42% { clip-path: inset(0 0 48% 0); opacity: 1; } 100% { clip-path: inset(0); opacity: 1; transform: scale(1); } }
 @keyframes botanical-glint { 0%,78%,100% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } 84% { filter: drop-shadow(0 5px 13px color-mix(in oklab,var(--brass-soft) 32%,transparent)) brightness(1.16); } 90% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } }
+@keyframes frame-fit-reveal { from { opacity: 0; transform: scale(.94); filter: blur(3px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
+@keyframes frame-line-draw { from { clip-path: inset(0 50% 100% 50%); opacity: 0; } 48% { clip-path: inset(0 0 52% 0); opacity: 1; } to { clip-path: inset(0); opacity: 1; } }
+@keyframes corner-vine-grow { from { opacity: 0; transform: scale(.78); } to { opacity: 1; transform: scale(1); } }
 @keyframes nanase-pulse { 0%,100% { opacity: .42; transform: scale(1) rotate(0); } 50% { opacity: .78; transform: scale(1.025) rotate(.5deg); } }
 @keyframes status-shine { 0%,72%,100% { background-position: 140% 0; } 82% { background-position: -40% 0; } }
 
@@ -190,23 +193,28 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .emblem-crosshair::before, .emblem-crosshair::after { content: ""; position: absolute; background: var(--primary); opacity: .55; }
 .emblem-crosshair::before { left: 50%; top: .5rem; bottom: .5rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 10%,transparent 10% 90%,#000 90%); }
 .emblem-crosshair::after { left: .5rem; right: .5rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 10%,transparent 10% 90%,#000 90%); }
-.profile-popover { position: absolute; left: calc(50% + 8rem); top: calc(8rem + 25vh); width: min(15rem,calc(100% - 2rem)); transform: translateY(-50%); }
-.profile-popover-nanase { left: auto; right: max(1rem,calc(50% - 38rem)); }
+.profile-popover { position: absolute; left: calc(50% + 7.5rem); top: 50%; width: 15rem; transform: translateY(-50%); }
+.profile-popover-nanase { left: calc(77% + 4.25rem); top: 22%; right: auto; }
 .profile-popover-in { animation: profile-popover-in .38s cubic-bezier(.16,1,.3,1) both; }
 .profile-popover-out { animation: profile-popover-out .24s ease-in both; pointer-events: none; }
 .profile-card-shell { box-shadow: 0 24px 80px color-mix(in oklab,var(--ink) 78%,transparent), inset 0 0 50px color-mix(in oklab,var(--brass) 5%,transparent); }
 .profile-frame-growth { animation: botanical-grow 1.65s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 1.65s infinite; }
 .profile-rose-frame { animation: botanical-glint 13s ease-in-out 2s infinite; }
-.profile-botanical-frame { animation: vine-settle 10s ease-in-out 2.6s infinite; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
-.profile-gold-vines { clip-path: inset(0 48% 96% 48%); filter: drop-shadow(0 6px 8px color-mix(in oklab,var(--ink) 72%,transparent)); animation: botanical-grow 1.9s cubic-bezier(.16,1,.3,1) both, botanical-glint 13s ease-in-out 2.2s infinite; mask-image: radial-gradient(ellipse 30% 22% at 0% 0%, #000 46%, transparent 74%), radial-gradient(ellipse 30% 22% at 100% 0%, #000 46%, transparent 74%), radial-gradient(ellipse 30% 22% at 0% 100%, #000 46%, transparent 74%), radial-gradient(ellipse 30% 22% at 100% 100%, #000 46%, transparent 74%); -webkit-mask-image: radial-gradient(ellipse 30% 22% at 0% 0%, #000 46%, transparent 74%), radial-gradient(ellipse 30% 22% at 100% 0%, #000 46%, transparent 74%), radial-gradient(ellipse 30% 22% at 0% 100%, #000 46%, transparent 74%), radial-gradient(ellipse 30% 22% at 100% 100%, #000 46%, transparent 74%); }
+.profile-botanical-frame { inset: -.55rem; animation: frame-fit-reveal 1.15s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 2.6s infinite; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
+.profile-frame-line { border: 1px solid color-mix(in oklab,var(--brass-soft) 82%,transparent); box-shadow: inset 0 0 0 3px color-mix(in oklab,var(--brass) 12%,transparent),0 0 12px color-mix(in oklab,var(--brass) 12%,transparent); animation: frame-line-draw 1.15s cubic-bezier(.16,1,.3,1) both; }
+.profile-corner-vine { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: fill; opacity: 0; filter: drop-shadow(0 5px 7px color-mix(in oklab,var(--ink) 72%,transparent)); animation: corner-vine-grow 1.55s cubic-bezier(.16,1,.3,1) forwards, botanical-glint 13s ease-in-out 2.2s infinite; }
+.profile-corner-vine-tl { clip-path: polygon(0 0,32% 0,22% 7%,14% 15%,8% 25%,0 32%); animation-delay: .08s,2.2s; }
+.profile-corner-vine-tr { clip-path: polygon(68% 0,100% 0,100% 32%,92% 25%,86% 15%,78% 7%); animation-delay: .22s,2.2s; }
+.profile-corner-vine-bl { clip-path: polygon(0 68%,8% 75%,14% 85%,22% 93%,32% 100%,0 100%); animation-delay: .38s,2.2s; }
+.profile-corner-vine-br { clip-path: polygon(100% 68%,100% 100%,68% 100%,78% 93%,86% 85%,92% 75%); animation-delay: .5s,2.2s; }
 .profile-bloom,.profile-bud { position: absolute; z-index: 2; transform-origin: 50% 65%; }
 .profile-bloom img,.profile-bud img { display: block; height: 100%; width: 100%; object-fit: contain; }
-.profile-bloom { height: 2.9rem; width: 2.9rem; opacity: 0; animation: rose-bloom 1.35s cubic-bezier(.16,1,.3,1) forwards; }
-.profile-bud { height: 1.8rem; width: 1.4rem; opacity: 0; animation: rose-bud-open 1.1s cubic-bezier(.16,1,.3,1) forwards; }
-.profile-bloom-tl { left: -.75rem; top: -.7rem; animation-delay: .35s; }
-.profile-bloom-bl { bottom: -.8rem; left: -.7rem; height: 2.7rem; width: 2.7rem; animation-delay: .85s; }
-.profile-bloom-br { bottom: -.85rem; right: -.75rem; height: 3.1rem; width: 3.1rem; animation-delay: 1s; }
-.profile-bud-tr { right: -.15rem; top: -.3rem; animation-delay: .75s; }
+.profile-bloom { height: 3.8rem; width: 3.8rem; opacity: 0; animation: rose-bloom 1.35s cubic-bezier(.16,1,.3,1) forwards; }
+.profile-bud { height: 2.35rem; width: 1.8rem; opacity: 0; animation: rose-bud-open 1.1s cubic-bezier(.16,1,.3,1) forwards; }
+.profile-bloom-tl { left: -1.8rem; top: -1.65rem; animation-delay: .35s; }
+.profile-bloom-bl { bottom: -1.7rem; left: -1.65rem; height: 3.45rem; width: 3.45rem; animation-delay: .85s; }
+.profile-bloom-br { bottom: -1.9rem; right: -1.75rem; height: 4rem; width: 4rem; animation-delay: 1s; }
+.profile-bud-tr { right: -.5rem; top: -.65rem; animation-delay: .75s; }
 
 .profile-vines { pointer-events: none; animation: vine-settle 9s ease-in-out 2.6s infinite; filter: drop-shadow(0 4px 8px color-mix(in oklab,var(--ink) 68%,transparent)); }
 .profile-vine-stems path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: vine-grow 2.4s cubic-bezier(.2,.75,.2,1) forwards; }
@@ -226,9 +234,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .archive-grid { background-image: linear-gradient(color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px); background-size: 48px 48px; }
 .relationship-line { height: 1px; background: currentColor; position: relative; overflow: hidden; }
 .relationship-line::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 7px, var(--background) 7px 11px); }
-.relationship-connection { --connection-angle: -32deg; left: calc(50% + 4.1rem); top: calc(50% - 2.55rem); width: 7.7rem; transform: rotate(var(--connection-angle)); transform-origin: left center; transition: left .35s cubic-bezier(.16,1,.3,1), top .35s cubic-bezier(.16,1,.3,1), width .35s cubic-bezier(.16,1,.3,1); }
-.relationship-connection-elias { left: calc(50% + 4.3rem); top: calc(50% - 2.68rem); width: 7.5rem; }
-.relationship-connection-nanase { width: 7.55rem; }
+.relationship-connection { --connection-angle: -32deg; left: calc(50% + 3.9rem); top: calc(50% - 2.43rem); width: 8.55rem; transform: rotate(var(--connection-angle)); transform-origin: left center; transition: left .35s cubic-bezier(.16,1,.3,1), top .35s cubic-bezier(.16,1,.3,1), width .35s cubic-bezier(.16,1,.3,1); }
+.relationship-connection-elias { left: calc(50% + 4.15rem); top: calc(50% - 2.58rem); width: 8.3rem; }
+.relationship-connection-nanase { width: 8.4rem; }
 .directional-link { color: var(--foreground); cursor: help; }
 .directional-track { position: absolute; left: 0; right: 0; top: 50%; display: flex; height: 3px; overflow: hidden; transform: translateY(-50%); border: 1px solid color-mix(in oklab,var(--foreground) 35%,transparent); transition: height .28s cubic-bezier(.16,1,.3,1), filter .28s ease, box-shadow .28s ease; }
 .directional-segment { display: block; height: 100%; flex: none; }
@@ -261,9 +269,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 
 @media (min-width: 768px) {
   .bedroom-terminal-view { transform-origin: 92% 48%; }
-  .relationship-connection { --connection-angle: -31deg; left: calc(50% + 5.4rem); top: calc(50% - 3.3rem); width: 8.05rem; }
-  .relationship-connection-elias { left: calc(50% + 5.65rem); top: calc(50% - 3.45rem); width: 7.8rem; }
-  .relationship-connection-nanase { width: 7.9rem; }
+  .relationship-connection { --connection-angle: -31deg; left: calc(50% + 5.2rem); top: calc(50% - 3.18rem); width: 8.9rem; }
+  .relationship-connection-elias { left: calc(50% + 5.5rem); top: calc(50% - 3.36rem); width: 8.6rem; }
+  .relationship-connection-nanase { width: 8.75rem; }
 }
 @keyframes drift-note-lr { from { transform: translateX(-30vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(105vw); opacity: 0; } }
 @keyframes drift-note-rl { from { transform: translateX(105vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(-30vw); opacity: 0; } }

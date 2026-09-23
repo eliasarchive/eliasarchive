@@ -58,3 +58,5 @@
 - [x] Improve relationship chart dragging and animate Nanase's profile name with a red inner glow
 - [x] Keep relationship lines attached during circle hover without excessive retraction
 - [x] Slim Elias botanical frame to corner-only overlap so all card text stays clear
+- [x] Rebuild Elias’s animated botanical frame to match the profile box ratio and overlap only its corners
+- [x] Anchor each character profile box close to the circle it belongs to
