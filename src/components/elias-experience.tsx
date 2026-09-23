@@ -131,7 +131,7 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
 
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute inset-0 z-[3] overflow-hidden" aria-hidden="true">
+    <div className="profile-botanical-frame pointer-events-none absolute -inset-7 z-[3] overflow-visible" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
@@ -690,8 +690,8 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover profile-popover-${character} absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label={`${record.name} profile`}>
       <div className={`profile-card-shell relative border bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl ${isElias ? "border-primary/75" : "border-chart-red/75"}`}>
         {isElias && <ProfileBotanicalFrame />}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-card/95 backdrop-blur-xl" />
-        <div className="pointer-events-none absolute inset-2 z-[2] border border-primary/25" />
+        <div className="pointer-events-none absolute inset-0 z-[4] bg-card/95 backdrop-blur-xl" />
+        <div className="pointer-events-none absolute inset-2 z-[5] border border-primary/25" />
         <div className="relative z-10 flex items-start justify-between">
           <div><p className={`text-[7px] uppercase md:text-[8px] ${isElias ? "text-primary" : "text-chart-red"}`}>Central profile</p><span className={`mt-2 block h-px w-14 ${isElias ? "bg-primary" : "bg-chart-red"}`} /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
