@@ -922,6 +922,22 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
            </Button>
          </div>
 
+          <div onPointerEnter={() => setHoveredNode("ashley")} onPointerLeave={() => setHoveredNode(null)} className="ashley-node group absolute left-[23%] top-[22%] z-30 grid h-28 w-28 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-32 md:w-32">
+            <div className="ashley-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
+            <span className="ashley-diamond ashley-diamond-top" aria-hidden="true" />
+            <span className="ashley-diamond ashley-diamond-right" aria-hidden="true" />
+            <span className="ashley-diamond ashley-diamond-bottom" aria-hidden="true" />
+            <span className="ashley-diamond ashley-diamond-left" aria-hidden="true" />
+            <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(590, .2, .02); toggleProfile("ashley", event.currentTarget); }} className="ashley-emblem relative z-10 grid h-28 w-28 place-items-center overflow-hidden whitespace-normal rounded-full border p-0 transition duration-500 hover:scale-[1.025] md:h-32 md:w-32">
+              <span className="ashley-inner-ring absolute inset-2 rounded-full border" />
+              <img src={ashleyHatEmblem} alt="" className="ashley-hat pointer-events-none absolute left-1/2 top-[43%] z-0 w-[88%] -translate-x-1/2 -translate-y-1/2 object-contain" />
+              <span className="ashley-title relative z-10 flex translate-y-[1.65rem] flex-col items-center justify-center">
+                <span className="ashley-name font-display text-[12px] uppercase leading-none md:text-sm">Ashley</span>
+                <span className="ashley-name mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Archer</span>
+              </span>
+            </Button>
+          </div>
+
 
         </div>
          {profileOpen && typeof document !== "undefined" && createPortal(
@@ -943,26 +959,10 @@ function RelationshipLegend() {
     <section className="mx-auto max-w-7xl border-t border-border pt-5" aria-label="Relationship legend">
       <div className="mb-4 flex items-end justify-between"><h3 className="font-display text-xl">Relationship legend</h3><p className="text-[8px] uppercase tracking-[.25em] text-muted-foreground">Future connection system</p></div>
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 md:grid-cols-4 lg:grid-cols-6">
-        {relationshipTypes.map((type, index) => (
+        {relationshipTypes.map((type) => (
           <div key={type} className="legend-item flex items-center gap-3 text-[9px] text-foreground/75">
              <span className="legend-swatch w-8 shrink-0" />
             <span>{type}</span>
-          </div>
-
-          <div onPointerEnter={() => setHoveredNode("ashley")} onPointerLeave={() => setHoveredNode(null)} className="ashley-node group absolute left-[23%] top-[22%] z-30 grid h-28 w-28 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-32 md:w-32">
-            <div className="ashley-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
-            <span className="ashley-diamond ashley-diamond-top" aria-hidden="true" />
-            <span className="ashley-diamond ashley-diamond-right" aria-hidden="true" />
-            <span className="ashley-diamond ashley-diamond-bottom" aria-hidden="true" />
-            <span className="ashley-diamond ashley-diamond-left" aria-hidden="true" />
-            <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(590, .2, .02); toggleProfile("ashley", event.currentTarget); }} className="ashley-emblem relative z-10 grid h-28 w-28 place-items-center overflow-hidden whitespace-normal rounded-full border p-0 transition duration-500 hover:scale-[1.025] md:h-32 md:w-32">
-              <span className="absolute inset-2 rounded-full border border-ashley-gold/45" />
-              <img src={ashleyHatEmblem} alt="" className="ashley-hat pointer-events-none absolute left-1/2 top-[43%] z-0 w-[88%] -translate-x-1/2 -translate-y-1/2 object-contain" />
-              <span className="ashley-title relative z-10 flex -translate-y-[-1.65rem] flex-col items-center justify-center">
-                <span className="ashley-name font-display text-[12px] uppercase leading-none md:text-sm">Ashley</span>
-                <span className="ashley-name mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Archer</span>
-              </span>
-            </Button>
           </div>
         ))}
       </div>
