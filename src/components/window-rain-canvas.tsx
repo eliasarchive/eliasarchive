@@ -36,9 +36,9 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
         x: rx() + box.h * 0.12,
         y: initial ? box.top + Math.random() * box.h : box.top - Math.random() * box.h * 0.3,
         speed: (700 + depth * 1300) * s,
-        length: (10 + depth * 38 + Math.random() * 12) * s,
-        alpha: 0.18 + depth * 0.5,
-        width: (0.6 + depth * 1.5) * s,
+        length: (8 + depth * 26 + Math.random() * 10) * s,
+        alpha: 0.14 + depth * 0.42,
+        width: (0.5 + depth * 1.1) * s,
         slant: -0.16 - Math.random() * 0.06,
       };
     };
@@ -73,8 +73,8 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
         scale,
       };
       const area = box.w * box.h;
-      if (layer === "rain") rain = Array.from({ length: Math.max(260, Math.round(area / 260)) }, () => makeRain(true));
-      else beads = Array.from({ length: Math.max(120, Math.round(area / 900)) }, () => makeBead(true));
+      if (layer === "rain") rain = Array.from({ length: Math.max(180, Math.round(area / 520)) }, () => makeRain(true));
+      else beads = Array.from({ length: Math.max(90, Math.round(area / 1400)) }, () => makeBead(true));
     };
 
     const drawRain = (dt: number) => {
@@ -100,10 +100,10 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
 
     const drawBead = (x: number, y: number, r: number) => {
       const g = context.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.1, x, y, r);
-      g.addColorStop(0, "rgba(255,255,255,0.75)");
-      g.addColorStop(0.35, "rgba(200,215,222,0.28)");
-      g.addColorStop(0.85, "rgba(30,40,45,0.35)");
-      g.addColorStop(1, "rgba(220,232,238,0.45)");
+      g.addColorStop(0, "rgba(255,255,255,0.55)");
+      g.addColorStop(0.35, "rgba(200,215,222,0.12)");
+      g.addColorStop(0.85, "rgba(30,40,45,0.22)");
+      g.addColorStop(1, "rgba(220,232,238,0.3)");
       context.fillStyle = g;
       context.beginPath();
       context.ellipse(x, y, r, r * 1.12, 0, 0, Math.PI * 2);
