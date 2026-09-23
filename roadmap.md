@@ -96,3 +96,4 @@
 - [x] Replace every active GitHub-incompatible media pointer with repository assets and restore the entrance foreground/shadow above lightning.
 - [x] Synchronize a bundled deep thunder rumble with every entrance lightning strike, including GitHub Pages.
 - [x] Refine the last-room glass droplets into a hyper-realistic photographic water effect without changing the uploaded room.
+- [x] Make last-room droplets clearly visible, individually varied, and gravity-driven with realistic sliding and trails.
