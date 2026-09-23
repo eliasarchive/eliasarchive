@@ -556,6 +556,9 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const [profileOpen, setProfileOpenRaw] = useState<"elias" | "nanase" | null>(null);
   const [profileLeaving, setProfileLeaving] = useState(false);
   const [profileAnchor, setProfileAnchor] = useState({ x: 0, y: 0 });
+  const profileTargetRef = useRef<HTMLElement | null>(null);
+  const profilePanelRef = useRef<HTMLDivElement | null>(null);
+  const profileSideRef = useRef<"left" | "right">("right");
   const profileTimer = useRef<number | undefined>(undefined);
   const setProfileOpen = (next: "elias" | "nanase" | null | ((open: "elias" | "nanase" | null) => "elias" | "nanase" | null)) => {
     const value = typeof next === "function" ? next(profileOpen) : next;
@@ -566,6 +569,18 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
       profileTimer.current = window.setTimeout(() => { setProfileOpenRaw(null); setProfileLeaving(false); }, 240);
     } else { setProfileLeaving(false); setProfileOpenRaw(value); }
   };
+  const positionProfile = useCallback((target: HTMLElement, side: "left" | "right", updateState = false) => {
+    const rect = target.getBoundingClientRect();
+    const panelWidth = window.innerWidth < 768 ? 172 : 240;
+    const x = side === "right" ? rect.right + 12 : rect.left - panelWidth - 12;
+    const y = rect.top + rect.height / 2;
+    const panel = profilePanelRef.current;
+    if (panel) {
+      panel.style.left = `${x}px`;
+      panel.style.top = `${y}px`;
+    }
+    if (updateState) setProfileAnchor({ x, y });
+  }, []);
   const toggleProfile = (character: "elias" | "nanase", target: HTMLElement) => {
     if (profileOpen === character) {
       setProfileOpen(null);
@@ -573,13 +588,11 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
     }
     const rect = target.getBoundingClientRect();
     const panelWidth = window.innerWidth < 768 ? 172 : 240;
-    const panelHalfHeight = window.innerWidth < 768 ? 145 : 178;
     const preferredRight = rect.right + 12;
-    const x = preferredRight + panelWidth <= window.innerWidth - 8
-      ? preferredRight
-      : Math.max(8, rect.left - panelWidth - 12);
-    const y = Math.min(window.innerHeight - panelHalfHeight - 8, Math.max(panelHalfHeight + 8, rect.top + rect.height / 2));
-    setProfileAnchor({ x, y });
+    const side = preferredRight + panelWidth <= window.innerWidth - 8 ? "right" : "left";
+    profileTargetRef.current = target;
+    profileSideRef.current = side;
+    positionProfile(target, side, true);
     setProfileOpen(character);
   };
   const [viewerOpen, setViewerOpen] = useState<"elias" | "nanase" | null>(null);
@@ -602,6 +615,8 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
       if (!p || !el) return;
       viewRef.current = { ...viewRef.current, offset: p };
       el.style.transform = `translate(calc(-50% + ${p.x}px), calc(-50% + ${p.y}px)) scale(${viewRef.current.zoom})`;
+      const profileTarget = profileTargetRef.current;
+      if (profileTarget) positionProfile(profileTarget, profileSideRef.current);
     });
   };
   const endDrag = () => {
@@ -614,6 +629,12 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
     if (window.innerWidth < 768) setZoom(.68);
   }, []);
   useEffect(() => { viewRef.current = { offset, zoom }; }, [offset, zoom]);
+  useEffect(() => {
+    const profileTarget = profileTargetRef.current;
+    if (!profileOpen || !profileTarget) return;
+    const frame = requestAnimationFrame(() => positionProfile(profileTarget, profileSideRef.current));
+    return () => cancelAnimationFrame(frame);
+  }, [offset, positionProfile, profileOpen, zoom]);
   const changeZoom = useCallback((nextZoom: number, clientX?: number, clientY?: number) => {
     const viewport = viewportRef.current;
     if (!viewport) return;
@@ -708,7 +729,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         </div>
          {profileOpen && typeof document !== "undefined" && createPortal(
            <div className="profile-anchor">
-             <ProfilePanel key={profileOpen} anchor={profileAnchor} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />
+             <ProfilePanel key={profileOpen} panelRef={profilePanelRef} anchor={profileAnchor} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />
            </div>,
            document.body,
          )}
@@ -736,13 +757,14 @@ function RelationshipLegend() {
   );
 }
 
-function ProfilePanel({ character, anchor, leaving, onClose, onExpand }: { character: "elias" | "nanase"; anchor: { x: number; y: number }; leaving: boolean; onClose: () => void; onExpand: () => void }) {
+function ProfilePanel({ character, panelRef, anchor, leaving, onClose, onExpand }: { character: "elias" | "nanase"; panelRef: React.RefObject<HTMLDivElement | null>; anchor: { x: number; y: number }; leaving: boolean; onClose: () => void; onExpand: () => void }) {
   const isElias = character === "elias";
   const record = isElias ? elias : nanase;
   const portrait = isElias ? eliasRose : nanasePortrait;
   const closeAnimated = () => { if (!leaving) onClose(); };
   return (
     <div
+      ref={panelRef}
       onPointerDown={(event) => event.stopPropagation()}
       style={{ left: anchor.x, top: anchor.y }}
       className={`profile-popover profile-popover-${character} fixed z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`}
