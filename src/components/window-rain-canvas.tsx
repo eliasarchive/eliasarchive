@@ -75,7 +75,7 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
     };
 
     const makeBead = (initial: boolean): GlassDrop => {
-      const scale = box.scale;
+      const scale = box.scale * 1.45;
       const sizeRoll = Math.random();
       const beadWidth = (sizeRoll < 0.42
         ? 0.45 + Math.random() * 0.9
@@ -122,7 +122,7 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
       };
       const area = box.w * box.h;
       if (layer === "rain") rain = Array.from({ length: Math.max(260, Math.round(area / 360)) }, () => makeRain(true));
-      else beads = Array.from({ length: Math.max(58, Math.round(area / 2600)) }, () => makeBead(true));
+      else beads = Array.from({ length: Math.max(72, Math.round(area / 2100)) }, () => makeBead(true));
     };
 
     const drawOutsideRain = (dt: number, time: number) => {
@@ -165,11 +165,11 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
 
     const drawGlassDrop = (drop: GlassDrop) => {
       const gradient = context.createLinearGradient(drop.x - drop.width, drop.y - drop.height, drop.x + drop.width, drop.y + drop.height);
-      gradient.addColorStop(0, `rgba(246,250,250,${0.2 * drop.clarity})`);
-      gradient.addColorStop(0.2, "rgba(210,226,230,0.018)");
-      gradient.addColorStop(0.62, `rgba(18,31,37,${0.13 + drop.weight * 0.05})`);
-      gradient.addColorStop(0.84, "rgba(166,191,199,0.035)");
-      gradient.addColorStop(1, `rgba(238,246,247,${0.18 * drop.clarity})`);
+      gradient.addColorStop(0, `rgba(246,250,250,${0.25 * drop.clarity})`);
+      gradient.addColorStop(0.2, "rgba(210,226,230,0.025)");
+      gradient.addColorStop(0.62, `rgba(18,31,37,${0.19 + drop.weight * 0.07})`);
+      gradient.addColorStop(0.84, "rgba(166,191,199,0.05)");
+      gradient.addColorStop(1, `rgba(238,246,247,${0.23 * drop.clarity})`);
       organicDropPath(drop);
       context.shadowColor = "rgba(4,10,14,0.3)";
       context.shadowBlur = Math.max(0.45, drop.width * 0.24);
@@ -193,7 +193,7 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
     };
 
     const drawGlassWater = (dt: number, time: number) => {
-      const scale = box.scale;
+      const scale = box.scale * 1.45;
       beads.forEach((drop, index) => {
         drop.delay -= dt;
         if (drop.delay <= 0 && drop.speed > 0) {
