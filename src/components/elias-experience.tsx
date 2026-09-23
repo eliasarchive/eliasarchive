@@ -575,7 +575,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-        <div className="chart-orbit absolute left-1/2 top-1/2 flex h-[22rem] w-[22rem] items-center justify-center transition-transform duration-100 md:h-[27rem] md:w-[27rem]" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+        <div className={`chart-orbit absolute left-1/2 top-1/2 flex h-[22rem] w-[22rem] items-center justify-center transition-transform duration-500 md:h-[27rem] md:w-[27rem] ${profileOpen ? "chart-orbit-profile-open" : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
@@ -634,10 +634,9 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
   };
   return (
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
-      <div className="profile-card-shell relative max-h-[min(31rem,calc(100dvh-7rem))] overflow-y-auto border border-primary/75 bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl md:px-5 md:py-5">
-        <div className="profile-frame-growth pointer-events-none absolute -inset-6 z-20" aria-hidden="true">
+      <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-5 py-5 shadow-2xl backdrop-blur-xl">
+        <div className="profile-frame-growth pointer-events-none absolute -inset-10 z-20" aria-hidden="true">
           <img src={profileBotanicalFrame} alt="" width={1024} height={1024} loading="eager" className="profile-rose-frame h-full w-full object-fill" />
-          <span className="profile-frame-shimmer" />
         </div>
         <div className="pointer-events-none absolute inset-2 border border-primary/25" />
         <div className="relative z-10 flex items-start justify-between">
