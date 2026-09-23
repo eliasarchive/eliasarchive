@@ -39,3 +39,6 @@
 - [x] Match the emblem's centered two-line Elias Archer typography and reduce the surrounding laurel crown.
 - [x] Recreate the opened Elias profile as the tall gold-framed rose-and-vine reference with cinematic growth animation.
 - [x] Restore the compact profile size, match the reference's realistic rose frame, center the emblem title, and use gold hover styling.
+- [x] Move the compact profile beside the emblem, raise and recenter its title, and replace the copied outline with an original realistic animated botanical frame.
+- [x] Anchor the profile beside the chart rather than the viewport, keep the emblem visible on mobile, and prevent the gold animation from obscuring its content.
+- [x] Hide the right-side like meter while the mobile profile is open and tighten the card further.
