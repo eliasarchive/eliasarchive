@@ -13,6 +13,7 @@ import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
 import welcomeBotanicalFrame from "@/assets/welcome-botanical-frame.png";
+import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 
@@ -490,6 +491,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
   return (
     <button onClick={continueToArchive} onPointerMove={(event) => setPosition({ x: event.clientX / window.innerWidth - .5, y: event.clientY / window.innerHeight - .5 })} className={`grain relative flex h-dvh w-full cursor-pointer items-center justify-center overflow-hidden bg-ink text-center animate-in fade-in duration-700 ${leaving ? "welcome-transition-out" : ""}`}>
       <div className="computer-desktop absolute inset-0" style={{ transform: `translate(${position.x * -5}px, ${position.y * -5}px) scale(1.02)` }} />
+      <div className="welcome-rose-field" aria-hidden="true" style={{ transform: `translate(${position.x * -8}px, ${position.y * -6}px)` }}><img src={welcomeRoseField} alt="" width={1920} height={1152} className="h-full w-full object-cover" /></div>
       <div className="absolute inset-3 border border-primary/20 md:inset-8" />
       <div className="absolute inset-x-3 top-3 flex h-9 items-center justify-between border-b border-primary/20 bg-background/60 px-4 text-[7px] uppercase tracking-[.25em] text-muted-foreground backdrop-blur-md md:inset-x-8 md:top-8"><span>Archer OS</span><span>Private computer · Secure session</span></div>
       <div className="relative flex min-h-[28rem] w-[min(90vw,38rem)] flex-col items-center justify-center border border-primary/25 bg-background/65 px-5 py-10 shadow-2xl backdrop-blur-xl" style={{ transform: `translate(${position.x * 10}px, ${position.y * 8}px)` }}>
