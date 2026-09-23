@@ -146,7 +146,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; border-color: color-mix(in oklab,var(--foreground) 58%,transparent); background: transparent; color: var(--foreground); }
 .terminal-hotspot:hover { border-color: color-mix(in oklab,var(--foreground) 84%,transparent); background: color-mix(in oklab,var(--foreground) 3%,transparent); }
 .terminal-image-frame { width: max(100vw, calc(100dvh * 1920 / 1004)); aspect-ratio: 1920 / 1004; translate: -50% -50%; transform-origin: 50% 68%; }
-.terminal-monitor { left: 44.6%; top: 62%; width: 8.4%; height: 8.4%; aspect-ratio: auto; transform-origin: center; }
+.terminal-monitor { left: 43.4%; top: 60.2%; width: 7.8%; height: 8.6%; aspect-ratio: auto; transform-origin: center; }
 .manor-rain-canvas { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
 .window-rain-canvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 .window-rain-rain { filter: blur(.5px); opacity: 1; }
