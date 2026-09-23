@@ -30,7 +30,7 @@ export function LightningCanvas() {
       const age = t - start;
       if (age < 700) {
         const flicker = age < 90 ? 1 : age < 160 ? 0.25 : age < 260 ? 0.85 : Math.max(0, 1 - (age - 260) / 440);
-        ctx.fillStyle = `rgba(190,205,235,${0.28 * flicker})`; ctx.fillRect(0, 0, w, h * 0.6);
+        ctx.fillStyle = `rgba(190,205,235,${0.12 * flicker})`; ctx.fillRect(0, 0, w, h * 0.6);
         ctx.lineCap = "round"; ctx.shadowColor = "rgba(200,215,255,.95)"; ctx.shadowBlur = 18;
         for (const [a, b, c, d, lw] of segs) { ctx.strokeStyle = `rgba(235,242,255,${flicker})`; ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(c, d); ctx.stroke(); }
         ctx.shadowBlur = 0;
