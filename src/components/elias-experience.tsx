@@ -933,7 +933,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
             <span className="ashley-diamond ashley-diamond-left" aria-hidden="true" />
              <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(590, .2, .02); toggleProfile("ashley", event.currentTarget); }} className="ashley-emblem relative z-10 grid h-28 w-28 place-items-center overflow-visible whitespace-normal rounded-full border p-0 transition duration-500 hover:scale-[1.025] md:h-32 md:w-32">
               <span className="ashley-inner-ring absolute inset-2 rounded-full border" />
-               <img src={ashleyHatEmblem} alt="" className="ashley-hat pointer-events-none absolute left-1/2 top-[7%] z-20 w-[128%] -translate-x-1/2 -translate-y-1/2 object-contain" />
+               <img src={ashleyHatEmblem} alt="" className="ashley-hat pointer-events-none absolute left-1/2 top-[16%] z-20 w-[168%] -translate-x-1/2 -translate-y-1/2 object-contain" />
                <span className="ashley-title relative z-10 flex flex-col items-center justify-center">
                 <span className="ashley-name font-display text-[12px] uppercase leading-none md:text-sm">Ashley</span>
                 <span className="ashley-name mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Archer</span>
