@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -524,7 +524,7 @@ export function EliasExperience() {
     }
     else {
       setEnteringRoom(true);
-      window.setTimeout(() => setStage("desk"), 900);
+      window.setTimeout(() => setStage("desk"), 1200);
     }
   };
 
@@ -563,12 +563,41 @@ function SoundControl({ muted, stage, onToggle }: { muted: boolean; stage: Exper
 }
 
 
+const dustMotes = Array.from({ length: 28 }, (_, index) => ({
+  x: (index * 37 + 11) % 97,
+  y: (index * 61 + 7) % 91,
+  size: 1 + ((index * 17) % 5) * 0.42,
+  duration: 8 + ((index * 13) % 11),
+  delay: -((index * 7) % 15),
+  drift: -18 + ((index * 19) % 37),
+}));
+
+function RoomDust({ entering = false }: { entering?: boolean }) {
+  return (
+    <div className={`room-dust ${entering ? "room-dust-rush" : ""}`} aria-hidden="true">
+      {dustMotes.map((mote, index) => (
+        <span
+          key={index}
+          style={{
+            "--dust-x": `${mote.x}%`,
+            "--dust-y": `${mote.y}%`,
+            "--dust-size": `${mote.size}px`,
+            "--dust-duration": `${mote.duration}s`,
+            "--dust-delay": `${mote.delay}s`,
+            "--dust-drift": `${mote.drift}px`,
+          } as CSSProperties}
+        />
+      ))}
+    </div>
+  );
+}
+
 function ManorSequence({ scene, enteringRoom, onThunder, onAdvance, onSkip }: { scene: number; enteringRoom: boolean; onThunder: () => void; onAdvance: () => void; onSkip: () => void }) {
   const current = manorScenes[scene];
   if (!current) return null;
   return (
     <section className={`relative h-dvh overflow-hidden bg-ink ${enteringRoom ? "room-transition-out" : ""}`} aria-label="Journey through the manor">
-      <div key={current.image} className="cinematic-frame absolute inset-0">
+      <div key={current.image} className={`cinematic-frame absolute inset-0 ${enteringRoom ? "room-camera-push" : ""}`}>
         {scene === 0 ? (
           <>
             <img src={manorEntrance} alt="The manor in heavy rain" width={1376} height={768} className="h-full w-full object-cover" />
@@ -585,13 +614,14 @@ function ManorSequence({ scene, enteringRoom, onThunder, onAdvance, onSkip }: { 
                 <img src={manorRoomGlass} alt="" width={1920} height={1004} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
                 <WindowRainCanvas maskSrc={manorRoomPaneMask} className="cinematic-bedroom" layer="droplets" zIndex={3} />
                 <img src={manorRoomInterior} alt="" width={1920} height={1004} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover" aria-hidden="true" />
+                <RoomDust entering={enteringRoom} />
               </>
             )}
           </>
         )}
       </div>
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
-      <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
+      <div className="room-passage-copy absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
         <div className="max-w-md border-l border-primary/60 pl-5">
           <p className="mb-2 text-[10px] uppercase tracking-[.35em] text-primary">Passage {current.chapter}</p>
           <h1 className="font-display text-4xl font-medium md:text-6xl">{current.title}</h1>
@@ -615,6 +645,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
       <img src={manorRoomGlass} alt="" width={1920} height={1004} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="droplets" zIndex={3} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
       <img src={manorRoomInterior} alt="" width={1920} height={1004} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
+      <RoomDust />
       <div className="vignette absolute inset-0 z-[5] bg-background/10" />
       <div className={`terminal-image-frame pointer-events-none absolute left-1/2 top-1/2 z-10 ${entering ? "terminal-zoom" : ""}`}>
       <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group pointer-events-auto absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
