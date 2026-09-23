@@ -83,3 +83,5 @@
 - [x] Fit the terminal target tightly around the MacBook with a transparent grey outline and no black fill.
 - [x] Replace synthesized indoor rain with real online roof/window recordings and make final-room rain clearly visible only behind the window.
 - [x] Replace outdoor-sounding ambience with true indoor recordings and composite the room rain behind cut-out window panes.
+
+- [ ] Put the room rain visually behind preserved window glass and use the user-selected YouTube room audio.
