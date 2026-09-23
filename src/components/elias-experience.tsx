@@ -12,6 +12,7 @@ import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
 import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
 import manorStudyAsset from "@/assets/manor-final-room.png.asset.json";
 import manorRoomForegroundAsset from "@/assets/manor-room-foreground.png.asset.json";
+import manorRoomGlassAsset from "@/assets/manor-room-glass.png.asset.json";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -22,7 +23,6 @@ import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
 import roofRainAsset from "@/assets/indoor-roof-rain.ogg.asset.json";
-import windowRainAsset from "@/assets/indoor-window-rain.ogg.asset.json";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -30,6 +30,8 @@ const manorStair = manorStairAsset.url;
 const manorGallery = manorGalleryAsset.url;
 const manorStudy = manorStudyAsset.url;
 const manorRoomForeground = manorRoomForegroundAsset.url;
+const manorRoomGlass = manorRoomGlassAsset.url;
+const roomRainVideoId = "c1XOgrBz6sU";
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
@@ -159,7 +161,7 @@ function useSound(enabled: boolean) {
   const pianoRef = useRef<number | null>(null);
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode } | null>(null);
   const roofRainRef = useRef<HTMLAudioElement | null>(null);
-  const windowRainRef = useRef<HTMLAudioElement | null>(null);
+  const windowRainRef = useRef<HTMLIFrameElement | null>(null);
   const rainSceneRef = useRef(0);
 
 
@@ -220,10 +222,14 @@ function useSound(enabled: boolean) {
       roofRainRef.current = roofRain;
     }
     if (!windowRainRef.current) {
-      const windowRain = new Audio(windowRainAsset.url);
-      windowRain.loop = true;
-      windowRain.preload = "auto";
-      windowRain.load();
+      const windowRain = document.createElement("iframe");
+      windowRain.src = `https://www.youtube.com/embed/${roomRainVideoId}?enablejsapi=1&autoplay=0&controls=0&disablekb=1&loop=1&playlist=${roomRainVideoId}&playsinline=1&start=10`;
+      windowRain.title = "Gentle rain on window ambience";
+      windowRain.allow = "autoplay; encrypted-media";
+      windowRain.tabIndex = -1;
+      windowRain.setAttribute("aria-hidden", "true");
+      windowRain.style.cssText = "position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;border:0;pointer-events:none";
+      document.body.appendChild(windowRain);
       windowRainRef.current = windowRain;
     }
     const length = Math.floor(ctx.sampleRate * 5);
@@ -277,9 +283,12 @@ function useSound(enabled: boolean) {
       else roofRain.pause();
     }
     if (windowRain) {
-      windowRain.volume = enabledRef.current && scene === 3 ? .44 : 0;
-      if (scene === 3) void windowRain.play().catch(() => undefined);
-      else windowRain.pause();
+      const command = (func: string, args: number[] = []) => windowRain.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), "https://www.youtube.com");
+      if (enabledRef.current && scene === 3) {
+        command("seekTo", [10, 1]);
+        command("setVolume", [44]);
+        command("playVideo");
+      } else command("pauseVideo");
     }
   }, [prepareRain]);
 
@@ -291,7 +300,7 @@ function useSound(enabled: boolean) {
     if (!ctx || !rain) return;
     rain.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
     roofRainRef.current?.pause();
-    windowRainRef.current?.pause();
+    windowRainRef.current?.contentWindow?.postMessage(JSON.stringify({ event: "command", func: "pauseVideo", args: [] }), "https://www.youtube.com");
     window.setTimeout(() => { try { rain.source.stop(); } catch { /* already stopped */ } }, 1600);
     rainRef.current = null;
   }, []);
@@ -388,7 +397,10 @@ function useSound(enabled: boolean) {
     if (pianoGainRef.current) pianoGainRef.current.gain.setTargetAtTime(enabled ? 0.18 : 0.0001, ctx.currentTime, 0.12);
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
     if (roofRainRef.current) roofRainRef.current.volume = enabled && rainSceneRef.current === 1 ? .34 : enabled && rainSceneRef.current === 2 ? .5 : 0;
-    if (windowRainRef.current) windowRainRef.current.volume = enabled && rainSceneRef.current === 3 ? .44 : 0;
+    if (windowRainRef.current) {
+      const func = enabled && rainSceneRef.current === 3 ? "playVideo" : "pauseVideo";
+      windowRainRef.current.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args: [] }), "https://www.youtube.com");
+    }
   }, [enabled]);
 
   return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
@@ -407,7 +419,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, manorRoomForeground, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
+    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, manorRoomForeground, manorRoomGlass, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -526,6 +538,7 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
               <>
                 <WindowRainCanvas />
                 <img src={manorRoomForeground} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
+                <img src={manorRoomGlass} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[3] h-full w-full object-cover" aria-hidden="true" />
               </>
             )}
           </>
@@ -554,7 +567,8 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
       <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={2692} height={1408} className={`bedroom-terminal-view absolute inset-0 z-0 h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
       <WindowRainCanvas />
       <img src={manorRoomForeground} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
-      <div className="vignette absolute inset-0 z-[3] bg-background/10" />
+      <img src={manorRoomGlass} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[3] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
+      <div className="vignette absolute inset-0 z-[4] bg-background/10" />
       <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
         <span className="terminal-corner terminal-corner-tl" /><span className="terminal-corner terminal-corner-tr" /><span className="terminal-corner terminal-corner-bl" /><span className="terminal-corner terminal-corner-br" />
         <span className="absolute inset-1 border border-primary/20 transition-all duration-500 group-hover:inset-0 group-hover:border-primary/60" />
