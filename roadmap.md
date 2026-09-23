@@ -61,3 +61,4 @@
 - [x] Rebuild Elias’s animated botanical frame to match the profile box ratio and overlap only its corners
 - [x] Anchor each character profile box close to the circle it belongs to
 - [ ] Replace Elias’s layered frame with one newly created, correctly proportioned rose-and-vine artwork
+- [ ] Add a directional animated gold glow through Elias Archer’s profile name
