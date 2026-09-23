@@ -131,7 +131,7 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
 
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute -inset-7 z-[3] overflow-visible" aria-hidden="true">
+    <div className="profile-botanical-frame pointer-events-none absolute -inset-7 z-[7] overflow-visible" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
@@ -613,7 +613,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              </button>
            ))}
          </div>
-          <div className="group absolute left-1/2 top-1/2 z-30 grid h-40 w-40 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-52 md:w-52">
+           <div className="elias-node group absolute left-1/2 top-1/2 z-30 grid h-40 w-40 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-52 md:w-52">
         <div className="laurel-hover pointer-events-none absolute inset-[-4%] z-20 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.075]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
          <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => open === "elias" ? null : "elias"); }} className="relationship-emblem group relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-52 md:w-52">
@@ -636,7 +636,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         </Button>
         </div>
 
-          <div className="group absolute left-[77%] top-[22%] z-30 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-28 md:w-28">
+          <div className="nanase-node group absolute left-[77%] top-[22%] z-30 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-28 md:w-28">
             <div className="nanase-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
              <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-24 w-24 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-28 md:w-28">
              <span className="absolute inset-2 rounded-full border border-chart-red/30" />
