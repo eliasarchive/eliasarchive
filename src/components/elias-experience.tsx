@@ -22,7 +22,16 @@ const manorScenes = [
 ] as const;
 
 function LaurelWreath() {
-  const branchAngles = Array.from({ length: 13 }, (_, index) => index * 12.2);
+  const branchAngles = Array.from({ length: 12 }, (_, index) => 96 + index * 14.2);
+  const leaves = branchAngles.map((angle) => {
+    const radians = angle * Math.PI / 180;
+    return {
+      angle,
+      x: 180 + 146 * Math.cos(radians),
+      y: 180 + 146 * Math.sin(radians),
+      tangent: angle + 90,
+    };
+  });
 
   return (
     <svg viewBox="0 0 360 360" className="h-full w-full overflow-visible" aria-hidden="true">
@@ -33,22 +42,24 @@ function LaurelWreath() {
           <stop offset=".7" stopColor="var(--brass-soft)" />
           <stop offset="1" stopColor="var(--brass)" />
         </linearGradient>
-        <path id="laurel-leaf-out" d="M180 27C157 10 143 13 136 21c13 13 29 17 44 10Z" />
-        <path id="laurel-leaf-in" d="M181 31c19-17 34-16 42-9-10 14-25 20-42 13Z" />
+        <g id="laurel-leaf">
+          <path d="M0 0C9-11 25-13 37-4C28 8 12 11 0 0Z" />
+          <path d="M3 0C14-2 25-3 33-4" fill="none" stroke="var(--brass-soft)" strokeWidth=".55" opacity=".58" />
+        </g>
       </defs>
       <g className="laurel-metal" fill="url(#laurel-gold)" stroke="var(--primary)" strokeWidth=".7" strokeLinejoin="round">
         <path d="M180 331C91 301 42 228 54 143 61 91 91 49 137 23" fill="none" strokeWidth="2.2" opacity=".86" />
         <path d="M180 331c89-30 138-103 126-188-7-52-37-94-83-120" fill="none" strokeWidth="2.2" opacity=".86" />
-        {branchAngles.map((angle, index) => (
-          <g key={`left-${index}`} transform={`rotate(${-angle} 180 180)`}>
-            <use href="#laurel-leaf-out" />
-            <use href="#laurel-leaf-in" opacity=".92" />
+        {leaves.map((leaf, index) => (
+          <g key={`left-${index}`} transform={`translate(${leaf.x} ${leaf.y})`}>
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent - 39}) scale(${index < 2 || index > 9 ? .84 : 1})`} />
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent + 39}) scale(${index < 2 || index > 9 ? .8 : .94})`} opacity=".92" />
           </g>
         ))}
-        {branchAngles.map((angle, index) => (
-          <g key={`right-${index}`} transform={`translate(360 0) scale(-1 1) rotate(${-angle} 180 180)`}>
-            <use href="#laurel-leaf-out" />
-            <use href="#laurel-leaf-in" opacity=".92" />
+        {leaves.map((leaf, index) => (
+          <g key={`right-${index}`} transform={`translate(${360 - leaf.x} ${leaf.y}) scale(-1 1)`}>
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent - 39}) scale(${index < 2 || index > 9 ? .84 : 1})`} />
+            <use href="#laurel-leaf" transform={`rotate(${leaf.tangent + 39}) scale(${index < 2 || index > 9 ? .8 : .94})`} opacity=".92" />
           </g>
         ))}
         <path d="M180 329c-13-11-23-14-38-14 8 12 20 19 38 20 18-1 30-8 38-20-15 0-25 3-38 14Z" />
