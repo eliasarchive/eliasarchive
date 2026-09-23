@@ -568,6 +568,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const [zoom, setZoom] = useState(1);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef({ offset, zoom });
+  const orbitRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   useEffect(() => {
     if (window.innerWidth < 768) setZoom(.68);
@@ -613,7 +614,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[30rem] w-[48rem] will-change-transform md:h-[34rem] md:w-[58rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+         <div ref={orbitRef} className={`chart-orbit absolute left-1/2 top-1/2 h-[30rem] w-[48rem] will-change-transform md:h-[34rem] md:w-[58rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
@@ -663,9 +664,18 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
            </Button>
          </div>
 
-          {profileOpen && <div className={`profile-scale profile-scale-${profileOpen}`} style={{ "--profile-counter-scale": 1 / zoom } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
 
         </div>
+        {profileOpen && (() => {
+          const orbit = orbitRef.current;
+          const w = orbit?.offsetWidth ?? 768, h = orbit?.offsetHeight ?? 480;
+          const cx = (orbit?.offsetLeft ?? 0) + offset.x, cy = (orbit?.offsetTop ?? 0) + offset.y;
+          const isN = profileOpen === "nanase";
+          const md = w > 800;
+          const ax = cx + (isN ? .27 * w : 0) * zoom, ay = cy + (isN ? -.28 * h : 0) * zoom;
+          const r = (isN ? (md ? 56 : 48) + 12 : (md ? 104 : 80) + 16) * zoom;
+          return <div className="profile-anchor" style={{ "--ax": `${ax + r}px`, "--ay": `${ay}px` } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>;
+        })()}
       </div>
       <RelationshipLegend />
       {!profileOpen && <LikeMeter tone={tone} />}
