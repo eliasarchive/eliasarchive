@@ -11,6 +11,7 @@ import manorEntrance from "@/assets/manor-rain-clear.jpg";
 import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
 import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
 import manorStudyAsset from "@/assets/manor-final-room.png.asset.json";
+import manorRoomForegroundAsset from "@/assets/manor-room-foreground.png.asset.json";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -20,14 +21,15 @@ import archiveRoseField from "@/assets/archive-red-field.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
-import roofRainAsset from "@/assets/rain-glass-roof.ogg.asset.json";
-import windowRainAsset from "@/assets/rain-window.ogg.asset.json";
+import roofRainAsset from "@/assets/indoor-roof-rain.ogg.asset.json";
+import windowRainAsset from "@/assets/indoor-window-rain.ogg.asset.json";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
 const manorStair = manorStairAsset.url;
 const manorGallery = manorGalleryAsset.url;
 const manorStudy = manorStudyAsset.url;
+const manorRoomForeground = manorRoomForegroundAsset.url;
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
@@ -257,9 +259,9 @@ function useSound(enabled: boolean) {
     if (!ctx || !rain) return;
     const profiles = [
       { volume: .11, high: 380, low: 5600 },
-      { volume: .006, high: 850, low: 3900 },
-      { volume: .006, high: 950, low: 5000 },
-      { volume: .004, high: 1100, low: 5400 },
+      { volume: .0001, high: 850, low: 3900 },
+      { volume: .0001, high: 950, low: 5000 },
+      { volume: .0001, high: 1100, low: 5400 },
     ];
     const profile = profiles[Math.max(0, Math.min(scene, profiles.length - 1))] ?? profiles[0];
     if (!profile) return;
@@ -270,12 +272,12 @@ function useSound(enabled: boolean) {
     const roofRain = roofRainRef.current;
     const windowRain = windowRainRef.current;
     if (roofRain) {
-      roofRain.volume = enabledRef.current && scene === 1 ? .38 : enabledRef.current && scene === 2 ? .62 : 0;
+      roofRain.volume = enabledRef.current && scene === 1 ? .34 : enabledRef.current && scene === 2 ? .5 : 0;
       if (scene === 1 || scene === 2) void roofRain.play().catch(() => undefined);
       else roofRain.pause();
     }
     if (windowRain) {
-      windowRain.volume = enabledRef.current && scene === 3 ? .58 : 0;
+      windowRain.volume = enabledRef.current && scene === 3 ? .44 : 0;
       if (scene === 3) void windowRain.play().catch(() => undefined);
       else windowRain.pause();
     }
@@ -385,8 +387,8 @@ function useSound(enabled: boolean) {
     if (jazzGainRef.current) jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.32 : 0.0001, ctx.currentTime, 0.12);
     if (pianoGainRef.current) pianoGainRef.current.gain.setTargetAtTime(enabled ? 0.18 : 0.0001, ctx.currentTime, 0.12);
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
-    if (roofRainRef.current) roofRainRef.current.volume = enabled && rainSceneRef.current === 1 ? .38 : enabled && rainSceneRef.current === 2 ? .62 : 0;
-    if (windowRainRef.current) windowRainRef.current.volume = enabled && rainSceneRef.current === 3 ? .58 : 0;
+    if (roofRainRef.current) roofRainRef.current.volume = enabled && rainSceneRef.current === 1 ? .34 : enabled && rainSceneRef.current === 2 ? .5 : 0;
+    if (windowRainRef.current) windowRainRef.current.volume = enabled && rainSceneRef.current === 3 ? .44 : 0;
   }, [enabled]);
 
   return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
@@ -405,7 +407,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
+    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, manorRoomForeground, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -519,8 +521,13 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
           </>
         ) : (
           <>
-            <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
-            {scene === manorScenes.length - 1 && <WindowRainCanvas />}
+            <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom absolute inset-0 z-0" : "cinematic-image"} h-full w-full object-cover`} />
+            {scene === manorScenes.length - 1 && (
+              <>
+                <WindowRainCanvas />
+                <img src={manorRoomForeground} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
+              </>
+            )}
           </>
         )}
       </div>
@@ -544,10 +551,11 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
 function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boolean }) {
   return (
     <section className="desk-scene-enter relative h-dvh overflow-hidden bg-ink">
-      <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={1024} height={683} className={`bedroom-terminal-view h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
+      <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={2692} height={1408} className={`bedroom-terminal-view absolute inset-0 z-0 h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
       <WindowRainCanvas />
-      <div className="vignette absolute inset-0 bg-background/10" />
-      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
+      <img src={manorRoomForeground} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
+      <div className="vignette absolute inset-0 z-[3] bg-background/10" />
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
         <span className="terminal-corner terminal-corner-tl" /><span className="terminal-corner terminal-corner-tr" /><span className="terminal-corner terminal-corner-bl" /><span className="terminal-corner terminal-corner-br" />
         <span className="absolute inset-1 border border-primary/20 transition-all duration-500 group-hover:inset-0 group-hover:border-primary/60" />
         <span className="absolute left-1/2 top-[calc(100%+0.55rem)] -translate-x-1/2 whitespace-nowrap border border-primary/60 bg-background/90 px-3 py-1.5 text-[7px] uppercase tracking-[.2em] text-primary shadow-lg backdrop-blur-md md:px-4 md:py-2 md:text-[9px] md:tracking-[.28em]">Access terminal</span>

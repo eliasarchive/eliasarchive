@@ -82,3 +82,4 @@
 - [x] Remove baked-in entrance rain, make indoor audio glass-focused and progressively louder, add window-only room rain, and rename the hall passages.
 - [x] Fit the terminal target tightly around the MacBook with a transparent grey outline and no black fill.
 - [x] Replace synthesized indoor rain with real online roof/window recordings and make final-room rain clearly visible only behind the window.
+- [x] Replace outdoor-sounding ambience with true indoor recordings and composite the room rain behind cut-out window panes.

@@ -1,6 +1,6 @@
 # Rain audio sources
 
-- `rain-glass-roof.ogg`: “Rain on a veranda and thunder” by ezwa, public domain, via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:Rain_on_a_veranda_and_t.ogg
-- `rain-window.ogg`: “Rain against the window”, via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:Rain_against_the_window.ogg
+- `indoor-roof-rain.ogg`: “Interior Rain” by Vrymaa, recorded inside a bedroom with rain striking its skylight; CC0 via Freesound: https://freesound.org/people/Vrymaa/sounds/810879/
+- `indoor-window-rain.ogg`: “Rain on window (interior)” by xkeril, recorded from inside against closed windows; CC0 via Freesound: https://freesound.org/people/xkeril/sounds/669486/
 
-Both recordings are used as looping ambience during the manor passage.
+Both recordings are normalized, softly filtered, and used as looping indoor ambience during the manor passage.
