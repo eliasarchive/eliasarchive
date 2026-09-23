@@ -14,7 +14,7 @@ import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
 import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
-import archiveRoseField from "@/assets/archive-red-field.png";
+import archiveRoseField from "@/assets/archive-red-field.jpg";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
