@@ -53,3 +53,4 @@
 - [x] Use the supplied Nanase claw logo and end both horizontal-labelled mixed-color lines at the circle boundaries
 - [x] Rebuild Elias's botanical frame outside the profile box to match the second supplied reference
 - [x] Align thinner relationship lines between circle edges, remove arrows, and raise hover labels
+- [x] Smoothly widen each relationship line on hover
