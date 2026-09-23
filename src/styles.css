@@ -118,13 +118,13 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes vine-open { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
 @keyframes rose-bloom { 0% { opacity: 0; transform: perspective(220px) rotateX(68deg) rotateZ(-13deg) scale(.18); clip-path: circle(8% at 50% 53%); filter: blur(5px) brightness(.5); } 42% { opacity: 1; clip-path: circle(34% at 50% 53%); } 76% { transform: perspective(220px) rotateX(-5deg) rotateZ(2deg) scale(1.08); clip-path: circle(72% at 50% 53%); filter: blur(0) brightness(1.12); } 100% { opacity: 1; transform: perspective(220px) rotateX(0) rotateZ(0) scale(1); clip-path: circle(76% at 50% 53%); filter: blur(0) brightness(1); } }
 @keyframes rose-bud-open { 0% { opacity: 0; transform: scale(.28,.12) rotate(-8deg); clip-path: inset(44% 24% 10%); filter: brightness(.55); } 72% { opacity: 1; transform: scale(1.06,1.1) rotate(1deg); clip-path: inset(0); filter: brightness(1.1); } 100% { opacity: 1; transform: scale(1) rotate(0); clip-path: inset(0); filter: brightness(1); } }
-@keyframes vine-settle { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,-2px,0); } }
+@keyframes vine-settle { 0% { transform: translate3d(0,0,0) rotate(0); } 23% { transform: translate3d(.6px,-1.4px,0) rotate(.12deg); } 41% { transform: translate3d(-.4px,-2.3px,0) rotate(-.08deg); } 63% { transform: translate3d(.9px,-1px,0) rotate(.16deg); } 84% { transform: translate3d(-.3px,-1.9px,0) rotate(-.05deg); } 100% { transform: translate3d(0,0,0) rotate(0); } }
 @keyframes vine-shimmer { 0%,78% { transform: translateX(-580px) rotate(15deg); opacity: 0; } 82% { opacity: .2; } 88%,100% { transform: translateX(860px) rotate(15deg); opacity: 0; } }
 @keyframes rose-frame-reveal { from { opacity: 0; transform: scale(.94); filter: blur(4px) brightness(.7); } to { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } }
 @keyframes botanical-grow { 0% { clip-path: inset(0 48% 94% 48%); opacity: 0; transform: scale(.97); } 42% { clip-path: inset(0 0 48% 0); opacity: 1; } 100% { clip-path: inset(0); opacity: 1; transform: scale(1); } }
 @keyframes botanical-glint { 0%,78%,100% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } 84% { filter: drop-shadow(0 5px 13px color-mix(in oklab,var(--brass-soft) 32%,transparent)) brightness(1.16); } 90% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } }
 @keyframes frame-fit-reveal { from { opacity: 0; transform: scale(.94); filter: blur(3px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
-@keyframes botanical-art-reveal { 0% { clip-path: inset(0 50% 96% 50%); opacity: 0; transform: scale(.96); filter: blur(4px) brightness(.65); } 45% { clip-path: inset(0 0 48% 0); opacity: 1; } 100% { clip-path: inset(0); opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } }
+@keyframes botanical-art-reveal { 0% { clip-path: inset(49% 34% 49% 34%); opacity: 0; transform: scale(.96); filter: blur(4px) brightness(.65); } 45% { clip-path: inset(22% 8% 22% 8%); opacity: 1; } 100% { clip-path: inset(0); opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } }
 @keyframes elias-name-glow { 0%,100% { background-position: 120% 50%; text-shadow: 0 0 4px color-mix(in oklab,var(--brass) 28%,transparent); filter: brightness(.9); } 50% { background-position: -20% 50%; text-shadow: 0 0 7px var(--brass-soft),0 0 17px color-mix(in oklab,var(--brass-soft) 58%,transparent); filter: brightness(1.42); } }
 @keyframes nanase-pulse { 0%,100% { opacity: .42; transform: scale(1) rotate(0); } 50% { opacity: .78; transform: scale(1.025) rotate(.5deg); } }
 @keyframes status-shine { 0%,72%,100% { background-position: 140% 0; } 82% { background-position: -40% 0; } }
@@ -200,7 +200,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .profile-card-shell { box-shadow: 0 24px 80px color-mix(in oklab,var(--ink) 78%,transparent), inset 0 0 50px color-mix(in oklab,var(--brass) 5%,transparent); }
 .profile-frame-growth { animation: botanical-grow 1.65s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 1.65s infinite; }
 .profile-rose-frame { animation: botanical-glint 13s ease-in-out 2s infinite; }
-.profile-botanical-frame { inset: -.7rem; animation: frame-fit-reveal 1.15s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 2.6s infinite; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
+.profile-botanical-frame { inset: -.7rem; animation: frame-fit-reveal 1.15s cubic-bezier(.16,1,.3,1) both, vine-settle 13s cubic-bezier(.37,0,.24,1) 2.6s infinite; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
 .profile-botanical-art { display: block; object-fit: fill; animation: botanical-art-reveal 1.8s cubic-bezier(.16,1,.3,1) both, botanical-glint 13s ease-in-out 2.2s infinite; }
 .elias-profile-name { color: transparent; background-image: linear-gradient(100deg,var(--brass),var(--brass-soft),color-mix(in oklab,var(--foreground) 72%,var(--brass-soft)),var(--brass-soft),var(--brass)); background-size: 240% 100%; background-clip: text; -webkit-background-clip: text; animation: elias-name-glow 2.8s ease-in-out infinite; }
 
@@ -243,7 +243,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .nanase-crosshair::before,.nanase-crosshair::after { content: ""; position: absolute; background: var(--chart-red); opacity: .32; }
 .nanase-crosshair::before { left: 50%; top: .4rem; bottom: .4rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 12%,transparent 12% 88%,#000 88%); }
 .nanase-crosshair::after { left: .4rem; right: .4rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 12%,transparent 12% 88%,#000 88%); }
-.nanase-title-drift { text-shadow: 0 0 18px color-mix(in oklab,var(--chart-red) 58%,transparent); animation: title-drift 11s ease-in-out infinite reverse; }
+@keyframes nanase-title-drift-anim { 0%,100% { transform: translate3d(0,-1px,0); } 50% { transform: translate3d(.7px,-3px,0); } }
+.profile-scale { position: absolute; inset: 0; z-index: 60; pointer-events: none; transform: scale(var(--profile-counter-scale)); transform-origin: center; transition: transform .2s ease-out; }
+.profile-scale .profile-popover { pointer-events: auto; }
+.nanase-title-drift { text-shadow: 0 0 18px color-mix(in oklab,var(--chart-red) 58%,transparent); animation: nanase-title-drift-anim 11s ease-in-out infinite; }
 .nanase-profile-name { color: transparent; background-image: linear-gradient(100deg,var(--chart-red),color-mix(in oklab,var(--chart-red) 45%,var(--foreground)),var(--chart-red)); background-size: 220% 100%; background-clip: text; -webkit-background-clip: text; animation: nanase-text-glow 2.4s ease-in-out infinite; }
 .nanase-mark { filter: drop-shadow(0 0 7px color-mix(in oklab,var(--chart-red) 55%,transparent)); }
 .status-shimmer { background-size: 220% 100%; background-clip: text; color: transparent; animation: status-shine 7s ease-in-out infinite; }
@@ -277,3 +280,6 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
   .chart-orbit-profile-open { margin-left: -5.25rem; }
   .chart-orbit-profile-nanase { margin-left: -7rem; }
 }
+
+.welcome-botanical-frame { pointer-events: none; position: absolute; inset: -2.6rem; z-index: 2; animation: frame-fit-reveal 1.4s cubic-bezier(.16,1,.3,1) both, vine-settle 15s cubic-bezier(.37,0,.24,1) 2.4s infinite; filter: drop-shadow(0 10px 18px color-mix(in oklab,var(--ink) 80%,transparent)); }
+.welcome-botanical-frame img { display: block; height: 100%; width: 100%; object-fit: fill; animation: botanical-art-reveal 2s cubic-bezier(.16,1,.3,1) both, botanical-glint 15s ease-in-out 2.4s infinite; }
