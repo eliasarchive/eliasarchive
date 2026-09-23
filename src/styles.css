@@ -108,8 +108,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes welcome-transition-out { 0% { opacity: 1; transform: scale(1); filter: blur(0); } 60% { opacity: 1; transform: scale(1.025); } 100% { opacity: 0; transform: scale(1.06); filter: blur(8px); } }
 @keyframes crest-float { 0%,100% { transform: translateY(0) rotate(-2deg); opacity: .55; } 50% { transform: translateY(-7px) rotate(2deg); opacity: .95; } }
 @keyframes chart-breathe { 0%,100% { filter: drop-shadow(0 0 10px transparent); } 50% { filter: drop-shadow(0 0 16px color-mix(in oklab,var(--primary) 22%,transparent)); } }
-@keyframes profile-popover-in { from { opacity: 0; transform: translate(-18px,-50%) scale(.94); clip-path: inset(0 100% 0 0); } to { opacity: 1; transform: translate(0,-50%) scale(1); clip-path: inset(0); } }
-@keyframes profile-popover-out { from { opacity: 1; transform: translate(0,-50%) scale(1); clip-path: inset(0); } to { opacity: 0; transform: translate(12px,-50%) scale(.96); clip-path: inset(0 0 0 100%); } }
+@keyframes profile-popover-in { from { opacity: 0; transform: translate(-18px,-50%) scale(.94); filter: blur(3px); } to { opacity: 1; transform: translate(0,-50%) scale(1); filter: blur(0); } }
+@keyframes profile-popover-out { from { opacity: 1; transform: translate(0,-50%) scale(1); filter: blur(0); } to { opacity: 0; transform: translate(12px,-50%) scale(.96); filter: blur(3px); } }
 @keyframes note-dialog-in { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes laurel-hover { 0%,100% { transform: translate3d(0,1px,0) rotate(-.18deg); } 50% { transform: translate3d(0,-3px,0) rotate(.18deg); } }
 @keyframes title-drift { 0%,100% { transform: translate3d(-.6px,-10px,0); } 50% { transform: translate3d(1.2px,-12px,0); } }
