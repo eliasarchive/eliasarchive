@@ -24,9 +24,9 @@ type GlassDrop = {
   trail: Point[];
 };
 
-const SOURCE_WIDTH = 2692;
-const SOURCE_HEIGHT = 1408;
-const PANE = { x0: 1086, y0: 45, x1: 1606, y1: 957 };
+const SOURCE_WIDTH = 1920;
+const SOURCE_HEIGHT = 1004;
+const PANE = { x0: 774, y0: 33, x1: 1146, y1: 683 };
 
 type Layer = "rain" | "droplets";
 

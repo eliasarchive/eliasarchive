@@ -10,10 +10,10 @@ import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntrance from "@/assets/manor-rain-clear.jpg";
 import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
 import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
-import manorStudy from "@/assets/manor-room-original.png";
-import manorRoomInterior from "@/assets/manor-room-original-foreground.png";
-import manorRoomGlass from "@/assets/manor-room-original-glass.png";
-import manorRoomPaneMask from "@/assets/manor-room-original-pane-mask.png";
+import manorStudyAsset from "@/assets/elias-room-original.png.asset.json";
+import manorRoomInteriorAsset from "@/assets/elias-room-original-foreground-v2.png.asset.json";
+import manorRoomGlassAsset from "@/assets/elias-room-original-glass-v2.png.asset.json";
+import manorRoomPaneMaskAsset from "@/assets/elias-room-original-pane-mask-v2.png.asset.json";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -30,6 +30,10 @@ type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 const manorStair = manorStairAsset.url;
 const manorGallery = manorGalleryAsset.url;
 const roomRainVideoId = "c1XOgrBz6sU";
+const manorStudy = manorStudyAsset.url;
+const manorRoomInterior = manorRoomInteriorAsset.url;
+const manorRoomGlass = manorRoomGlassAsset.url;
+const manorRoomPaneMask = manorRoomPaneMaskAsset.url;
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
@@ -535,9 +539,9 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
             {scene === manorScenes.length - 1 && (
               <>
                 <WindowRainCanvas maskSrc={manorRoomPaneMask} className="cinematic-bedroom" layer="rain" zIndex={1} />
-                <img src={manorRoomGlass} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
+                <img src={manorRoomGlass} alt="" width={1920} height={1004} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
                 <WindowRainCanvas maskSrc={manorRoomPaneMask} className="cinematic-bedroom" layer="droplets" zIndex={3} />
-                <img src={manorRoomInterior} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover" aria-hidden="true" />
+                <img src={manorRoomInterior} alt="" width={1920} height={1004} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover" aria-hidden="true" />
               </>
             )}
           </>
@@ -565,9 +569,9 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
     <section className="desk-scene-enter relative h-dvh overflow-hidden bg-ink">
       <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={2692} height={1408} className={`bedroom-terminal-view absolute inset-0 z-0 h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="rain" zIndex={1} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
-      <img src={manorRoomGlass} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
+      <img src={manorRoomGlass} alt="" width={1920} height={1004} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="droplets" zIndex={3} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
-      <img src={manorRoomInterior} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
+      <img src={manorRoomInterior} alt="" width={1920} height={1004} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <div className="vignette absolute inset-0 z-[5] bg-background/10" />
       <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
         <span className="terminal-corner terminal-corner-tl" /><span className="terminal-corner terminal-corner-tr" /><span className="terminal-corner terminal-corner-bl" /><span className="terminal-corner terminal-corner-br" />
