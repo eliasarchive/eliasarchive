@@ -603,13 +603,12 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-          <div className="relationship-connection absolute z-20">
+          <div className="relationship-connection absolute z-40">
            {directionalRelationships.map((relationship, index) => (
-              <button key={relationship.id} className={`directional-link absolute inset-x-0 h-8 ${index === 0 ? "-translate-y-7" : "translate-y-5"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
+               <button key={relationship.id} className={`directional-link absolute inset-x-0 h-5 ${index === 0 ? "-translate-y-3" : "translate-y-1"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
                   {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
                 </span>
-                <span className={`direction-arrow direction-arrow-${relationship.direction}`} style={{ color: relationship.direction === "left" ? relationship.portions[1].color : relationship.portions[1].color }} aria-hidden="true" />
                 <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
              </button>
            ))}

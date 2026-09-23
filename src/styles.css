@@ -226,14 +226,11 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .archive-grid { background-image: linear-gradient(color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px); background-size: 48px 48px; }
 .relationship-line { height: 1px; background: currentColor; position: relative; overflow: hidden; }
 .relationship-line::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 7px, var(--background) 7px 11px); }
-.relationship-connection { --connection-angle: -32deg; left: calc(50% + 5rem); top: 50%; width: 7.5rem; transform: rotate(var(--connection-angle)); transform-origin: left center; }
+.relationship-connection { --connection-angle: -32deg; left: calc(50% + 4.4rem); top: calc(50% - 2.75rem); width: 6.5rem; transform: rotate(var(--connection-angle)); transform-origin: left center; }
 .directional-link { color: var(--foreground); cursor: help; }
-.directional-track { position: absolute; left: 0; right: 0; top: 50%; display: flex; height: 6px; overflow: hidden; transform: translateY(-50%); border: 1px solid color-mix(in oklab,var(--foreground) 42%,transparent); }
+.directional-track { position: absolute; left: 0; right: 0; top: 50%; display: flex; height: 3px; overflow: hidden; transform: translateY(-50%); border: 1px solid color-mix(in oklab,var(--foreground) 35%,transparent); }
 .directional-segment { display: block; height: 100%; flex: none; }
-.direction-arrow { position: absolute; top: 50%; height: 12px; width: 12px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; filter: drop-shadow(0 0 5px currentColor); }
-.direction-arrow-left { left: -1px; transform: translateY(-50%) rotate(-135deg); }
-.direction-arrow-right { right: -1px; transform: translateY(-50%) rotate(45deg); }
-.direction-tooltip { pointer-events: none; position: absolute; left: 50%; bottom: calc(100% + .65rem); z-index: 50; width: max-content; max-width: 17rem; transform: translate(-50%,6px) rotate(calc(-1 * var(--connection-angle))) scale(.96); border: 1px solid var(--border); background: color-mix(in oklab,var(--background) 94%,transparent); padding: .5rem .65rem; opacity: 0; box-shadow: 0 12px 35px color-mix(in oklab,var(--ink) 75%,transparent); transform-origin: center; transition: opacity .25s ease, transform .25s ease; }
+.direction-tooltip { pointer-events: none; position: absolute; left: 50%; bottom: calc(100% + .8rem); z-index: 100; width: max-content; max-width: 17rem; transform: translate(-50%,6px) rotate(calc(-1 * var(--connection-angle))) scale(.96); border: 1px solid var(--border); background: var(--background); padding: .5rem .65rem; opacity: 0; box-shadow: 0 12px 35px color-mix(in oklab,var(--ink) 75%,transparent); transform-origin: center; transition: opacity .25s ease, transform .25s ease; }
 .direction-tooltip strong,.direction-tooltip span { display: block; font-size: .48rem; line-height: 1.5; text-transform: uppercase; }
 .direction-tooltip strong { color: var(--brass-soft); }
 .direction-tooltip span { margin-top: .2rem; color: var(--muted-foreground); }
@@ -260,7 +257,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 
 @media (min-width: 768px) {
   .bedroom-terminal-view { transform-origin: 92% 48%; }
-  .relationship-connection { --connection-angle: -31deg; left: calc(50% + 6.5rem); width: 8.25rem; }
+  .relationship-connection { --connection-angle: -31deg; left: calc(50% + 5.75rem); top: calc(50% - 3.5rem); width: 7.35rem; }
 }
 @keyframes drift-note-lr { from { transform: translateX(-30vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(105vw); opacity: 0; } }
 @keyframes drift-note-rl { from { transform: translateX(105vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(-30vw); opacity: 0; } }
