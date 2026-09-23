@@ -129,10 +129,13 @@ function ProfileVines() {
 const warmedImages: HTMLImageElement[] = [];
 
 function ProfileBotanicalFrame() {
-
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute -inset-3 z-[7] overflow-visible" aria-hidden="true">
-      <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
+    <div className="profile-botanical-frame pointer-events-none absolute z-[7] overflow-visible" aria-hidden="true">
+      <span className="profile-frame-line absolute inset-0" />
+      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-tl" />
+      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-tr" />
+      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-bl" />
+      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-br" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-br"><img src={profileRoseBloom} alt="" /></div>
