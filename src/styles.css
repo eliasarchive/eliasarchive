@@ -313,7 +313,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .profile-accent-nanase .profile-image-button,.profile-accent-nanase .profile-quote { border-color: var(--chart-red); }
 .profile-accent-ashley .profile-image-button,.profile-accent-ashley .profile-quote { border-color: var(--ashley-pink); }
 .status-ashley { background-image: linear-gradient(105deg,var(--ashley-pink),var(--ashley-gold),var(--foreground),var(--ashley-gold),var(--ashley-pink)); }
-.ashley-spoiler { background: var(--foreground); color: transparent; text-shadow: none; transition: color .25s ease,background .25s ease; }
+.ashley-spoiler { display: inline; white-space: normal; line-height: inherit; background: var(--foreground); color: transparent; text-shadow: none; transition: color .25s ease,background .25s ease; }
 .ashley-spoiler:hover,.ashley-spoiler:focus-visible { background: color-mix(in oklab,var(--foreground) 88%,var(--ashley-pink)); color: transparent; }
 .ashley-spoiler-open,.ashley-spoiler-open:hover,.ashley-spoiler-open:focus-visible { background: color-mix(in oklab,var(--ashley-pink) 12%,transparent); color: var(--foreground); }
 .status-shimmer { background-size: 220% 100%; background-clip: text; color: transparent; animation: status-shine 7s ease-in-out infinite; }
