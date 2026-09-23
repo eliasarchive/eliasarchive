@@ -49,3 +49,4 @@
 
 - [x] Add Nanase Koji with directional mixed relationships, emblem, portrait, quote, and both prefect statuses
 - [x] Recenter Elias, orbit the smaller Nanase node, overlay the rose frame, and bundle Nanase's portrait for GitHub
+- [x] Reduce Nanase again, place his logo behind his name, constrain roses to profile corners, and segment relationship colors precisely
