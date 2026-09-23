@@ -94,3 +94,5 @@
 - [x] Remove reconstructed window/exterior layers and composite rain only through the exact pane mask over the untouched uploaded room photograph.
 - [x] Replace the enlarged derivative with the exact 1920×1004 upload and tighten rain to its photographed glass pixels only.
 - [x] Replace every active GitHub-incompatible media pointer with repository assets and restore the entrance foreground/shadow above lightning.
+- [x] Synchronize a bundled deep thunder rumble with every entrance lightning strike, including GitHub Pages.
+- [x] Refine the last-room glass droplets into a hyper-realistic photographic water effect without changing the uploaded room.

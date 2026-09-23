@@ -21,6 +21,8 @@ type GlassDrop = {
   speed: number;
   delay: number;
   phase: number;
+  clarity: number;
+  shoulder: number;
   trail: Point[];
 };
 
@@ -72,8 +74,8 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
 
     const makeBead = (initial: boolean): GlassDrop => {
       const scale = box.scale * 2;
-      const large = Math.random() < 0.28;
-      const beadWidth = (large ? 1.8 + Math.random() * 2.8 : 0.45 + Math.random() * 1.25) * scale;
+      const large = Math.random() < 0.3;
+      const beadWidth = (large ? 1.7 + Math.random() * 3.2 : 0.35 + Math.random() * 1.35) * scale;
       return {
         x: randomX(),
         y: initial ? box.top + Math.random() * box.h : box.top - 12 * scale,
@@ -83,6 +85,8 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
         speed: large && Math.random() < 0.42 ? (2.5 + Math.random() * 7) * scale : 0,
         delay: 1.5 + Math.random() * 14,
         phase: Math.random() * Math.PI * 2,
+        clarity: 0.55 + Math.random() * 0.45,
+        shoulder: 0.72 + Math.random() * 0.52,
         trail: [],
       };
     };
@@ -143,26 +147,42 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
       const h = drop.height;
       context.beginPath();
       context.moveTo(x, y - h * 0.58);
-      context.bezierCurveTo(x + w * (0.25 + drop.lean), y - h * 0.48, x + w * 0.68, y - h * 0.02, x + w * 0.24, y + h * 0.5);
-      context.bezierCurveTo(x - w * 0.04, y + h * 0.69, x - w * (0.76 - drop.lean), y + h * 0.18, x - w * 0.38, y - h * 0.24);
+      context.bezierCurveTo(x + w * (0.25 + drop.lean), y - h * 0.48, x + w * 0.68 * drop.shoulder, y - h * 0.02, x + w * 0.24, y + h * 0.5);
+      context.bezierCurveTo(x - w * 0.04, y + h * 0.69, x - w * (0.76 - drop.lean) / drop.shoulder, y + h * 0.18, x - w * 0.38, y - h * 0.24);
       context.bezierCurveTo(x - w * 0.2, y - h * 0.47, x - w * 0.08, y - h * 0.57, x, y - h * 0.58);
       context.closePath();
     };
 
     const drawGlassDrop = (drop: GlassDrop) => {
       const gradient = context.createLinearGradient(drop.x - drop.width, drop.y - drop.height, drop.x + drop.width, drop.y + drop.height);
-      gradient.addColorStop(0, "rgba(235,243,245,0.24)");
-      gradient.addColorStop(0.2, "rgba(206,222,228,0.025)");
-      gradient.addColorStop(0.72, "rgba(55,73,81,0.1)");
-      gradient.addColorStop(1, "rgba(219,232,236,0.16)");
+      gradient.addColorStop(0, `rgba(246,250,250,${0.28 * drop.clarity})`);
+      gradient.addColorStop(0.18, "rgba(210,226,230,0.025)");
+      gradient.addColorStop(0.58, "rgba(24,38,44,0.16)");
+      gradient.addColorStop(0.82, "rgba(166,191,199,0.055)");
+      gradient.addColorStop(1, `rgba(232,241,243,${0.2 * drop.clarity})`);
       organicDropPath(drop);
+      context.shadowColor = "rgba(5,12,16,0.3)";
+      context.shadowBlur = Math.max(0.6, drop.width * 0.38);
+      context.shadowOffsetY = Math.max(0.35, drop.width * 0.12);
       context.fillStyle = gradient;
       context.fill();
+      context.shadowBlur = 0;
+      context.shadowOffsetY = 0;
+      organicDropPath(drop);
+      context.strokeStyle = `rgba(220,235,239,${0.2 * drop.clarity})`;
+      context.lineWidth = Math.max(0.3, drop.width * 0.08);
+      context.stroke();
       context.beginPath();
       context.moveTo(drop.x - drop.width * 0.2, drop.y - drop.height * 0.37);
       context.quadraticCurveTo(drop.x - drop.width * 0.04, drop.y - drop.height * 0.51, drop.x + drop.width * 0.1, drop.y - drop.height * 0.32);
-      context.strokeStyle = "rgba(248,252,252,0.29)";
+      context.strokeStyle = `rgba(252,254,254,${0.38 * drop.clarity})`;
       context.lineWidth = Math.max(0.35, drop.width * 0.1);
+      context.stroke();
+      context.beginPath();
+      context.moveTo(drop.x + drop.width * 0.14, drop.y + drop.height * 0.18);
+      context.quadraticCurveTo(drop.x + drop.width * 0.24, drop.y + drop.height * 0.34, drop.x + drop.width * 0.04, drop.y + drop.height * 0.44);
+      context.strokeStyle = "rgba(12,25,31,0.22)";
+      context.lineWidth = Math.max(0.3, drop.width * 0.07);
       context.stroke();
     };
 
@@ -188,8 +208,12 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
             const next = drop.trail[point + 1] ?? current;
             if (current && next) context.quadraticCurveTo(current.x, current.y, (current.x + next.x) / 2, (current.y + next.y) / 2);
           }
-          context.strokeStyle = "rgba(198,216,222,0.13)";
-          context.lineWidth = Math.max(0.5, drop.width * 0.32);
+           const trailGradient = context.createLinearGradient(drop.x - drop.width, drop.y - drop.height * 4, drop.x + drop.width, drop.y);
+           trailGradient.addColorStop(0, "rgba(164,188,196,0.025)");
+           trailGradient.addColorStop(0.7, "rgba(205,222,226,0.13)");
+           trailGradient.addColorStop(1, "rgba(241,247,248,0.23)");
+           context.strokeStyle = trailGradient;
+           context.lineWidth = Math.max(0.42, drop.width * 0.22);
           context.lineCap = "round";
           context.stroke();
         }
