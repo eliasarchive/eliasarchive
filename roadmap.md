@@ -37,3 +37,4 @@
 
 - [x] Rebuild the relationship emblem to closely match the full classical laurel reference and verify it responsively.
 - [x] Match the emblem's centered two-line Elias Archer typography and reduce the surrounding laurel crown.
+- [x] Recreate the opened Elias profile as the tall gold-framed rose-and-vine reference with cinematic growth animation.
