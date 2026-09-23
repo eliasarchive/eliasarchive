@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { ManorRainCanvas } from "@/components/manor-rain-canvas";
+import { WindowRainCanvas } from "@/components/window-rain-canvas";
 import { fetchViews, registerView } from "@/lib/archive-social";
-import manorEntranceAsset from "@/assets/manor-rain.jpg.asset.json";
+import manorEntrance from "@/assets/manor-rain-clear.jpg";
 import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
 import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
 import manorStudyAsset from "@/assets/manor-final-room.png.asset.json";
@@ -19,18 +20,19 @@ import archiveRoseField from "@/assets/archive-red-field.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
+import roofRainAsset from "@/assets/rain-glass-roof.ogg.asset.json";
+import windowRainAsset from "@/assets/rain-window.ogg.asset.json";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
-const manorEntrance = manorEntranceAsset.url;
 const manorStair = manorStairAsset.url;
 const manorGallery = manorGalleryAsset.url;
 const manorStudy = manorStudyAsset.url;
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
-  { image: manorStair, chapter: "II", title: "Beyond the threshold", note: "First left" },
-  { image: manorGallery, chapter: "III", title: "The private wing", note: "Second left" },
+  { image: manorStair, chapter: "II", title: "The Main Hall", note: "Climbing the stairs" },
+  { image: manorGallery, chapter: "III", title: "The Top Floor", note: "Approaching the room" },
   { image: manorStudy, chapter: "IV", title: "The room", note: "Enter" },
 ] as const;
 
@@ -154,6 +156,9 @@ function useSound(enabled: boolean) {
   const pianoGainRef = useRef<GainNode | null>(null);
   const pianoRef = useRef<number | null>(null);
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode } | null>(null);
+  const roofRainRef = useRef<HTMLAudioElement | null>(null);
+  const windowRainRef = useRef<HTMLAudioElement | null>(null);
+  const rainSceneRef = useRef(0);
 
 
   const ensure = useCallback(() => {
@@ -205,6 +210,20 @@ function useSound(enabled: boolean) {
   const prepareRain = useCallback(() => {
     const ctx = ensure();
     if (!ctx || rainRef.current) return;
+    if (!roofRainRef.current) {
+      const roofRain = new Audio(roofRainAsset.url);
+      roofRain.loop = true;
+      roofRain.preload = "auto";
+      roofRain.load();
+      roofRainRef.current = roofRain;
+    }
+    if (!windowRainRef.current) {
+      const windowRain = new Audio(windowRainAsset.url);
+      windowRain.loop = true;
+      windowRain.preload = "auto";
+      windowRain.load();
+      windowRainRef.current = windowRain;
+    }
     const length = Math.floor(ctx.sampleRate * 5);
     const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -225,22 +244,22 @@ function useSound(enabled: boolean) {
     lowpass.frequency.value = 5600;
     const gain = ctx.createGain();
     gain.gain.value = 0.0001;
-    gain.gain.value = 0.0001;
     source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
     source.start();
     rainRef.current = { source, gain, highpass, lowpass };
   }, [ensure]);
 
   const setRainScene = useCallback((scene: number) => {
+    rainSceneRef.current = scene;
     prepareRain();
     const ctx = contextRef.current;
     const rain = rainRef.current;
     if (!ctx || !rain) return;
     const profiles = [
       { volume: .11, high: 380, low: 5600 },
-      { volume: .085, high: 120, low: 2350 },
-      { volume: .135, high: 180, low: 4100 },
-      { volume: .105, high: 620, low: 6800 },
+      { volume: .006, high: 850, low: 3900 },
+      { volume: .006, high: 950, low: 5000 },
+      { volume: .004, high: 1100, low: 5400 },
     ];
     const profile = profiles[Math.max(0, Math.min(scene, profiles.length - 1))] ?? profiles[0];
     if (!profile) return;
@@ -248,6 +267,18 @@ function useSound(enabled: boolean) {
     rain.gain.gain.setTargetAtTime(volume, ctx.currentTime, .28);
     rain.highpass.frequency.setTargetAtTime(profile.high, ctx.currentTime, .35);
     rain.lowpass.frequency.setTargetAtTime(profile.low, ctx.currentTime, .35);
+    const roofRain = roofRainRef.current;
+    const windowRain = windowRainRef.current;
+    if (roofRain) {
+      roofRain.volume = enabledRef.current && scene === 1 ? .38 : enabledRef.current && scene === 2 ? .62 : 0;
+      if (scene === 1 || scene === 2) void roofRain.play().catch(() => undefined);
+      else roofRain.pause();
+    }
+    if (windowRain) {
+      windowRain.volume = enabledRef.current && scene === 3 ? .58 : 0;
+      if (scene === 3) void windowRain.play().catch(() => undefined);
+      else windowRain.pause();
+    }
   }, [prepareRain]);
 
   const beginRain = useCallback(() => setRainScene(0), [setRainScene]);
@@ -257,6 +288,8 @@ function useSound(enabled: boolean) {
     const rain = rainRef.current;
     if (!ctx || !rain) return;
     rain.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
+    roofRainRef.current?.pause();
+    windowRainRef.current?.pause();
     window.setTimeout(() => { try { rain.source.stop(); } catch { /* already stopped */ } }, 1600);
     rainRef.current = null;
   }, []);
@@ -352,6 +385,8 @@ function useSound(enabled: boolean) {
     if (jazzGainRef.current) jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.32 : 0.0001, ctx.currentTime, 0.12);
     if (pianoGainRef.current) pianoGainRef.current.gain.setTargetAtTime(enabled ? 0.18 : 0.0001, ctx.currentTime, 0.12);
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
+    if (roofRainRef.current) roofRainRef.current.volume = enabled && rainSceneRef.current === 1 ? .38 : enabled && rainSceneRef.current === 2 ? .62 : 0;
+    if (windowRainRef.current) windowRainRef.current.volume = enabled && rainSceneRef.current === 3 ? .58 : 0;
   }, [enabled]);
 
   return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
@@ -479,11 +514,14 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
       <div key={current.image} className="cinematic-frame absolute inset-0">
         {scene === 0 ? (
           <>
-            <img src={manorEntrance} alt="The manor in heavy rain" width={1200} height={600} className="h-full w-full object-cover" />
+            <img src={manorEntrance} alt="The manor in heavy rain" width={1376} height={768} className="h-full w-full object-cover" />
             <ManorRainCanvas />
           </>
         ) : (
-          <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
+          <>
+            <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
+            {scene === manorScenes.length - 1 && <WindowRainCanvas />}
+          </>
         )}
       </div>
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
@@ -507,9 +545,9 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
   return (
     <section className="desk-scene-enter relative h-dvh overflow-hidden bg-ink">
       <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={1024} height={683} className={`bedroom-terminal-view h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
+      <WindowRainCanvas />
       <div className="vignette absolute inset-0 bg-background/10" />
-      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute min-w-0 rounded-none border border-primary/40 bg-ink/90 p-0 shadow-[0_0_26px_color-mix(in_oklab,var(--primary)_18%,transparent)] transition-colors duration-700 hover:border-primary hover:bg-ink hover:shadow-[0_0_38px_color-mix(in_oklab,var(--primary)_32%,transparent)] focus-visible:outline-primary disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
-        <span className="terminal-screen-lines absolute inset-0" aria-hidden="true" />
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
         <span className="terminal-corner terminal-corner-tl" /><span className="terminal-corner terminal-corner-tr" /><span className="terminal-corner terminal-corner-bl" /><span className="terminal-corner terminal-corner-br" />
         <span className="absolute inset-1 border border-primary/20 transition-all duration-500 group-hover:inset-0 group-hover:border-primary/60" />
         <span className="absolute left-1/2 top-[calc(100%+0.55rem)] -translate-x-1/2 whitespace-nowrap border border-primary/60 bg-background/90 px-3 py-1.5 text-[7px] uppercase tracking-[.2em] text-primary shadow-lg backdrop-blur-md md:px-4 md:py-2 md:text-[9px] md:tracking-[.28em]">Access terminal</span>
