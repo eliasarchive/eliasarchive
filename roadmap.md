@@ -102,3 +102,4 @@
 - [x] Make the room-to-desk transition more distinctive with layered depth and a MacBook-focused cinematic rush.
 - [x] Increase dust visibility and distribute moving particles across the entire room.
 - [x] Prevent the browser scrollbar from flashing during the room-to-desk transition.
+- [ ] Add Ashley Archer to the relationship chart with directional relationships, profile, spoiler quote, and pastel-pink/gold emblem.
