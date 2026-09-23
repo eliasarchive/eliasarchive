@@ -110,6 +110,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes chart-breathe { 0%,100% { filter: drop-shadow(0 0 10px transparent); } 50% { filter: drop-shadow(0 0 16px color-mix(in oklab,var(--primary) 22%,transparent)); } }
 @keyframes profile-popover-in { from { opacity: 0; transform: translate(-50%,16px) scale(.96); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: translate(-50%,0) scale(1); clip-path: inset(0); } }
 @keyframes profile-popover-out { from { opacity: 1; transform: translate(-50%,0) scale(1); clip-path: inset(0); } to { opacity: 0; transform: translate(-50%,12px) scale(.96); clip-path: inset(0 0 100% 0); } }
+@keyframes note-dialog-in { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes laurel-hover { 0%,100% { transform: translate3d(0,2px,0) rotate(-.65deg); } 50% { transform: translate3d(0,-4px,0) rotate(.65deg); } }
+@keyframes title-drift { 0%,100% { transform: translate3d(-1px,1px,0); } 50% { transform: translate3d(2px,-2px,0); } }
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
@@ -163,6 +166,16 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .chart-orbit { animation: chart-breathe 4.5s ease-in-out infinite; }
 .crest-float { animation: crest-float 3.2s ease-in-out infinite; }
 .elias-signature { text-shadow: 0 0 24px color-mix(in oklab,var(--primary) 28%,transparent); }
+.note-dialog-in { animation: note-dialog-in .38s cubic-bezier(.16,1,.3,1) both; }
+.relationship-emblem { background-image: radial-gradient(circle at 50% 42%, color-mix(in oklab,var(--brass) 9%,transparent), transparent 66%); box-shadow: inset 0 0 28px color-mix(in oklab,var(--primary) 8%,transparent), 0 0 70px color-mix(in oklab,var(--primary) 22%,transparent); }
+.laurel-hover { animation: laurel-hover 7.5s ease-in-out infinite; filter: drop-shadow(0 4px 7px color-mix(in oklab,var(--ink) 65%,transparent)); }
+.elias-title-drift { animation: title-drift 8.5s ease-in-out infinite; }
+.crest-star { position: absolute; z-index: 2; width: 11px; height: 11px; background: var(--brass-soft); clip-path: polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%); box-shadow: 0 0 14px color-mix(in oklab,var(--primary) 55%,transparent); }
+.crest-star-top { top: -8.2rem; }
+.crest-star-bottom { bottom: -8.2rem; }
+.emblem-crosshair::before, .emblem-crosshair::after { content: ""; position: absolute; background: var(--primary); opacity: .55; }
+.emblem-crosshair::before { left: 50%; top: .5rem; bottom: .5rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 10%,transparent 10% 90%,#000 90%); }
+.emblem-crosshair::after { left: .5rem; right: .5rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 10%,transparent 10% 90%,#000 90%); }
 .profile-popover { position: fixed; bottom: 1.5rem; left: 50%; width: min(15rem,calc(100% - 1.5rem)); transform: translateX(-50%); }
 .profile-popover-in { animation: profile-popover-in .38s cubic-bezier(.16,1,.3,1) both; }
 .profile-popover-out { animation: profile-popover-out .24s ease-in both; pointer-events: none; }

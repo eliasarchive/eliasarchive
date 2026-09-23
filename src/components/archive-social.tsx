@@ -131,8 +131,8 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
       </aside>
 
       {composing && (
-        <div className="fixed inset-0 z-[95] grid place-items-center bg-ink/80 px-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Leave a note">
-          <div className="profile-popover-in relative w-full max-w-sm border border-primary/40 bg-card p-6 shadow-2xl">
+        <div className="fixed inset-0 z-[95] flex min-h-dvh items-center justify-center overflow-y-auto bg-ink/80 px-4 py-[max(1rem,env(safe-area-inset-top))] backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Leave a note">
+          <div className="note-dialog-in relative my-auto max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto border border-primary/40 bg-card p-5 shadow-2xl sm:p-6">
             <Button aria-label="Close" variant="ghost" size="icon" onClick={() => setComposing(false)} className="absolute right-2 top-2 h-7 w-7 text-muted-foreground"><X /></Button>
             <p className="text-[8px] uppercase tracking-[.35em] text-primary">One note per visitor</p>
             <h3 className="mt-2 font-display text-2xl">Leave your mark</h3>
@@ -143,8 +143,8 @@ export function LikeMeter({ tone }: { tone: (frequency?: number, duration?: numb
               placeholder="Write something (optional)…"
               className="mt-4 h-24 w-full resize-none border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
             />
-            <div className="mt-1 flex items-center justify-between text-[8px] uppercase tracking-[.2em] text-muted-foreground">
-              <span className={error ? "text-accent-foreground" : ""}>{error ?? "Offensive language is blocked"}</span>
+            <div className="mt-1 flex items-start justify-between gap-3 text-[8px] uppercase tracking-[.2em] text-muted-foreground">
+              <span className={`min-w-0 leading-4 ${error ? "text-accent-foreground" : ""}`}>{error ?? "Offensive language is blocked"}</span>
               <span>{message.length}/160</span>
             </div>
             <Button disabled={saving} onClick={() => void publish()} className="mt-4 w-full uppercase tracking-[.25em]">

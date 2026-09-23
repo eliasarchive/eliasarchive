@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Crown, Diamond, Leaf, Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
+import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
@@ -20,6 +20,43 @@ const manorScenes = [
   { image: manorTurn, chapter: "III", title: "The private wing", note: "Second left" },
   { image: eliasBedroom, chapter: "IV", title: "The bedroom", note: "Enter" },
 ] as const;
+
+function LaurelWreath() {
+  const leaves = Array.from({ length: 13 }, (_, index) => ({
+    y: 31 + index * 8.25,
+    rotation: -43 + index * 6.5,
+    scale: index < 2 || index > 10 ? 0.78 : 1,
+  }));
+
+  return (
+    <svg viewBox="0 0 240 240" className="h-full w-full overflow-visible" aria-hidden="true">
+      <defs>
+        <linearGradient id="laurel-gold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="var(--brass-soft)" />
+          <stop offset="0.5" stopColor="var(--brass)" />
+          <stop offset="1" stopColor="var(--muted-foreground)" />
+        </linearGradient>
+      </defs>
+      <g fill="url(#laurel-gold)" stroke="var(--primary)" strokeWidth="0.55">
+        <path d="M112 213C54 196 29 147 42 88c5-24 18-45 37-61" fill="none" strokeWidth="1.5" opacity=".72" />
+        <path d="M128 213c58-17 83-66 70-125-5-24-18-45-37-61" fill="none" strokeWidth="1.5" opacity=".72" />
+        {leaves.map((leaf, index) => (
+          <g key={`left-${index}`} transform={`translate(${49 + Math.sin(index * .28) * 15} ${leaf.y}) rotate(${leaf.rotation}) scale(${leaf.scale})`}>
+            <path d="M0 0C10-7 21-6 28 0 18 7 8 8 0 0Z" />
+            <path d="M3 2C13 4 20 3 26 0" fill="none" opacity=".55" />
+          </g>
+        ))}
+        {leaves.map((leaf, index) => (
+          <g key={`right-${index}`} transform={`translate(${191 - Math.sin(index * .28) * 15} ${leaf.y}) rotate(${-leaf.rotation}) scale(${-leaf.scale} ${leaf.scale})`}>
+            <path d="M0 0C10-7 21-6 28 0 18 7 8 8 0 0Z" />
+            <path d="M3 2C13 4 20 3 26 0" fill="none" opacity=".55" />
+          </g>
+        ))}
+        <path d="m120 208 4 8 8 4-8 4-4 8-4-8-8-4 8-4Z" />
+      </g>
+    </svg>
+  );
+}
 
 function useSound(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
@@ -387,6 +424,17 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
     { id: "appearance", label: "Appearance", numeral: "02" },
     { id: "backstory", label: "Backstory", numeral: "03" },
   ];
+  useEffect(() => {
+    const sources = [eliasRose, eliasBowing];
+    const images = sources.map((source) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = source;
+      void image.decode().catch(() => undefined);
+      return image;
+    });
+    return () => images.forEach((image) => { image.src = ""; });
+  }, []);
   return (
     <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
       <DriftingNotes />
@@ -463,31 +511,27 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
         <div className="chart-orbit absolute left-1/2 top-1/2 flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
-        <div className="crest-rotate absolute h-72 w-72 rounded-full border border-dashed border-primary/30 md:h-96 md:w-96" />
+        <div className="crest-rotate absolute h-72 w-72 rounded-full border border-primary/20 md:h-96 md:w-96" />
         <div className="crest-rotate-reverse absolute h-60 w-60 rounded-full border border-primary/15 md:h-80 md:w-80">
           {[0, 90, 180, 270].map((angle) => (
             <span key={angle} className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rotate-45 border border-primary/70 bg-background" style={{ transform: `rotate(${angle}deg) translateY(-50%) translate(0, -7.5rem)` }} />
           ))}
         </div>
         <div className="absolute h-52 w-52 rounded-full border border-primary/25 md:h-72 md:w-72" />
-        <Crown className="crest-float absolute -top-36 h-8 w-8 text-primary/70 md:-top-48" />
-        <Leaf className="crest-float absolute -left-36 h-9 w-9 -rotate-45 text-primary/55 md:-left-48" />
-        <Leaf className="crest-float absolute -right-36 h-9 w-9 rotate-45 scale-x-[-1] text-primary/55 md:-right-48" />
-        <Diamond className="crest-float absolute -bottom-36 h-5 w-5 rotate-45 text-primary/60 md:-bottom-48" />
-        <button onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="group relative z-10 grid h-36 w-36 place-items-center rounded-full border border-primary/70 bg-card shadow-[0_0_70px_color-mix(in_oklab,var(--primary)_22%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
+        <div className="laurel-hover pointer-events-none absolute h-64 w-64 md:h-80 md:w-80"><LaurelWreath /></div>
+        <span className="crest-star crest-star-top" aria-hidden="true" />
+        <span className="crest-star crest-star-bottom" aria-hidden="true" />
+        <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-36 w-36 place-items-center whitespace-normal rounded-full border border-primary/70 bg-card p-0 shadow-[0_0_70px_color-mix(in_oklab,var(--primary)_22%,transparent)] transition duration-500 hover:scale-105 md:h-44 md:w-44">
           <span className="absolute inset-2 rounded-full border border-primary/25 animate-[pulse-ring_3s_ease-in-out_infinite]" />
           <span className="absolute inset-[-0.6rem] rounded-full border border-primary/15" />
-          <span className="absolute left-1/2 top-2 h-3 w-px -translate-x-1/2 bg-primary/60" />
-          <span className="absolute bottom-2 left-1/2 h-3 w-px -translate-x-1/2 bg-primary/60" />
-          <span className="absolute left-2 top-1/2 h-px w-3 -translate-y-1/2 bg-primary/60" />
-          <span className="absolute right-2 top-1/2 h-px w-3 -translate-y-1/2 bg-primary/60" />
-          <span className="px-4 text-center">
+          <span className="emblem-crosshair" aria-hidden="true" />
+          <span className="elias-title-drift px-4 text-center">
             <span className="block text-[7px] uppercase tracking-[.42em] text-primary">Central file</span>
             <span className="mx-auto my-2 block h-px w-10 bg-primary/50" />
-            <span className="elias-signature block font-display text-2xl italic leading-tight text-brass-soft md:text-3xl"><span className="text-4xl not-italic md:text-5xl">E</span>lias<br /><span className="text-4xl not-italic md:text-5xl">A</span>rcher</span>
+            <span className="elias-signature block font-display text-2xl font-normal uppercase leading-[.8] text-brass-soft md:text-3xl"><span className="text-4xl md:text-5xl">E</span>lias<br /><span className="text-4xl md:text-5xl">A</span>rcher</span>
             <span className="mx-auto mt-2 block h-px w-6 bg-primary/40" />
           </span>
-        </button>
+        </Button>
         </div>
         {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       </div>
@@ -527,7 +571,7 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
         <div className="flex items-center justify-between"><p className="text-[8px] uppercase tracking-[.3em] text-primary">Central profile</p><Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8"><X /></Button></div>
         <p className="mt-2 text-[10px] leading-5 text-muted-foreground">Elias Archer</p>
         <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative mt-2 flex h-28 w-full items-end justify-center overflow-hidden border border-border bg-background/50 md:h-32">
-          <img src={eliasRose} alt="Elias Archer holding a rose" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
+          <img src={eliasRose} alt="Elias Archer holding a rose" loading="eager" decoding="async" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center border border-border bg-background/70 text-primary backdrop-blur-md"><Maximize2 className="h-4 w-4" /></span>
         </button>
         <blockquote className="mt-3 border-l border-primary pl-3 font-display text-xs leading-snug md:text-sm">“This is me, what the fuck do you want me to add onto that”</blockquote>
@@ -560,7 +604,7 @@ function AppearanceDossier({ tone }: { tone: (frequency?: number, duration?: num
           <div className="absolute inset-x-[12%] bottom-0 top-[5%] bg-gradient-to-t from-forest/40 via-transparent to-transparent" />
           <div className="absolute inset-0 flex items-center justify-center transition-[transform,filter] duration-700 ease-[cubic-bezier(.16,1,.3,1)]" style={{ transform: selected ? `translate(${(50 - selected.x) * .38}%, ${(50 - selected.y) * .38}%) scale(1.38)` : "translate(0, 0) scale(1)", filter: selected ? "contrast(1.04) brightness(1.03)" : undefined }}>
             <div className="relative">
-              <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" className="block max-h-[65vh] max-w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)]" />
+              <img src={eliasBowing} alt="Elias Archer bowing in his black school uniform and prefect armband" loading="eager" decoding="async" className="block max-h-[65vh] max-w-full object-contain drop-shadow-[0_28px_45px_color-mix(in_oklab,var(--ink)_80%,transparent)]" />
               {appearanceFeatures.map((feature) => (
                 <button key={feature.id} aria-label={`View ${feature.label} details`} onClick={() => { tone(520, .08, .02); setActive(feature.id); }} className={`group absolute z-20 h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 ${active && active !== feature.id ? "opacity-20" : "opacity-100"}`} style={{ left: `${feature.x}%`, top: `${feature.y}%` }}>
                   <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-background transition group-hover:scale-150" />
