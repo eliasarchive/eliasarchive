@@ -15,6 +15,7 @@ import profileGoldVines from "@/assets/profile-gold-vines.png";
 import profileRoseBloom from "@/assets/profile-rose-bloom.png";
 import profileRoseBud from "@/assets/profile-rose-bud.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
+import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -68,15 +69,6 @@ function LaurelWreath() {
         ))}
         <path d="M180 329c-13-11-23-14-38-14 8 12 20 19 38 20 18-1 30-8 38-20-15 0-25 3-38 14Z" />
       </g>
-    </svg>
-  );
-}
-
-function NanaseMark() {
-  return (
-    <svg viewBox="0 0 120 112" className="nanase-mark h-[88%] w-[88%] shrink-0" aria-hidden="true">
-      <path d="M30 92C20 70 23 39 42 11c-6 32-2 57 9 76L60 40l9 47c11-19 15-44 9-76 19 28 22 59 12 81L60 104Z" fill="none" stroke="currentColor" strokeWidth="3" />
-      <path d="M42 82 31 59m20 28-5-34m23 34 5-34m4 29 11-23" fill="none" stroke="currentColor" strokeWidth="2" opacity=".72" />
     </svg>
   );
 }
@@ -139,7 +131,7 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
 
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute inset-0 z-[3] overflow-hidden" aria-hidden="true">
+    <div className="profile-botanical-frame pointer-events-none absolute -inset-7 z-[3] overflow-visible" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
@@ -611,14 +603,14 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-          <div className="relationship-connection absolute left-1/2 top-1/2 z-20 w-[31%] origin-left -rotate-[28deg] md:w-[33%] md:-rotate-[24deg]">
+          <div className="relationship-connection absolute z-20">
            {directionalRelationships.map((relationship, index) => (
               <button key={relationship.id} className={`directional-link absolute inset-x-0 h-8 ${index === 0 ? "-translate-y-7" : "translate-y-5"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
                   {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
                 </span>
-               <span className={`direction-arrow direction-arrow-${relationship.direction}`} aria-hidden="true" />
-               <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span>{relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(" · ")}</span></span>
+                <span className={`direction-arrow direction-arrow-${relationship.direction}`} style={{ color: relationship.direction === "left" ? relationship.portions[1].color : relationship.portions[1].color }} aria-hidden="true" />
+                <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
              </button>
            ))}
          </div>
@@ -650,7 +642,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-24 w-24 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-28 md:w-28">
              <span className="absolute inset-2 rounded-full border border-chart-red/30" />
              <span className="nanase-crosshair" aria-hidden="true" />
-              <span className="pointer-events-none absolute inset-2 z-0 grid place-items-center opacity-55"><NanaseMark /></span>
+               <img src={nanaseClawLogo} alt="" className="nanase-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[78%] w-[66%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-55" />
               <span className="nanase-title-drift relative z-10 flex flex-col items-center justify-center">
                  <span className="font-display text-xs uppercase leading-none md:text-sm">Nanase</span>
                  <span className="mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Koji</span>
@@ -698,8 +690,8 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover profile-popover-${character} absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label={`${record.name} profile`}>
       <div className={`profile-card-shell relative border bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl ${isElias ? "border-primary/75" : "border-chart-red/75"}`}>
         {isElias && <ProfileBotanicalFrame />}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-card/95 backdrop-blur-xl" />
-        <div className="pointer-events-none absolute inset-2 z-[2] border border-primary/25" />
+        <div className="pointer-events-none absolute inset-0 z-[4] bg-card/95 backdrop-blur-xl" />
+        <div className="pointer-events-none absolute inset-2 z-[5] border border-primary/25" />
         <div className="relative z-10 flex items-start justify-between">
           <div><p className={`text-[7px] uppercase md:text-[8px] ${isElias ? "text-primary" : "text-chart-red"}`}>Central profile</p><span className={`mt-2 block h-px w-14 ${isElias ? "bg-primary" : "bg-chart-red"}`} /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
