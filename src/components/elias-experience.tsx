@@ -17,7 +17,7 @@ import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
 import archiveRoseField from "@/assets/archive-red-field.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
-import roseEmblem from "@/assets/real-rose-emblem.jpg.asset.json";
+import roseEmblem from "@/assets/real-rose-emblem.jpg";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
