@@ -539,7 +539,7 @@ export function EliasExperience() {
   };
 
   return (
-    <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
+    <main className={`${stage === "manor" || stage === "desk" ? "fixed inset-0 overflow-hidden" : "min-h-dvh"} w-full bg-background text-foreground selection:bg-primary/30`}>
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onThunder={thunder} onAdvance={advanceManor} onSkip={() => { setRainScene(3); setStage("desk"); }} />}
@@ -563,13 +563,14 @@ function SoundControl({ muted, stage, onToggle }: { muted: boolean; stage: Exper
 }
 
 
-const dustMotes = Array.from({ length: 28 }, (_, index) => ({
-  x: (index * 37 + 11) % 97,
-  y: (index * 61 + 7) % 91,
-  size: 1 + ((index * 17) % 5) * 0.42,
-  duration: 8 + ((index * 13) % 11),
-  delay: -((index * 7) % 15),
-  drift: -18 + ((index * 19) % 37),
+const dustMotes = Array.from({ length: 72 }, (_, index) => ({
+  x: (index * 37 + 11) % 100,
+  y: (index * 61 + 7) % 100,
+  size: 1.2 + ((index * 17) % 7) * 0.46,
+  duration: 7 + ((index * 13) % 13),
+  delay: -((index * 7) % 18),
+  drift: -42 + ((index * 19) % 85),
+  depth: 0.58 + ((index * 23) % 43) / 50,
 }));
 
 function RoomDust({ entering = false }: { entering?: boolean }) {
@@ -585,6 +586,7 @@ function RoomDust({ entering = false }: { entering?: boolean }) {
             "--dust-duration": `${mote.duration}s`,
             "--dust-delay": `${mote.delay}s`,
             "--dust-drift": `${mote.drift}px`,
+            "--dust-depth": mote.depth,
           } as CSSProperties}
         />
       ))}
@@ -620,6 +622,14 @@ function ManorSequence({ scene, enteringRoom, onThunder, onAdvance, onSkip }: { 
           </>
         )}
       </div>
+      {enteringRoom && (
+        <div className="room-threshold-transition" aria-hidden="true">
+          <span className="room-focus-halo" />
+          <span className="room-focus-ring room-focus-ring-outer" />
+          <span className="room-focus-ring room-focus-ring-inner" />
+          <span className="room-focus-sweep" />
+        </div>
+      )}
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
       <div className="room-passage-copy absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
         <div className="max-w-md border-l border-primary/60 pl-5">
@@ -646,6 +656,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="droplets" zIndex={3} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
       <img src={manorRoomInterior} alt="" width={1920} height={1004} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <RoomDust />
+      <div className="desk-arrival-glint pointer-events-none absolute inset-0 z-[7]" aria-hidden="true" />
       <div className="vignette absolute inset-0 z-[5] bg-background/10" />
       <div className={`terminal-image-frame pointer-events-none absolute left-1/2 top-1/2 z-10 ${entering ? "terminal-zoom" : ""}`}>
       <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group pointer-events-auto absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
