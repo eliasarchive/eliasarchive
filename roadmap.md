@@ -68,3 +68,4 @@
 - [x] Center Nanase Koji name within his circle (raise it)
 - [ ] Keep Nanase's profile box anchored to his circle while zooming, freeze Elias's rose frame animation, raise Nanase's name over the logo, add dark red to his name pulse
 - [ ] Add a faint, nearly full-screen rose field behind the welcome back screen
+- [ ] Use a real photo from the internet (not AI generated) for the welcome rose field
