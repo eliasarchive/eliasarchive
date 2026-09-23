@@ -65,3 +65,4 @@
 - [x] Keep character profile boxes visually proportional while the relationship chart is zoomed
 - [ ] Make profile box shrink further as chart zoom increases so it stays small when zoomed in
 - [ ] Italicize and raise Elias quote, symmetric frame reveal, smoother uneven pulsing, welcome-screen rose frame
+- [ ] Center Nanase Koji name within his circle (raise it)
