@@ -288,4 +288,4 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 
 .welcome-rose-emblem { filter: drop-shadow(0 0 10px color-mix(in oklab, var(--brass-soft) 45%, transparent)); }
 
-.archive-rose-field { pointer-events: none; position: fixed; inset: 0; z-index: 0; opacity: .2; filter: saturate(.9) brightness(1.1) blur(1px); animation: fade-in 2s ease-out both; }
+.archive-rose-field { pointer-events: none; position: fixed; inset: 0; z-index: 0; opacity: .17; filter: saturate(.9) brightness(.85) blur(1px); animation: fade-in 2s ease-out both; }

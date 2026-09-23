@@ -14,6 +14,7 @@ import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
 import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
+import archiveRoseField from "@/assets/archive-rose-field.jpg.asset.json";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg.asset.json";
@@ -342,7 +343,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem.url];
+    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem.url, archiveRoseField.url];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -422,7 +423,7 @@ export function EliasExperience() {
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
-      {stage === "archive" && <div className="archive-rose-field" aria-hidden="true"><img src={welcomeRoseField} alt="" className="h-full w-full object-cover" /></div>}
+      {stage === "archive" && <div className="archive-rose-field" aria-hidden="true"><img src={archiveRoseField.url} alt="" className="h-full w-full object-cover" /></div>}
       {stage === "archive" && (
         <div className="relative z-[1]"><Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} views={views} /></div>
       )}
@@ -525,7 +526,7 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
     { id: "backstory", label: "Backstory", numeral: "03" },
   ];
   return (
-    <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
+    <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-transparent text-foreground animate-in fade-in duration-700">
       <DriftingNotes />
       <header className="relative z-30 grid border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:grid-cols-[1fr_auto_1fr] md:items-center md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
