@@ -200,8 +200,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .profile-card-shell { box-shadow: 0 24px 80px color-mix(in oklab,var(--ink) 78%,transparent), inset 0 0 50px color-mix(in oklab,var(--brass) 5%,transparent); }
 .profile-frame-growth { animation: botanical-grow 1.65s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 1.65s infinite; }
 .profile-rose-frame { animation: botanical-glint 13s ease-in-out 2s infinite; }
-.profile-botanical-frame { inset: -.7rem; animation: frame-fit-reveal 1.15s cubic-bezier(.16,1,.3,1) both, vine-settle 13s cubic-bezier(.37,0,.24,1) 2.6s infinite; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
-.profile-botanical-art { display: block; object-fit: fill; animation: botanical-art-reveal 1.8s cubic-bezier(.16,1,.3,1) both, botanical-glint 13s ease-in-out 2.2s infinite; }
+.profile-botanical-frame { inset: -.7rem; animation: none; transform: none; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
+.profile-botanical-art { display: block; object-fit: fill; animation: none; clip-path: none; }
 .elias-profile-name { color: transparent; background-image: linear-gradient(100deg,var(--brass),var(--brass-soft),color-mix(in oklab,var(--foreground) 72%,var(--brass-soft)),var(--brass-soft),var(--brass)); background-size: 240% 100%; background-clip: text; -webkit-background-clip: text; animation: elias-name-glow 2.8s ease-in-out infinite; }
 
 .profile-vines { pointer-events: none; animation: vine-settle 9s ease-in-out 2.6s infinite; filter: drop-shadow(0 4px 8px color-mix(in oklab,var(--ink) 68%,transparent)); }
