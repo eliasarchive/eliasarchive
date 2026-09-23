@@ -517,7 +517,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
         <span className="absolute left-1/2 top-[calc(100%+0.55rem)] -translate-x-1/2 whitespace-nowrap border border-primary/60 bg-background/90 px-3 py-1.5 text-[7px] uppercase tracking-[.2em] text-primary shadow-lg backdrop-blur-md md:px-4 md:py-2 md:text-[9px] md:tracking-[.28em]">Access terminal</span>
       </Button>
       <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-        <p className="font-display text-2xl text-foreground/80">The room settles into silence.</p>
+        <p className="font-display text-2xl text-foreground/80">Rain traces the window.</p>
         <p className="mt-2 text-[9px] uppercase tracking-[.28em] text-muted-foreground">The computer is waiting</p>
       </div>
     </section>

@@ -262,8 +262,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 }
 
 @media (min-width: 768px) {
-  .bedroom-terminal-view { transform-origin: 76% 56%; }
-  .terminal-monitor { left: 72%; top: 47%; width: clamp(7rem,11vw,10rem); }
+  .bedroom-terminal-view { transform-origin: 50% 68%; }
+  .terminal-monitor { left: 45.4%; top: 64.1%; width: 8.6%; }
   .relationship-connection { --connection-angle: -31deg; left: calc(50% + 5.2rem); top: calc(50% - 3.18rem); width: 8.9rem; }
   .relationship-connection-elias { left: calc(50% + 5.5rem); top: calc(50% - 3.36rem); width: 8.6rem; }
   .relationship-connection-nanase { width: 8.75rem; }
