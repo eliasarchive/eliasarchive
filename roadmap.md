@@ -35,4 +35,4 @@
 - [x] Preload the Relationship and Appearance character images before their first reveal
 - [x] Restyle the central relationship emblem with a floating gold laurel and subtle title drift
 
-- [ ] Rebuild the relationship emblem to closely match the full classical laurel reference and verify it responsively.
+- [x] Rebuild the relationship emblem to closely match the full classical laurel reference and verify it responsively.
