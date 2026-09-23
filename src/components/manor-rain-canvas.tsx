@@ -47,7 +47,7 @@ function newDrop(width: number, height: number, randomY = true): Drop {
     x: Math.random() * (width + 180) - 90,
     y: randomY ? Math.random() * height : -80 - Math.random() * 180,
     length: (13 + Math.random() * 28) * depth,
-    speed: (650 + Math.random() * 720) * depth,
+    speed: (900 + Math.random() * 880) * depth,
     drift: (-54 - Math.random() * 44) * depth,
     alpha: (0.12 + Math.random() * 0.27) * depth,
     width: 0.55 + depth * 0.65,
@@ -78,7 +78,7 @@ export function ManorRainCanvas() {
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      drops = Array.from({ length: Math.max(90, Math.round(width * height / 5200)) }, () => newDrop(width, height));
+      drops = Array.from({ length: Math.max(150, Math.round(width * height / 3300)) }, () => newDrop(width, height));
     };
 
     const spawnImpact = (drop: Drop) => {
@@ -90,7 +90,7 @@ export function ManorRainCanvas() {
       } else if (Math.random() < 0.35) {
         impacts.push({ x: drop.x, y: drop.y, age: 0, life: 0.2 + Math.random() * 0.17, size: 3 + depth * 7, kind: "splash" });
       }
-      if (impacts.length > 95) impacts.splice(0, impacts.length - 95);
+      if (impacts.length > 140) impacts.splice(0, impacts.length - 140);
     };
 
     const draw = (time: number) => {
