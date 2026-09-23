@@ -86,3 +86,5 @@
 
 - [x] Put the room rain visually behind preserved window glass and use the user-selected YouTube room audio.
 - [x] Start the selected room rain recording at 10 seconds so rain is immediate.
+- [x] Rebuild the final-room window as exact pane-masked layers with rain behind the glass and room.
+- [x] Make the manor entrance rain denser and faster.
