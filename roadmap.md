@@ -48,3 +48,4 @@
 - [x] Laurel expands on emblem hover; title raised in circle
 
 - [x] Add Nanase Koji with directional mixed relationships, emblem, portrait, quote, and both prefect statuses
+- [x] Recenter Elias, orbit the smaller Nanase node, overlay the rose frame, and bundle Nanase's portrait for GitHub

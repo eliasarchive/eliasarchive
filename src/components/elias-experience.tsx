@@ -14,7 +14,7 @@ import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import profileGoldVines from "@/assets/profile-gold-vines.png";
 import profileRoseBloom from "@/assets/profile-rose-bloom.png";
 import profileRoseBud from "@/assets/profile-rose-bud.png";
-import nanasePortraitAsset from "@/assets/nanase-koji.png.asset.json";
+import nanasePortrait from "@/assets/nanase-koji.png";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -74,7 +74,7 @@ function LaurelWreath() {
 
 function NanaseMark() {
   return (
-    <svg viewBox="0 0 120 112" className="nanase-mark h-16 w-16 md:h-20 md:w-20" aria-hidden="true">
+    <svg viewBox="0 0 120 112" className="nanase-mark h-20 w-20 shrink-0 md:h-24 md:w-24" aria-hidden="true">
       <path d="M30 92C20 70 23 39 42 11c-6 32-2 57 9 76L60 40l9 47c11-19 15-44 9-76 19 28 22 59 12 81L60 104Z" fill="none" stroke="currentColor" strokeWidth="3" />
       <path d="M42 82 31 59m20 28-5-34m23 34 5-34m4 29 11-23" fill="none" stroke="currentColor" strokeWidth="2" opacity=".72" />
     </svg>
@@ -139,8 +139,8 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
 
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute inset-0 z-0 overflow-visible" aria-hidden="true">
-      <img src={profileGoldVines} alt="" className="profile-gold-vines absolute -inset-4 h-[calc(100%+2rem)] w-[calc(100%+2rem)] object-fill" />
+    <div className="profile-botanical-frame pointer-events-none absolute -inset-2 z-[3] overflow-visible" aria-hidden="true">
+      <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-lm"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
@@ -357,7 +357,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame layers) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud, nanasePortraitAsset.url];
+    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud, nanasePortrait];
     sources.forEach((source) => {
       const image = new Image();
       image.decoding = "async";
@@ -610,11 +610,11 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[22rem] w-[42rem] transition-transform duration-500 md:h-[27rem] md:w-[52rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[30rem] w-[48rem] transition-transform duration-500 md:h-[34rem] md:w-[58rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-         <div className="absolute inset-x-[27%] top-[40%] z-20">
+          <div className="relationship-connection absolute left-1/2 top-1/2 z-20 w-[31%] origin-left -rotate-[28deg] md:w-[33%] md:-rotate-[24deg]">
            {directionalRelationships.map((relationship, index) => (
              <button key={relationship.id} className={`directional-link absolute inset-x-0 h-8 ${index === 0 ? "-translate-y-7" : "translate-y-5"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
                <span className="directional-track" style={{ background: `linear-gradient(to right, ${relationship.portions[0].color} 0 ${relationship.portions[0].value}%, ${relationship.portions[1].color} ${relationship.portions[0].value}% 100%)` }} />
@@ -623,7 +623,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              </button>
            ))}
          </div>
-         <div className="group absolute left-[7%] top-1/2 grid h-40 w-40 -translate-y-1/2 place-items-center md:h-52 md:w-52">
+          <div className="group absolute left-1/2 top-1/2 z-30 grid h-40 w-40 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-52 md:w-52">
         <div className="laurel-hover pointer-events-none absolute inset-[-4%] z-20 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.075]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
          <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => open === "elias" ? null : "elias"); }} className="relationship-emblem group relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-52 md:w-52">
@@ -646,15 +646,15 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         </Button>
         </div>
 
-         <div className="group absolute right-[7%] top-1/2 grid h-40 w-40 -translate-y-1/2 place-items-center md:h-52 md:w-52">
+          <div className="group absolute left-[77%] top-[22%] z-30 grid h-32 w-32 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-40 md:w-40">
            <div className="nanase-rings pointer-events-none absolute -inset-5 rounded-full" aria-hidden="true" />
-           <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-52 md:w-52">
+            <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-32 w-32 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-40 md:w-40">
              <span className="absolute inset-2 rounded-full border border-chart-red/30" />
              <span className="nanase-crosshair" aria-hidden="true" />
              <span className="nanase-title-drift relative z-10 flex -translate-y-1 flex-col items-center justify-center">
                <NanaseMark />
-               <span className="mt-1 font-display text-lg uppercase leading-none md:text-2xl">Nanase</span>
-               <span className="mt-1 font-display text-base uppercase leading-none md:text-xl">Koji</span>
+                <span className="font-display text-base uppercase leading-none md:text-xl">Nanase</span>
+                <span className="mt-1 font-display text-sm uppercase leading-none md:text-lg">Koji</span>
              </span>
            </Button>
          </div>
@@ -689,7 +689,7 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
   const [leaving, setLeaving] = useState(false);
   const isElias = character === "elias";
   const record = isElias ? elias : nanase;
-  const portrait = isElias ? eliasRose : nanasePortraitAsset.url;
+  const portrait = isElias ? eliasRose : nanasePortrait;
   const closeAnimated = () => {
     if (leaving) return;
     setLeaving(true);
@@ -723,7 +723,7 @@ function ImageViewer({ character, onClose }: { character: "elias" | "nanase"; on
   return (
     <div className="fixed inset-0 z-[80] grid place-items-center bg-background/90 p-4 backdrop-blur-xl" role="dialog" aria-modal="true" aria-label={`Enlarged image of ${isElias ? "Elias Archer" : "Nanase Koji"}`} onClick={onClose}>
       <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close image" className="absolute right-5 top-5 z-10"><X /></Button>
-      <img onClick={(event) => event.stopPropagation()} src={isElias ? eliasRose : nanasePortraitAsset.url} alt={isElias ? "Elias Archer holding a rose, enlarged" : "Nanase Koji, enlarged"} className="animate-in zoom-in-95 max-h-[92dvh] max-w-[92vw] object-contain duration-500" />
+      <img onClick={(event) => event.stopPropagation()} src={isElias ? eliasRose : nanasePortrait} alt={isElias ? "Elias Archer holding a rose, enlarged" : "Nanase Koji, enlarged"} className="animate-in zoom-in-95 max-h-[92dvh] max-w-[92vw] object-contain duration-500" />
     </div>
   );
 }
