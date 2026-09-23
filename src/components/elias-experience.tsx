@@ -729,7 +729,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         </div>
          {profileOpen && typeof document !== "undefined" && createPortal(
            <div className="profile-anchor">
-             <ProfilePanel key={profileOpen} panelRef={profilePanelRef} anchor={profileAnchor} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />
+             <ProfilePanel key={profileOpen} panelRef={profilePanelRef} anchor={profileAnchor} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); setProfileOpen(null); }} />
            </div>,
            document.body,
          )}
