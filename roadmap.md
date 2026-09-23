@@ -63,3 +63,5 @@
 - [x] Replace Elias’s layered frame with one newly created, correctly proportioned rose-and-vine artwork
 - [x] Add a directional animated gold glow through Elias Archer’s profile name
 - [x] Keep character profile boxes visually proportional while the relationship chart is zoomed
+- [ ] Make profile box shrink further as chart zoom increases so it stays small when zoomed in
+- [ ] Italicize and raise Elias quote, symmetric frame reveal, smoother uneven pulsing, welcome-screen rose frame
