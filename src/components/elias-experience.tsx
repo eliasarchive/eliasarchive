@@ -645,7 +645,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
            </Button>
          </div>
 
-          {profileOpen && <div className="profile-scale" style={{ "--profile-counter-scale": Math.pow(1 / zoom, 1.7) } as React.CSSProperties}><ProfilePanel character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
+          {profileOpen && <div className={`profile-scale profile-scale-${profileOpen}`} style={{ "--profile-counter-scale": Math.pow(1 / zoom, 1.7) } as React.CSSProperties}><ProfilePanel character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
 
         </div>
       </div>
