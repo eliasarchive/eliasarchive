@@ -550,6 +550,7 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
 function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: number, volume?: number) => void }) {
   const [profileOpen, setProfileOpen] = useState<"elias" | "nanase" | null>(null);
   const [viewerOpen, setViewerOpen] = useState<"elias" | "nanase" | null>(null);
+  const [hoveredNode, setHoveredNode] = useState<"elias" | "nanase" | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -599,11 +600,11 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[30rem] w-[48rem] transition-transform duration-500 md:h-[34rem] md:w-[58rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[30rem] w-[48rem] will-change-transform md:h-[34rem] md:w-[58rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-          <div className="relationship-connection absolute z-40">
+          <div className={`relationship-connection absolute z-40 ${hoveredNode ? `relationship-connection-${hoveredNode}` : ""}`}>
            {directionalRelationships.map((relationship, index) => (
                <button key={relationship.id} className={`directional-link absolute inset-x-0 h-5 ${index === 0 ? "-translate-y-3" : "translate-y-1"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
@@ -613,7 +614,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              </button>
            ))}
          </div>
-           <div className="elias-node group absolute left-1/2 top-1/2 z-30 grid h-40 w-40 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-52 md:w-52">
+           <div onPointerEnter={() => setHoveredNode("elias")} onPointerLeave={() => setHoveredNode(null)} className="elias-node group absolute left-1/2 top-1/2 z-30 grid h-40 w-40 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-52 md:w-52">
         <div className="laurel-hover pointer-events-none absolute inset-[-4%] z-20 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.075]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
          <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => open === "elias" ? null : "elias"); }} className="relationship-emblem group relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-52 md:w-52">
@@ -636,7 +637,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         </Button>
         </div>
 
-          <div className="nanase-node group absolute left-[77%] top-[22%] z-30 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-28 md:w-28">
+          <div onPointerEnter={() => setHoveredNode("nanase")} onPointerLeave={() => setHoveredNode(null)} className="nanase-node group absolute left-[77%] top-[22%] z-30 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-28 md:w-28">
             <div className="nanase-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
              <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-24 w-24 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-28 md:w-28">
              <span className="absolute inset-2 rounded-full border border-chart-red/30" />
@@ -695,7 +696,7 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
           <div><p className={`text-[7px] uppercase md:text-[8px] ${isElias ? "text-primary" : "text-chart-red"}`}>Central profile</p><span className={`mt-2 block h-px w-14 ${isElias ? "bg-primary" : "bg-chart-red"}`} /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
         </div>
-        <p className={`relative z-10 mt-2 font-display text-lg ${isElias ? "text-brass-soft" : "text-chart-red"}`}>{record.name}</p>
+        <p className={`relative z-10 mt-2 font-display text-lg ${isElias ? "text-brass-soft" : "nanase-profile-name text-chart-red"}`}>{record.name}</p>
         <p className={`status-shimmer relative z-10 mt-1 text-[8px] uppercase ${isElias ? "status-silver" : "status-gold"}`}>Status: {record.status}</p>
         <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className={`group relative z-10 mt-3 flex h-32 w-full items-end justify-center overflow-hidden border bg-background/50 md:h-36 ${isElias ? "border-primary/60" : "border-chart-red/60"}`}>
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
