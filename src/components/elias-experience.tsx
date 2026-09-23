@@ -539,7 +539,7 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
             {scene === manorScenes.length - 1 && (
               <>
                 <WindowRainCanvas maskSrc={manorRoomPaneMask} className="cinematic-bedroom" layer="rain" zIndex={1} />
-                <img src={manorRoomGlass} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover opacity-60" aria-hidden="true" />
+                <img src={manorRoomGlass} alt="" width={2692} height={1408} className="cinematic-bedroom window-optical-glass pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
                 <WindowRainCanvas maskSrc={manorRoomPaneMask} className="cinematic-bedroom" layer="droplets" zIndex={3} />
                 <img src={manorRoomInterior} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover" aria-hidden="true" />
               </>
@@ -569,7 +569,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
     <section className="desk-scene-enter relative h-dvh overflow-hidden bg-ink">
       <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={2692} height={1408} className={`bedroom-terminal-view absolute inset-0 z-0 h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="rain" zIndex={1} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
-      <img src={manorRoomGlass} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover opacity-60 ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
+      <img src={manorRoomGlass} alt="" width={2692} height={1408} className={`bedroom-terminal-view window-optical-glass pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="droplets" zIndex={3} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
       <img src={manorRoomInterior} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <div className="vignette absolute inset-0 z-[5] bg-background/10" />

@@ -147,7 +147,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .terminal-hotspot:hover { border-color: color-mix(in oklab,var(--foreground) 84%,transparent); background: color-mix(in oklab,var(--foreground) 3%,transparent); }
 .terminal-monitor { left: 45.4%; top: 64.1%; width: 8.6%; aspect-ratio: 1.7 / 1; height: auto; transform-origin: center; }
 .manor-rain-canvas { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
-.window-rain-canvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; filter: contrast(1.04) brightness(.92); }
+.window-rain-canvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
+.window-rain-rain { filter: blur(.85px) saturate(.72) contrast(.78); opacity: .86; }
+.window-rain-droplets { filter: blur(.12px); opacity: .74; }
+.window-optical-glass { opacity: .68; filter: saturate(.78) contrast(.92); }
 .terminal-screen-lines { opacity: .45; background-image: repeating-linear-gradient(to bottom,transparent 0 4px,color-mix(in oklab,var(--primary) 12%,transparent) 4px 5px); }
 .rain-field { z-index: 2; overflow: hidden; background: linear-gradient(110deg, transparent 55%, color-mix(in oklab,var(--foreground) 5%,transparent)); }
 .rain-layer { position: absolute; inset: -20%; transform: skewX(-6deg); background-repeat: repeat; }
