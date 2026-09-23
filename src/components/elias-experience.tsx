@@ -656,7 +656,7 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
   };
   return (
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
-      <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-5 py-5 shadow-2xl backdrop-blur-xl">
+      <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl">
         <ProfileBotanicalFrame />
         <div className="pointer-events-none absolute inset-0 z-[1] bg-card/95 backdrop-blur-xl" />
         <div className="pointer-events-none absolute inset-2 z-[2] border border-primary/25" />
@@ -664,8 +664,8 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
           <div><p className="text-[7px] uppercase tracking-[.35em] text-primary md:text-[8px]">Central profile</p><span className="mt-2 block h-px w-14 bg-primary" /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
         </div>
-        <p className="relative z-10 mt-3 font-display text-xl text-brass-soft">Elias Archer</p>
-        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative z-10 mt-3 flex h-36 w-full items-end justify-center overflow-hidden border border-primary/60 bg-background/50 md:h-40">
+        <p className="relative z-10 mt-2 font-display text-lg text-brass-soft">Elias Archer</p>
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative z-10 mt-3 flex h-32 w-full items-end justify-center overflow-hidden border border-primary/60 bg-background/50 md:h-36">
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
           <img src={eliasRose} alt="Elias Archer holding a rose" loading="eager" fetchPriority="high" decoding="sync" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-3.5 w-3.5" /></span>
