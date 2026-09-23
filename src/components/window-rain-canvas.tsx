@@ -25,9 +25,9 @@ function makeDrop(width: number, height: number, initial = false): WindowDrop {
   return {
     x: Math.random() * width,
     y: initial ? Math.random() * height : -30 - Math.random() * 100,
-    speed: 230 + Math.random() * 310,
-    length: 7 + Math.random() * 15,
-    alpha: 0.07 + Math.random() * 0.12,
+    speed: 265 + Math.random() * 360,
+    length: 11 + Math.random() * 22,
+    alpha: 0.2 + Math.random() * 0.24,
   };
 }
 
@@ -51,7 +51,7 @@ export function WindowRainCanvas() {
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      drops = Array.from({ length: Math.max(45, Math.round(width * height / 12500)) }, () => makeDrop(width, height, true));
+      drops = Array.from({ length: Math.max(110, Math.round(width * height / 5200)) }, () => makeDrop(width, height, true));
     };
     const draw = (time: number) => {
       const delta = Math.min(0.04, (time - previous) / 1000);
@@ -65,9 +65,12 @@ export function WindowRainCanvas() {
           context.beginPath();
           context.moveTo(drop.x - 1.8, tailY);
           context.lineTo(drop.x, drop.y);
-          context.strokeStyle = `rgba(205, 220, 226, ${drop.alpha})`;
-          context.lineWidth = 0.65;
+          context.strokeStyle = `rgba(214, 229, 235, ${drop.alpha})`;
+          context.shadowColor = "rgba(196, 218, 228, 0.32)";
+          context.shadowBlur = 2.4;
+          context.lineWidth = 1.05;
           context.stroke();
+          context.shadowBlur = 0;
         }
         if (drop.y > height) drops[index] = makeDrop(width, height);
       });

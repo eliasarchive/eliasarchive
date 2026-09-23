@@ -81,4 +81,4 @@
 - [x] Replace the generated entrance clip with scripted rain whose splashes and ripples land only on the driveway.
 - [x] Remove baked-in entrance rain, make indoor audio glass-focused and progressively louder, add window-only room rain, and rename the hall passages.
 - [x] Fit the terminal target tightly around the MacBook with a transparent grey outline and no black fill.
-- [ ] Replace synthesized indoor rain with real online roof/window recordings and make final-room rain clearly visible only behind the window.
+- [x] Replace synthesized indoor rain with real online roof/window recordings and make final-room rain clearly visible only behind the window.

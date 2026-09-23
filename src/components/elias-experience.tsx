@@ -20,6 +20,8 @@ import archiveRoseField from "@/assets/archive-red-field.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
+import roofRainAsset from "@/assets/rain-glass-roof.ogg.asset.json";
+import windowRainAsset from "@/assets/rain-window.ogg.asset.json";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -153,7 +155,9 @@ function useSound(enabled: boolean) {
   const jazzRef = useRef<{ oscillators: OscillatorNode[]; timer: number } | null>(null);
   const pianoGainRef = useRef<GainNode | null>(null);
   const pianoRef = useRef<number | null>(null);
-  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode; glassGain: GainNode; glassTimer: number } | null>(null);
+  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode } | null>(null);
+  const roofRainRef = useRef<HTMLAudioElement | null>(null);
+  const windowRainRef = useRef<HTMLAudioElement | null>(null);
   const rainSceneRef = useRef(0);
 
 
@@ -206,6 +210,20 @@ function useSound(enabled: boolean) {
   const prepareRain = useCallback(() => {
     const ctx = ensure();
     if (!ctx || rainRef.current) return;
+    if (!roofRainRef.current) {
+      const roofRain = new Audio(roofRainAsset.url);
+      roofRain.loop = true;
+      roofRain.preload = "auto";
+      roofRain.load();
+      roofRainRef.current = roofRain;
+    }
+    if (!windowRainRef.current) {
+      const windowRain = new Audio(windowRainAsset.url);
+      windowRain.loop = true;
+      windowRain.preload = "auto";
+      windowRain.load();
+      windowRainRef.current = windowRain;
+    }
     const length = Math.floor(ctx.sampleRate * 5);
     const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -228,29 +246,7 @@ function useSound(enabled: boolean) {
     gain.gain.value = 0.0001;
     source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
     source.start();
-    const glassGain = ctx.createGain();
-    glassGain.gain.value = 0.0001;
-    glassGain.connect(ctx.destination);
-    const glassTimer = window.setInterval(() => {
-      if (!enabledRef.current || glassGain.gain.value < 0.001) return;
-      const now = ctx.currentTime;
-      const tap = ctx.createOscillator();
-      const tapGain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-      tap.type = "sine";
-      tap.frequency.setValueAtTime(1750 + Math.random() * 2900, now);
-      tap.frequency.exponentialRampToValueAtTime(650 + Math.random() * 700, now + .035);
-      filter.type = "bandpass";
-      filter.frequency.value = 2500 + Math.random() * 1800;
-      filter.Q.value = 1.2;
-      tapGain.gain.setValueAtTime(0.0001, now);
-      tapGain.gain.exponentialRampToValueAtTime(.018 + Math.random() * .032, now + .003);
-      tapGain.gain.exponentialRampToValueAtTime(0.0001, now + .045 + Math.random() * .055);
-      tap.connect(filter).connect(tapGain).connect(glassGain);
-      tap.start(now);
-      tap.stop(now + .12);
-    }, 42);
-    rainRef.current = { source, gain, highpass, lowpass, glassGain, glassTimer };
+    rainRef.current = { source, gain, highpass, lowpass };
   }, [ensure]);
 
   const setRainScene = useCallback((scene: number) => {
@@ -260,18 +256,29 @@ function useSound(enabled: boolean) {
     const rain = rainRef.current;
     if (!ctx || !rain) return;
     const profiles = [
-      { volume: .11, glass: .0001, high: 380, low: 5600 },
-      { volume: .022, glass: .68, high: 850, low: 3900 },
-      { volume: .035, glass: 1.0, high: 950, low: 5000 },
-      { volume: .018, glass: .78, high: 1100, low: 5400 },
+      { volume: .11, high: 380, low: 5600 },
+      { volume: .006, high: 850, low: 3900 },
+      { volume: .006, high: 950, low: 5000 },
+      { volume: .004, high: 1100, low: 5400 },
     ];
     const profile = profiles[Math.max(0, Math.min(scene, profiles.length - 1))] ?? profiles[0];
     if (!profile) return;
     const volume = enabledRef.current ? profile.volume : .0001;
     rain.gain.gain.setTargetAtTime(volume, ctx.currentTime, .28);
-    rain.glassGain.gain.setTargetAtTime(enabledRef.current ? profile.glass : .0001, ctx.currentTime, .28);
     rain.highpass.frequency.setTargetAtTime(profile.high, ctx.currentTime, .35);
     rain.lowpass.frequency.setTargetAtTime(profile.low, ctx.currentTime, .35);
+    const roofRain = roofRainRef.current;
+    const windowRain = windowRainRef.current;
+    if (roofRain) {
+      roofRain.volume = enabledRef.current && scene === 1 ? .38 : enabledRef.current && scene === 2 ? .62 : 0;
+      if (scene === 1 || scene === 2) void roofRain.play().catch(() => undefined);
+      else roofRain.pause();
+    }
+    if (windowRain) {
+      windowRain.volume = enabledRef.current && scene === 3 ? .58 : 0;
+      if (scene === 3) void windowRain.play().catch(() => undefined);
+      else windowRain.pause();
+    }
   }, [prepareRain]);
 
   const beginRain = useCallback(() => setRainScene(0), [setRainScene]);
@@ -281,8 +288,8 @@ function useSound(enabled: boolean) {
     const rain = rainRef.current;
     if (!ctx || !rain) return;
     rain.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
-    rain.glassGain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
-    window.clearInterval(rain.glassTimer);
+    roofRainRef.current?.pause();
+    windowRainRef.current?.pause();
     window.setTimeout(() => { try { rain.source.stop(); } catch { /* already stopped */ } }, 1600);
     rainRef.current = null;
   }, []);
@@ -378,7 +385,8 @@ function useSound(enabled: boolean) {
     if (jazzGainRef.current) jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.32 : 0.0001, ctx.currentTime, 0.12);
     if (pianoGainRef.current) pianoGainRef.current.gain.setTargetAtTime(enabled ? 0.18 : 0.0001, ctx.currentTime, 0.12);
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
-    if (rainRef.current) rainRef.current.glassGain.gain.setTargetAtTime(enabled ? (rainSceneRef.current === 2 ? 1 : rainSceneRef.current > 0 ? .72 : .0001) : .0001, ctx.currentTime, 0.2);
+    if (roofRainRef.current) roofRainRef.current.volume = enabled && rainSceneRef.current === 1 ? .38 : enabled && rainSceneRef.current === 2 ? .62 : 0;
+    if (windowRainRef.current) windowRainRef.current.volume = enabled && rainSceneRef.current === 3 ? .58 : 0;
   }, [enabled]);
 
   return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
