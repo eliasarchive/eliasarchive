@@ -119,6 +119,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes rose-bloom { 0% { opacity: 0; filter: blur(7px) brightness(.55); } 68% { opacity: 1; filter: blur(0) brightness(1.12); } 100% { opacity: 1; filter: blur(0) brightness(1); } }
 @keyframes vine-settle { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,-2px,0); } }
 @keyframes vine-shimmer { 0%,78% { transform: translateX(-580px) rotate(15deg); opacity: 0; } 82% { opacity: .2; } 88%,100% { transform: translateX(860px) rotate(15deg); opacity: 0; } }
+@keyframes rose-frame-reveal { from { opacity: 0; transform: scale(.94); filter: blur(4px) brightness(.7); } to { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } }
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
@@ -173,7 +174,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .crest-float { animation: crest-float 3.2s ease-in-out infinite; }
 .elias-signature { text-shadow: 0 0 24px color-mix(in oklab,var(--primary) 28%,transparent); }
 .note-dialog-in { animation: note-dialog-in .38s cubic-bezier(.16,1,.3,1) both; }
-.relationship-emblem { background-image: radial-gradient(circle at 50% 42%, color-mix(in oklab,var(--brass) 8%,transparent), transparent 64%); box-shadow: inset 0 0 34px color-mix(in oklab,var(--primary) 9%,transparent), 0 0 60px color-mix(in oklab,var(--primary) 16%,transparent); }
+.relationship-emblem { color: var(--brass-soft) !important; background-image: radial-gradient(circle at 50% 42%, color-mix(in oklab,var(--brass) 8%,transparent), transparent 64%); box-shadow: inset 0 0 34px color-mix(in oklab,var(--primary) 9%,transparent), 0 0 60px color-mix(in oklab,var(--primary) 16%,transparent); }
+.relationship-emblem:hover { color: var(--brass-soft) !important; border-color: var(--primary) !important; background-color: color-mix(in oklab,var(--primary) 10%,var(--card)) !important; box-shadow: inset 0 0 36px color-mix(in oklab,var(--primary) 14%,transparent), 0 0 70px color-mix(in oklab,var(--primary) 26%,transparent); }
 .relationship-emblem::after { content: ""; position: absolute; inset: -45%; pointer-events: none; background: linear-gradient(105deg,transparent 42%,color-mix(in oklab,var(--brass-soft) 46%,transparent) 49%,transparent 56%); animation: gold-glint 14s ease-in-out infinite; }
 .laurel-hover { animation: laurel-hover 9s ease-in-out infinite; filter: drop-shadow(0 5px 8px color-mix(in oklab,var(--ink) 72%,transparent)); }
 .laurel-metal { filter: drop-shadow(0 0 3px color-mix(in oklab,var(--brass-soft) 18%,transparent)); }
@@ -183,10 +185,11 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .emblem-crosshair::before, .emblem-crosshair::after { content: ""; position: absolute; background: var(--primary); opacity: .55; }
 .emblem-crosshair::before { left: 50%; top: .5rem; bottom: .5rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 10%,transparent 10% 90%,#000 90%); }
 .emblem-crosshair::after { left: .5rem; right: .5rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 10%,transparent 10% 90%,#000 90%); }
-.profile-popover { position: fixed; left: 50%; top: 54%; width: min(31rem,calc(100% - 2.5rem)); transform: translate(-50%,-50%); }
+.profile-popover { position: fixed; left: 50%; top: 53%; width: min(22rem,calc(100% - 4rem)); transform: translate(-50%,-50%); }
 .profile-popover-in { animation: profile-popover-in .38s cubic-bezier(.16,1,.3,1) both; }
 .profile-popover-out { animation: profile-popover-out .24s ease-in both; pointer-events: none; }
 .profile-card-shell { box-shadow: 0 24px 80px color-mix(in oklab,var(--ink) 78%,transparent), inset 0 0 50px color-mix(in oklab,var(--brass) 5%,transparent); }
+.profile-rose-frame { animation: rose-frame-reveal 1.2s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 1.2s infinite; filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)); }
 .profile-vines { pointer-events: none; animation: vine-settle 9s ease-in-out 2.6s infinite; filter: drop-shadow(0 4px 8px color-mix(in oklab,var(--ink) 68%,transparent)); }
 .profile-vine-stems path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: vine-grow 2.4s cubic-bezier(.2,.75,.2,1) forwards; }
 .profile-vine-stems path:nth-child(2) { animation-delay: .25s; }
