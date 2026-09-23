@@ -759,8 +759,11 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const positionProfile = useCallback((target: HTMLElement, side: "left" | "right", updateState = false) => {
     const rect = target.getBoundingClientRect();
     const panelWidth = window.innerWidth < 768 ? 172 : 240;
-    const x = side === "right" ? rect.right + 12 : rect.left - panelWidth - 12;
-    const y = rect.top + rect.height / 2;
+    const idealX = side === "right" ? rect.right + 12 : rect.left - panelWidth - 12;
+    const x = Math.max(8, Math.min(idealX, window.innerWidth - panelWidth - 8));
+    const panelHeight = profilePanelRef.current?.getBoundingClientRect().height ?? (window.innerWidth < 768 ? 420 : 475);
+    const idealY = rect.top + rect.height / 2;
+    const y = Math.max(panelHeight / 2 + 8, Math.min(idealY, window.innerHeight - panelHeight / 2 - 8));
     const panel = profilePanelRef.current;
     if (panel) {
       panel.style.left = `${x}px`;
