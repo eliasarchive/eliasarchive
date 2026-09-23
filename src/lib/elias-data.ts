@@ -1,4 +1,5 @@
 export const elias = {
+  id: "elias",
   name: "Elias Archer",
   pronouns: "He/Him",
   height: "6'2\".",
@@ -6,7 +7,38 @@ export const elias = {
   school: "Kitagawa High",
   background: 'London-born child heir of "Archer Bionat"',
   programme: "Part of the prefect programme",
+  status: "Deputy Head Prefect",
 } as const;
+
+export const nanase = {
+  id: "nanase",
+  name: "Nanase Koji",
+  status: "Head Prefect",
+  quote: "Nanase's pretty respectful and has standard manners, if not for the prefect programme I wouldn't have interacted at all.",
+} as const;
+
+export const directionalRelationships = [
+  {
+    id: "nanase-to-elias",
+    from: "Nanase Koji",
+    to: "Elias Archer",
+    direction: "left",
+    portions: [
+      { label: "Friendship", value: 80, color: "var(--legend-2)" },
+      { label: "Mentor / Guidance", value: 20, color: "var(--legend-12)" },
+    ],
+  },
+  {
+    id: "elias-to-nanase",
+    from: "Elias Archer",
+    to: "Nanase Koji",
+    direction: "right",
+    portions: [
+      { label: "Respect / Admiration", value: 30, color: "var(--legend-6)" },
+      { label: "Friendship", value: 70, color: "var(--legend-2)" },
+    ],
+  },
+] as const;
 
 export const relationshipTypes = [
   "Hatred",

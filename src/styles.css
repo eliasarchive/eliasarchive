@@ -123,6 +123,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes rose-frame-reveal { from { opacity: 0; transform: scale(.94); filter: blur(4px) brightness(.7); } to { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } }
 @keyframes botanical-grow { 0% { clip-path: inset(0 48% 94% 48%); opacity: 0; transform: scale(.97); } 42% { clip-path: inset(0 0 48% 0); opacity: 1; } 100% { clip-path: inset(0); opacity: 1; transform: scale(1); } }
 @keyframes botanical-glint { 0%,78%,100% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } 84% { filter: drop-shadow(0 5px 13px color-mix(in oklab,var(--brass-soft) 32%,transparent)) brightness(1.16); } 90% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } }
+@keyframes nanase-pulse { 0%,100% { opacity: .42; transform: scale(1) rotate(0); } 50% { opacity: .78; transform: scale(1.025) rotate(.5deg); } }
+@keyframes status-shine { 0%,72%,100% { background-position: 140% 0; } 82% { background-position: -40% 0; } }
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
@@ -189,6 +191,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .emblem-crosshair::before { left: 50%; top: .5rem; bottom: .5rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 10%,transparent 10% 90%,#000 90%); }
 .emblem-crosshair::after { left: .5rem; right: .5rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 10%,transparent 10% 90%,#000 90%); }
 .profile-popover { position: absolute; left: calc(50% + 8rem); top: calc(8rem + 25vh); width: min(15rem,calc(100% - 2rem)); transform: translateY(-50%); }
+.profile-popover-nanase { left: auto; right: max(1rem,calc(50% - 38rem)); }
 .profile-popover-in { animation: profile-popover-in .38s cubic-bezier(.16,1,.3,1) both; }
 .profile-popover-out { animation: profile-popover-out .24s ease-in both; pointer-events: none; }
 .profile-card-shell { box-shadow: 0 24px 80px color-mix(in oklab,var(--ink) 78%,transparent), inset 0 0 50px color-mix(in oklab,var(--brass) 5%,transparent); }
@@ -226,6 +229,27 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .archive-grid { background-image: linear-gradient(color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px); background-size: 48px 48px; }
 .relationship-line { height: 1px; background: currentColor; position: relative; overflow: hidden; }
 .relationship-line::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 7px, var(--background) 7px 11px); }
+.directional-link { color: var(--foreground); cursor: help; }
+.directional-track { position: absolute; left: 0; right: 0; top: 50%; height: 4px; transform: translateY(-50%); box-shadow: 0 0 14px currentColor; }
+.direction-arrow { position: absolute; top: 50%; height: 12px; width: 12px; border-top: 2px solid var(--brass-soft); border-right: 2px solid var(--brass-soft); filter: drop-shadow(0 0 5px var(--brass)); }
+.direction-arrow-left { left: -1px; transform: translateY(-50%) rotate(-135deg); }
+.direction-arrow-right { right: -1px; transform: translateY(-50%) rotate(45deg); }
+.direction-tooltip { pointer-events: none; position: absolute; left: 50%; bottom: calc(100% + .4rem); z-index: 50; width: max-content; max-width: 17rem; transform: translate(-50%,6px) scale(.96); border: 1px solid var(--border); background: color-mix(in oklab,var(--background) 94%,transparent); padding: .5rem .65rem; opacity: 0; box-shadow: 0 12px 35px color-mix(in oklab,var(--ink) 75%,transparent); transition: opacity .25s ease, transform .25s ease; }
+.direction-tooltip strong,.direction-tooltip span { display: block; font-size: .48rem; line-height: 1.5; text-transform: uppercase; }
+.direction-tooltip strong { color: var(--brass-soft); }
+.direction-tooltip span { margin-top: .2rem; color: var(--muted-foreground); }
+.directional-link:hover .direction-tooltip,.directional-link:focus-visible .direction-tooltip { opacity: 1; transform: translate(-50%,0) scale(1); }
+.nanase-emblem { color: var(--chart-red); background-image: radial-gradient(circle at 50% 38%,color-mix(in oklab,var(--chart-red) 16%,transparent),transparent 66%); box-shadow: inset 0 0 34px color-mix(in oklab,var(--chart-red) 13%,transparent),0 0 48px color-mix(in oklab,var(--chart-red) 18%,transparent); }
+.nanase-emblem:hover { color: color-mix(in oklab,var(--chart-red) 78%,var(--foreground)); border-color: var(--chart-red); background-color: color-mix(in oklab,var(--chart-red) 8%,var(--card)); }
+.nanase-rings { border: 1px solid color-mix(in oklab,var(--chart-red) 48%,transparent); box-shadow: inset 0 0 0 8px var(--background),inset 0 0 0 9px color-mix(in oklab,var(--chart-red) 28%,transparent); animation: nanase-pulse 8s ease-in-out infinite; }
+.nanase-crosshair::before,.nanase-crosshair::after { content: ""; position: absolute; background: var(--chart-red); opacity: .32; }
+.nanase-crosshair::before { left: 50%; top: .4rem; bottom: .4rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 12%,transparent 12% 88%,#000 88%); }
+.nanase-crosshair::after { left: .4rem; right: .4rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 12%,transparent 12% 88%,#000 88%); }
+.nanase-title-drift { text-shadow: 0 0 18px color-mix(in oklab,var(--chart-red) 58%,transparent); animation: title-drift 11s ease-in-out infinite reverse; }
+.nanase-mark { filter: drop-shadow(0 0 7px color-mix(in oklab,var(--chart-red) 55%,transparent)); }
+.status-shimmer { background-size: 220% 100%; background-clip: text; color: transparent; animation: status-shine 7s ease-in-out infinite; }
+.status-gold { background-image: linear-gradient(105deg,var(--brass),var(--brass-soft),var(--foreground),var(--brass-soft),var(--brass)); }
+.status-silver { background-image: linear-gradient(105deg,var(--muted-foreground),var(--foreground),var(--brass-soft),var(--foreground),var(--muted-foreground)); }
 .hotspot-line { transform-origin: left; animation: line-grow .35s ease-out both; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -248,4 +272,5 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @media (max-width: 767px) {
   .profile-popover { left: auto; right: .35rem; top: calc(8rem + 25vh); width: 10.75rem; }
   .chart-orbit-profile-open { margin-left: -5.25rem; }
+  .chart-orbit-profile-nanase { margin-left: -10rem; }
 }

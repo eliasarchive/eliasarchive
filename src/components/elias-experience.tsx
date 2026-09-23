@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Crown, Leaf, Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { appearanceFeatures, elias, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
+import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntrance from "@/assets/manor-entrance-rain.jpg";
@@ -14,6 +14,7 @@ import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import profileGoldVines from "@/assets/profile-gold-vines.png";
 import profileRoseBloom from "@/assets/profile-rose-bloom.png";
 import profileRoseBud from "@/assets/profile-rose-bud.png";
+import nanasePortraitAsset from "@/assets/nanase-koji.png.asset.json";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -67,6 +68,15 @@ function LaurelWreath() {
         ))}
         <path d="M180 329c-13-11-23-14-38-14 8 12 20 19 38 20 18-1 30-8 38-20-15 0-25 3-38 14Z" />
       </g>
+    </svg>
+  );
+}
+
+function NanaseMark() {
+  return (
+    <svg viewBox="0 0 120 112" className="nanase-mark h-16 w-16 md:h-20 md:w-20" aria-hidden="true">
+      <path d="M30 92C20 70 23 39 42 11c-6 32-2 57 9 76L60 40l9 47c11-19 15-44 9-76 19 28 22 59 12 81L60 104Z" fill="none" stroke="currentColor" strokeWidth="3" />
+      <path d="M42 82 31 59m20 28-5-34m23 34 5-34m4 29 11-23" fill="none" stroke="currentColor" strokeWidth="2" opacity=".72" />
     </svg>
   );
 }
@@ -347,7 +357,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame layers) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud];
+    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud, nanasePortraitAsset.url];
     sources.forEach((source) => {
       const image = new Image();
       image.decoding = "async";
@@ -549,13 +559,16 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
 }
 
 function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: number, volume?: number) => void }) {
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [viewerOpen, setViewerOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState<"elias" | "nanase" | null>(null);
+  const [viewerOpen, setViewerOpen] = useState<"elias" | "nanase" | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef({ offset, zoom });
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  useEffect(() => {
+    if (window.innerWidth < 768) setZoom(.68);
+  }, []);
   useEffect(() => { viewRef.current = { offset, zoom }; }, [offset, zoom]);
   const changeZoom = useCallback((nextZoom: number, clientX?: number, clientY?: number) => {
     const viewport = viewportRef.current;
@@ -581,7 +594,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
     return () => viewport.removeEventListener("wheel", onWheel);
   }, [changeZoom]);
   useEffect(() => {
-    const close = (event: KeyboardEvent) => event.key === "Escape" && (viewerOpen ? setViewerOpen(false) : setProfileOpen(false));
+    const close = (event: KeyboardEvent) => event.key === "Escape" && (viewerOpen ? setViewerOpen(null) : setProfileOpen(null));
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, [viewerOpen]);
@@ -597,14 +610,23 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-        <div className={`chart-orbit absolute left-1/2 top-1/2 flex h-[22rem] w-[22rem] items-center justify-center transition-transform duration-500 md:h-[27rem] md:w-[27rem] ${profileOpen ? "chart-orbit-profile-open" : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[22rem] w-[42rem] transition-transform duration-500 md:h-[27rem] md:w-[52rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-        <div className="group relative grid h-52 w-52 place-items-center md:h-64 md:w-64">
+         <div className="absolute inset-x-[27%] top-[40%] z-20">
+           {directionalRelationships.map((relationship, index) => (
+             <button key={relationship.id} className={`directional-link absolute inset-x-0 h-8 ${index === 0 ? "-translate-y-7" : "translate-y-5"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
+               <span className="directional-track" style={{ background: `linear-gradient(to right, ${relationship.portions[0].color} 0 ${relationship.portions[0].value}%, ${relationship.portions[1].color} ${relationship.portions[0].value}% 100%)` }} />
+               <span className={`direction-arrow direction-arrow-${relationship.direction}`} aria-hidden="true" />
+               <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span>{relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(" · ")}</span></span>
+             </button>
+           ))}
+         </div>
+         <div className="group absolute left-[7%] top-1/2 grid h-40 w-40 -translate-y-1/2 place-items-center md:h-52 md:w-52">
         <div className="laurel-hover pointer-events-none absolute inset-[-4%] z-20 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.075]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
-        <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-52 w-52 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-64 md:w-64">
+         <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => open === "elias" ? null : "elias"); }} className="relationship-emblem group relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-52 md:w-52">
           <span className="absolute inset-2 rounded-full border border-primary/30" />
           <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
@@ -612,24 +634,37 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
             <span className="block text-[7px] uppercase tracking-[.48em] text-primary md:text-[8px]">Central file</span>
             <span className="mx-auto my-2.5 block h-px w-16 bg-primary/60 md:my-3 md:w-20" />
             <span className="elias-signature grid w-full place-items-center font-display font-normal text-brass-soft">
-              <span className="block w-full text-center text-[1.25rem] uppercase leading-none md:text-[1.65rem]">Elias</span>
+               <span className="block w-full text-center text-[1.05rem] uppercase leading-none md:text-[1.35rem]">Elias</span>
               <span className="relative my-1 block h-3 w-full md:my-2">
                 <span className="absolute left-1/2 top-1/2 h-px w-[74%] -translate-x-1/2 -translate-y-1/2 bg-primary/60" />
                 <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-card" />
               </span>
-              <span className="block w-full text-center text-[1.2rem] uppercase leading-none italic md:text-[1.58rem]">Archer</span>
+               <span className="block w-full text-center text-[1rem] uppercase leading-none italic md:text-[1.3rem]">Archer</span>
             </span>
             <span className="mx-auto mt-3 block h-px w-14 bg-primary/55 md:mt-4 md:w-16" />
           </span>
         </Button>
         </div>
 
+         <div className="group absolute right-[7%] top-1/2 grid h-40 w-40 -translate-y-1/2 place-items-center md:h-52 md:w-52">
+           <div className="nanase-rings pointer-events-none absolute -inset-5 rounded-full" aria-hidden="true" />
+           <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-52 md:w-52">
+             <span className="absolute inset-2 rounded-full border border-chart-red/30" />
+             <span className="nanase-crosshair" aria-hidden="true" />
+             <span className="nanase-title-drift relative z-10 flex -translate-y-1 flex-col items-center justify-center">
+               <NanaseMark />
+               <span className="mt-1 font-display text-lg uppercase leading-none md:text-2xl">Nanase</span>
+               <span className="mt-1 font-display text-base uppercase leading-none md:text-xl">Koji</span>
+             </span>
+           </Button>
+         </div>
+
         </div>
       </div>
-      {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
+      {profileOpen && <ProfilePanel character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />}
       <RelationshipLegend />
       {!profileOpen && <LikeMeter tone={tone} />}
-      {viewerOpen && <ImageViewer onClose={() => setViewerOpen(false)} />}
+      {viewerOpen && <ImageViewer character={viewerOpen} onClose={() => setViewerOpen(null)} />}
     </div>
   );
 }
@@ -650,40 +685,45 @@ function RelationshipLegend() {
   );
 }
 
-function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: () => void }) {
+function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "nanase"; onClose: () => void; onExpand: () => void }) {
   const [leaving, setLeaving] = useState(false);
+  const isElias = character === "elias";
+  const record = isElias ? elias : nanase;
+  const portrait = isElias ? eliasRose : nanasePortraitAsset.url;
   const closeAnimated = () => {
     if (leaving) return;
     setLeaving(true);
     window.setTimeout(onClose, 240);
   };
   return (
-    <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
-      <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl">
-        <ProfileBotanicalFrame />
+    <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover profile-popover-${character} absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label={`${record.name} profile`}>
+      <div className={`profile-card-shell relative border bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl ${isElias ? "border-primary/75" : "border-chart-red/75"}`}>
+        {isElias && <ProfileBotanicalFrame />}
         <div className="pointer-events-none absolute inset-0 z-[1] bg-card/95 backdrop-blur-xl" />
         <div className="pointer-events-none absolute inset-2 z-[2] border border-primary/25" />
         <div className="relative z-10 flex items-start justify-between">
-          <div><p className="text-[7px] uppercase tracking-[.35em] text-primary md:text-[8px]">Central profile</p><span className="mt-2 block h-px w-14 bg-primary" /></div>
+          <div><p className={`text-[7px] uppercase md:text-[8px] ${isElias ? "text-primary" : "text-chart-red"}`}>Central profile</p><span className={`mt-2 block h-px w-14 ${isElias ? "bg-primary" : "bg-chart-red"}`} /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
         </div>
-        <p className="relative z-10 mt-2 font-display text-lg text-brass-soft">Elias Archer</p>
-        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative z-10 mt-3 flex h-32 w-full items-end justify-center overflow-hidden border border-primary/60 bg-background/50 md:h-36">
+        <p className={`relative z-10 mt-2 font-display text-lg ${isElias ? "text-brass-soft" : "text-chart-red"}`}>{record.name}</p>
+        <p className={`status-shimmer relative z-10 mt-1 text-[8px] uppercase ${isElias ? "status-silver" : "status-gold"}`}>Status: {record.status}</p>
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className={`group relative z-10 mt-3 flex h-32 w-full items-end justify-center overflow-hidden border bg-background/50 md:h-36 ${isElias ? "border-primary/60" : "border-chart-red/60"}`}>
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
-          <img src={eliasRose} alt="Elias Archer holding a rose" loading="eager" fetchPriority="high" decoding="sync" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
+          <img src={portrait} alt={isElias ? "Elias Archer holding a rose" : "Nanase Koji"} loading="eager" fetchPriority="high" decoding="sync" className={`h-full w-full transition duration-700 group-hover:scale-[1.025] ${isElias ? "object-contain" : "object-cover"}`} />
           <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-3.5 w-3.5" /></span>
         </button>
-        <blockquote className="relative z-10 mt-4 border-l border-primary pl-3 font-display text-sm leading-relaxed text-foreground">“This is me, what the fuck do you want me to add onto that”</blockquote>
+        <blockquote className={`relative z-10 mt-4 border-l pl-3 font-display text-sm leading-relaxed text-foreground ${isElias ? "border-primary" : "border-chart-red"}`}>“{isElias ? "This is me, what the fuck do you want me to add onto that" : nanase.quote}”</blockquote>
       </div>
     </div>
   );
 }
 
-function ImageViewer({ onClose }: { onClose: () => void }) {
+function ImageViewer({ character, onClose }: { character: "elias" | "nanase"; onClose: () => void }) {
+  const isElias = character === "elias";
   return (
-    <div className="fixed inset-0 z-[80] grid place-items-center bg-background/90 p-4 backdrop-blur-xl" role="dialog" aria-modal="true" aria-label="Enlarged image of Elias Archer" onClick={onClose}>
+    <div className="fixed inset-0 z-[80] grid place-items-center bg-background/90 p-4 backdrop-blur-xl" role="dialog" aria-modal="true" aria-label={`Enlarged image of ${isElias ? "Elias Archer" : "Nanase Koji"}`} onClick={onClose}>
       <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close image" className="absolute right-5 top-5 z-10"><X /></Button>
-      <img onClick={(event) => event.stopPropagation()} src={eliasRose} alt="Elias Archer holding a rose, enlarged" className="animate-in zoom-in-95 max-h-[92dvh] max-w-[92vw] object-contain duration-500" />
+      <img onClick={(event) => event.stopPropagation()} src={isElias ? eliasRose : nanasePortraitAsset.url} alt={isElias ? "Elias Archer holding a rose, enlarged" : "Nanase Koji, enlarged"} className="animate-in zoom-in-95 max-h-[92dvh] max-w-[92vw] object-contain duration-500" />
     </div>
   );
 }
