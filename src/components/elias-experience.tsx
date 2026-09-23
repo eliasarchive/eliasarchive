@@ -422,8 +422,9 @@ export function EliasExperience() {
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
+      {stage === "archive" && <div className="archive-rose-field" aria-hidden="true"><img src={welcomeRoseField} alt="" className="h-full w-full object-cover" /></div>}
       {stage === "archive" && (
-        <Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} views={views} />
+        <div className="relative z-[1]"><Archive section={section} onSection={(next) => { tone(220, .12, .018); setSection(next); }} tone={tone} views={views} /></div>
       )}
     </main>
   );
