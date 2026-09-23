@@ -599,8 +599,8 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           </span>
         </Button>
         </div>
-        {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       </div>
+      {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       <RelationshipLegend />
       <LikeMeter tone={tone} />
       {viewerOpen && <ImageViewer onClose={() => setViewerOpen(false)} />}
