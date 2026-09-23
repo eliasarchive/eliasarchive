@@ -60,3 +60,4 @@
 - [x] Slim Elias botanical frame to corner-only overlap so all card text stays clear
 - [x] Rebuild Elias’s animated botanical frame to match the profile box ratio and overlap only its corners
 - [x] Anchor each character profile box close to the circle it belongs to
+- [ ] Replace Elias’s layered frame with one newly created, correctly proportioned rose-and-vine artwork
