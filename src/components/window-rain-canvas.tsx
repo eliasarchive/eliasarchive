@@ -23,6 +23,8 @@ type GlassDrop = {
   phase: number;
   clarity: number;
   shoulder: number;
+  weight: number;
+  wobble: number;
   trail: Point[];
 };
 
@@ -74,19 +76,27 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
 
     const makeBead = (initial: boolean): GlassDrop => {
       const scale = box.scale * 2;
-      const large = Math.random() < 0.3;
-      const beadWidth = (large ? 1.7 + Math.random() * 3.2 : 0.35 + Math.random() * 1.35) * scale;
+      const sizeRoll = Math.random();
+      const beadWidth = (sizeRoll < 0.42
+        ? 0.55 + Math.random() * 1.25
+        : sizeRoll < 0.82
+          ? 1.9 + Math.random() * 2.8
+          : 5 + Math.random() * 4.8) * scale;
+      const weight = Math.min(1, beadWidth / (8 * scale));
+      const moving = sizeRoll >= 0.42 || Math.random() < 0.18;
       return {
         x: randomX(),
         y: initial ? box.top + Math.random() * box.h : box.top - 12 * scale,
         width: beadWidth,
-        height: beadWidth * (large ? 2.2 + Math.random() * 2.8 : 1.45 + Math.random() * 1.5),
+        height: beadWidth * (1.15 + Math.random() * (1.6 + weight * 2.8)),
         lean: (Math.random() - 0.5) * 0.42,
-        speed: large && Math.random() < 0.42 ? (2.5 + Math.random() * 7) * scale : 0,
-        delay: 1.5 + Math.random() * 14,
+        speed: moving ? (7 + weight * 20 + Math.random() * 11) * scale : 0,
+        delay: moving ? 0.3 + Math.random() * 4.8 : 4 + Math.random() * 13,
         phase: Math.random() * Math.PI * 2,
-        clarity: 0.55 + Math.random() * 0.45,
-        shoulder: 0.72 + Math.random() * 0.52,
+        clarity: 0.72 + Math.random() * 0.28,
+        shoulder: 0.64 + Math.random() * 0.72,
+        weight,
+        wobble: 0.35 + Math.random() * 1.35,
         trail: [],
       };
     };
@@ -112,7 +122,7 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
       };
       const area = box.w * box.h;
       if (layer === "rain") rain = Array.from({ length: Math.max(260, Math.round(area / 360)) }, () => makeRain(true));
-      else beads = Array.from({ length: Math.max(38, Math.round(area / 3800)) }, () => makeBead(true));
+      else beads = Array.from({ length: Math.max(58, Math.round(area / 2600)) }, () => makeBead(true));
     };
 
     const drawOutsideRain = (dt: number, time: number) => {
@@ -156,26 +166,26 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
     const drawGlassDrop = (drop: GlassDrop) => {
       const gradient = context.createLinearGradient(drop.x - drop.width, drop.y - drop.height, drop.x + drop.width, drop.y + drop.height);
       gradient.addColorStop(0, `rgba(246,250,250,${0.28 * drop.clarity})`);
-      gradient.addColorStop(0.18, "rgba(210,226,230,0.025)");
-      gradient.addColorStop(0.58, "rgba(24,38,44,0.16)");
-      gradient.addColorStop(0.82, "rgba(166,191,199,0.055)");
-      gradient.addColorStop(1, `rgba(232,241,243,${0.2 * drop.clarity})`);
+      gradient.addColorStop(0.18, "rgba(210,226,230,0.045)");
+      gradient.addColorStop(0.58, `rgba(18,31,37,${0.2 + drop.weight * 0.08})`);
+      gradient.addColorStop(0.82, "rgba(166,191,199,0.09)");
+      gradient.addColorStop(1, `rgba(238,246,247,${0.27 * drop.clarity})`);
       organicDropPath(drop);
-      context.shadowColor = "rgba(5,12,16,0.3)";
-      context.shadowBlur = Math.max(0.6, drop.width * 0.38);
+      context.shadowColor = "rgba(4,10,14,0.42)";
+      context.shadowBlur = Math.max(0.7, drop.width * 0.3);
       context.shadowOffsetY = Math.max(0.35, drop.width * 0.12);
       context.fillStyle = gradient;
       context.fill();
       context.shadowBlur = 0;
       context.shadowOffsetY = 0;
       organicDropPath(drop);
-      context.strokeStyle = `rgba(220,235,239,${0.2 * drop.clarity})`;
+      context.strokeStyle = `rgba(220,235,239,${0.3 * drop.clarity})`;
       context.lineWidth = Math.max(0.3, drop.width * 0.08);
       context.stroke();
       context.beginPath();
       context.moveTo(drop.x - drop.width * 0.2, drop.y - drop.height * 0.37);
       context.quadraticCurveTo(drop.x - drop.width * 0.04, drop.y - drop.height * 0.51, drop.x + drop.width * 0.1, drop.y - drop.height * 0.32);
-      context.strokeStyle = `rgba(252,254,254,${0.38 * drop.clarity})`;
+      context.strokeStyle = `rgba(252,254,254,${0.54 * drop.clarity})`;
       context.lineWidth = Math.max(0.35, drop.width * 0.1);
       context.stroke();
       context.beginPath();
@@ -192,12 +202,12 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
         drop.delay -= dt;
         if (drop.delay <= 0 && drop.speed > 0) {
           drop.y += drop.speed * dt;
-          drop.x += Math.sin(time * 0.001 + drop.phase) * 0.11 * scale;
-          drop.speed = Math.min(drop.speed + 2.2 * scale * dt, 15 * scale);
+          drop.x += Math.sin(time * 0.0012 + drop.phase) * drop.wobble * scale * dt;
+          drop.speed = Math.min(drop.speed + (5 + drop.weight * 13) * scale * dt, (28 + drop.weight * 34) * scale);
           const last = drop.trail[drop.trail.length - 1];
-          if (!last || Math.hypot(last.x - drop.x, last.y - drop.y) > 1.8 * scale) drop.trail.push({ x: drop.x, y: drop.y });
-          if (drop.trail.length > 42) drop.trail.shift();
-          if (Math.random() < dt * 0.35) drop.delay = 0.3 + Math.random() * 1.5;
+          if (!last || Math.hypot(last.x - drop.x, last.y - drop.y) > 1.15 * scale) drop.trail.push({ x: drop.x, y: drop.y });
+          if (drop.trail.length > 56) drop.trail.shift();
+          if (Math.random() < dt * 0.12) drop.delay = 0.15 + Math.random() * 0.65;
         }
 
         if (drop.trail.length > 1) {
@@ -210,10 +220,10 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
           }
            const trailGradient = context.createLinearGradient(drop.x - drop.width, drop.y - drop.height * 4, drop.x + drop.width, drop.y);
            trailGradient.addColorStop(0, "rgba(164,188,196,0.025)");
-           trailGradient.addColorStop(0.7, "rgba(205,222,226,0.13)");
-           trailGradient.addColorStop(1, "rgba(241,247,248,0.23)");
+            trailGradient.addColorStop(0.7, "rgba(205,222,226,0.2)");
+            trailGradient.addColorStop(1, "rgba(241,247,248,0.36)");
            context.strokeStyle = trailGradient;
-           context.lineWidth = Math.max(0.42, drop.width * 0.22);
+            context.lineWidth = Math.max(0.55, drop.width * (0.16 + drop.weight * 0.12));
           context.lineCap = "round";
           context.stroke();
         }
