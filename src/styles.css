@@ -244,7 +244,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .nanase-crosshair::before { left: 50%; top: .4rem; bottom: .4rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 12%,transparent 12% 88%,#000 88%); }
 .nanase-crosshair::after { left: .4rem; right: .4rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 12%,transparent 12% 88%,#000 88%); }
 @keyframes nanase-title-drift-anim { 0%,100% { transform: translate3d(0,-8px,0); } 50% { transform: translate3d(.7px,-10px,0); } }
-.profile-scale { position: absolute; inset: 0; z-index: 60; pointer-events: none; transform: scale(var(--profile-counter-scale)); transform-origin: center; transition: transform .2s ease-out; }
+.profile-scale { position: absolute; inset: 0; z-index: 60; pointer-events: none; transform: scale(var(--profile-counter-scale)); transform-origin: center; }
 .profile-scale-nanase { transform-origin: 77% 22%; }
 .profile-scale .profile-popover { pointer-events: auto; }
 .nanase-title-drift { text-shadow: 0 0 18px color-mix(in oklab,var(--chart-red) 58%,transparent); animation: nanase-title-drift-anim 11s ease-in-out infinite; }

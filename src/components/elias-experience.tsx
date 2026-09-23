@@ -16,7 +16,7 @@ import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
-import roseEmblem from "@/assets/rose-emblem.png";
+import roseEmblem from "@/assets/real-rose-emblem.jpg.asset.json";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -342,7 +342,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem];
+    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem.url];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -504,7 +504,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
         <div className="welcome-botanical-frame" aria-hidden="true" style={{ borderImageSource: `url(${welcomeFrameSquare})` }} />
         <div className="welcome-crest relative z-10 mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
-          <img src={roseEmblem} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 object-contain" />
+           <img src={roseEmblem.url} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 rounded-full object-cover" />
         </div>
         <p className="mb-4 text-[9px] uppercase tracking-[.45em] text-primary">Private archive</p>
         <h1 className="font-display text-5xl font-medium md:text-7xl">Welcome Back</h1>
@@ -663,7 +663,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
            </Button>
          </div>
 
-          {profileOpen && <div className={`profile-scale profile-scale-${profileOpen}`} style={{ "--profile-counter-scale": Math.pow(1 / zoom, 1.7) } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
+          {profileOpen && <div className={`profile-scale profile-scale-${profileOpen}`} style={{ "--profile-counter-scale": 1 / zoom } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
 
         </div>
       </div>
