@@ -506,7 +506,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
         <div className="welcome-botanical-frame" aria-hidden="true" style={{ borderImageSource: `url(${welcomeFrameSquare})` }} />
         <div className="welcome-crest relative z-10 mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
-           <img src={roseEmblem.url} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 rounded-full object-cover" />
+           <img src={roseEmblem} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 rounded-full object-cover" />
         </div>
         <p className="mb-4 text-[9px] uppercase tracking-[.45em] text-primary">Private archive</p>
         <h1 className="font-display text-5xl font-medium md:text-7xl">Welcome Back</h1>
