@@ -129,7 +129,7 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
 
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute -inset-x-9 -inset-y-8 z-0 overflow-visible" aria-hidden="true">
+    <div className="profile-botanical-frame pointer-events-none absolute inset-0 z-0 overflow-visible" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-lm"><img src={profileRoseBloom} alt="" /></div>
