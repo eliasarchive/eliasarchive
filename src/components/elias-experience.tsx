@@ -603,7 +603,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
       </div>
       {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
       <RelationshipLegend />
-      <LikeMeter tone={tone} />
+      {!profileOpen && <LikeMeter tone={tone} />}
       {viewerOpen && <ImageViewer onClose={() => setViewerOpen(false)} />}
     </div>
   );
