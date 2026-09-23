@@ -47,4 +47,4 @@
 - [x] Smaller profile card, better rose placement, preload frame art
 - [x] Laurel expands on emblem hover; title raised in circle
 
-- [ ] Add Nanase Koji with directional mixed relationships, emblem, portrait, quote, and both prefect statuses
+- [x] Add Nanase Koji with directional mixed relationships, emblem, portrait, quote, and both prefect statuses
