@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { fetchViews, registerView } from "@/lib/archive-social";
-import manorEntrance from "@/assets/manor-real-entrance.jpg";
-import manorStair from "@/assets/manor-real-stair.jpg";
-import manorGallery from "@/assets/manor-real-gallery.jpg";
-import manorStudy from "@/assets/manor-real-study.jpg";
+import manorEntranceAsset from "@/assets/manor-rain.jpg.asset.json";
+import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
+import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
+import manorStudyAsset from "@/assets/manor-final-room.png.asset.json";
+import manorRainLoopAsset from "@/assets/manor-rain-loop.mp4.asset.json";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -20,6 +21,12 @@ import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
+
+const manorEntrance = manorEntranceAsset.url;
+const manorStair = manorStairAsset.url;
+const manorGallery = manorGalleryAsset.url;
+const manorStudy = manorStudyAsset.url;
+const manorRainLoop = manorRainLoopAsset.url;
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
@@ -147,7 +154,7 @@ function useSound(enabled: boolean) {
   const jazzRef = useRef<{ oscillators: OscillatorNode[]; timer: number } | null>(null);
   const pianoGainRef = useRef<GainNode | null>(null);
   const pianoRef = useRef<number | null>(null);
-  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode } | null>(null);
+  const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode } | null>(null);
 
 
   const ensure = useCallback(() => {
@@ -196,10 +203,10 @@ function useSound(enabled: boolean) {
     gainRef.current = gain;
   }, [ensure]);
 
-  const beginRain = useCallback(() => {
+  const prepareRain = useCallback(() => {
     const ctx = ensure();
     if (!ctx || rainRef.current) return;
-    const length = Math.floor(ctx.sampleRate * 3);
+    const length = Math.floor(ctx.sampleRate * 5);
     const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     let last = 0;
@@ -213,17 +220,38 @@ function useSound(enabled: boolean) {
     source.loop = true;
     const highpass = ctx.createBiquadFilter();
     highpass.type = "highpass";
-    highpass.frequency.value = 430;
+    highpass.frequency.value = 380;
     const lowpass = ctx.createBiquadFilter();
     lowpass.type = "lowpass";
-    lowpass.frequency.value = 5200;
+    lowpass.frequency.value = 5600;
     const gain = ctx.createGain();
     gain.gain.value = 0.0001;
-    gain.gain.setTargetAtTime(enabledRef.current ? 0.11 : 0.0001, ctx.currentTime, 1.2);
+    gain.gain.value = 0.0001;
     source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
     source.start();
-    rainRef.current = { source, gain };
+    rainRef.current = { source, gain, highpass, lowpass };
   }, [ensure]);
+
+  const setRainScene = useCallback((scene: number) => {
+    prepareRain();
+    const ctx = contextRef.current;
+    const rain = rainRef.current;
+    if (!ctx || !rain) return;
+    const profiles = [
+      { volume: .11, high: 380, low: 5600 },
+      { volume: .085, high: 120, low: 2350 },
+      { volume: .135, high: 180, low: 4100 },
+      { volume: .105, high: 620, low: 6800 },
+    ];
+    const profile = profiles[Math.max(0, Math.min(scene, profiles.length - 1))] ?? profiles[0];
+    if (!profile) return;
+    const volume = enabledRef.current ? profile.volume : .0001;
+    rain.gain.gain.setTargetAtTime(volume, ctx.currentTime, .28);
+    rain.highpass.frequency.setTargetAtTime(profile.high, ctx.currentTime, .35);
+    rain.lowpass.frequency.setTargetAtTime(profile.low, ctx.currentTime, .35);
+  }, [prepareRain]);
+
+  const beginRain = useCallback(() => setRainScene(0), [setRainScene]);
 
   const stopRain = useCallback(() => {
     const ctx = contextRef.current;
@@ -327,7 +355,7 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume };
+  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
 }
 
 export function EliasExperience() {
@@ -338,7 +366,7 @@ export function EliasExperience() {
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
   const [views, setViews] = useState<number | null>(null);
-  const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
+  const { tone, beginAmbience, beginJazz, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
@@ -355,7 +383,12 @@ export function EliasExperience() {
       void image.decode().catch(() => undefined);
       warmedImages.push(image);
     });
-  }, []);
+    const video = document.createElement("video");
+    video.preload = "auto";
+    video.src = manorRainLoop;
+    video.load();
+    prepareRain();
+  }, [prepareRain]);
 
 
   useEffect(() => {
@@ -397,8 +430,11 @@ export function EliasExperience() {
     beginAmbience();
     tone(scene === 0 ? 165 : 205, 0.16, 0.025);
     window.setTimeout(() => tone(scene === 0 ? 220 : 275, 0.22, 0.018), 85);
-    if (scene === 0) { stopRain(); beginPiano(); }
-    if (scene < manorScenes.length - 1) setScene((current) => current + 1);
+    if (scene < manorScenes.length - 1) {
+      const nextScene = scene + 1;
+      setRainScene(nextScene);
+      setScene(nextScene);
+    }
     else {
       setEnteringRoom(true);
       window.setTimeout(() => setStage("desk"), 900);
@@ -419,7 +455,7 @@ export function EliasExperience() {
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
-       {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { stopRain(); beginPiano(); setStage("desk"); }} />}
+       {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { setRainScene(3); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && <div className="archive-rose-field" aria-hidden="true"><img src={archiveRoseField} alt="" className="h-full w-full object-cover" /></div>}
@@ -446,8 +482,11 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
   return (
     <section className={`relative h-dvh overflow-hidden bg-ink ${enteringRoom ? "room-transition-out" : ""}`} aria-label="Journey through the manor">
       <div key={current.image} className="cinematic-frame absolute inset-0">
-        <img src={current.image} alt={scene === 0 ? "The real front entrance of Harlaxton Manor" : "A real interior photograph of Harlaxton Manor"} width={1920} height={1262} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
-        {scene === 0 && <div className="rain-field pointer-events-none absolute inset-0" aria-hidden="true"><div className="rain-layer rain-far" /><div className="rain-layer rain-mid" /><div className="rain-layer rain-near" /><div className="rain-mist" /></div>}
+        {scene === 0 ? (
+          <video src={manorRainLoop} poster={manorEntrance} autoPlay muted loop playsInline preload="auto" aria-label="The manor in heavy rain" className="cinematic-image h-full w-full object-cover" />
+        ) : (
+          <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom" : "cinematic-image"} h-full w-full object-cover`} />
+        )}
       </div>
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-8 px-6 pb-8 md:px-12 md:pb-12">
@@ -478,7 +517,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
         <span className="absolute left-1/2 top-[calc(100%+0.55rem)] -translate-x-1/2 whitespace-nowrap border border-primary/60 bg-background/90 px-3 py-1.5 text-[7px] uppercase tracking-[.2em] text-primary shadow-lg backdrop-blur-md md:px-4 md:py-2 md:text-[9px] md:tracking-[.28em]">Access terminal</span>
       </Button>
       <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-        <p className="font-display text-2xl text-foreground/80">The room settles into silence.</p>
+        <p className="font-display text-2xl text-foreground/80">Rain traces the window.</p>
         <p className="mt-2 text-[9px] uppercase tracking-[.28em] text-muted-foreground">The computer is waiting</p>
       </div>
     </section>
