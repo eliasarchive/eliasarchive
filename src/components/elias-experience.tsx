@@ -573,11 +573,13 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="droplets" zIndex={3} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
       <img src={manorRoomInterior} alt="" width={1920} height={1004} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <div className="vignette absolute inset-0 z-[5] bg-background/10" />
-      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
+      <div className={`terminal-image-frame pointer-events-none absolute left-1/2 top-1/2 z-10 ${entering ? "terminal-zoom" : ""}`}>
+      <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group pointer-events-auto absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
         <span className="terminal-corner terminal-corner-tl" /><span className="terminal-corner terminal-corner-tr" /><span className="terminal-corner terminal-corner-bl" /><span className="terminal-corner terminal-corner-br" />
         <span className="absolute inset-1 border border-primary/20 transition-all duration-500 group-hover:inset-0 group-hover:border-primary/60" />
         <span className="absolute left-1/2 top-[calc(100%+0.55rem)] -translate-x-1/2 whitespace-nowrap border border-primary/60 bg-background/90 px-3 py-1.5 text-[7px] uppercase tracking-[.2em] text-primary shadow-lg backdrop-blur-md md:px-4 md:py-2 md:text-[9px] md:tracking-[.28em]">Access terminal</span>
       </Button>
+      </div>
       <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
         <p className="font-display text-2xl text-foreground/80">Rain traces the window.</p>
         <p className="mt-2 text-[9px] uppercase tracking-[.28em] text-muted-foreground">The computer is waiting</p>
