@@ -40,5 +40,5 @@ export function LightningCanvas() {
     raf = requestAnimationFrame(draw);
     return () => { cancelAnimationFrame(raf); removeEventListener("resize", resize); };
   }, []);
-  return <canvas ref={ref} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" />;
+  return <canvas ref={ref} className="pointer-events-none absolute inset-0 z-[1] h-full w-full" aria-hidden="true" />;
 }
