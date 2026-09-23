@@ -154,6 +154,7 @@ function useSound(enabled: boolean) {
   const pianoGainRef = useRef<GainNode | null>(null);
   const pianoRef = useRef<number | null>(null);
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode; glassGain: GainNode; glassTimer: number } | null>(null);
+  const rainSceneRef = useRef(0);
 
 
   const ensure = useCallback(() => {
@@ -253,6 +254,7 @@ function useSound(enabled: boolean) {
   }, [ensure]);
 
   const setRainScene = useCallback((scene: number) => {
+    rainSceneRef.current = scene;
     prepareRain();
     const ctx = contextRef.current;
     const rain = rainRef.current;
@@ -376,7 +378,7 @@ function useSound(enabled: boolean) {
     if (jazzGainRef.current) jazzGainRef.current.gain.setTargetAtTime(enabled ? 0.32 : 0.0001, ctx.currentTime, 0.12);
     if (pianoGainRef.current) pianoGainRef.current.gain.setTargetAtTime(enabled ? 0.18 : 0.0001, ctx.currentTime, 0.12);
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
-    if (rainRef.current) rainRef.current.glassGain.gain.setTargetAtTime(enabled ? (scene === 2 ? 1 : scene > 0 ? .72 : .0001) : .0001, ctx.currentTime, 0.2);
+    if (rainRef.current) rainRef.current.glassGain.gain.setTargetAtTime(enabled ? (rainSceneRef.current === 2 ? 1 : rainSceneRef.current > 0 ? .72 : .0001) : .0001, ctx.currentTime, 0.2);
   }, [enabled]);
 
   return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
