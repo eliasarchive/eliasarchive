@@ -124,7 +124,10 @@ function ProfileVines() {
   );
 }
 
+const warmedImages: HTMLImageElement[] = [];
+
 function ProfileBotanicalFrame() {
+
   return (
     <div className="profile-botanical-frame pointer-events-none absolute -inset-x-9 -inset-y-8 z-0 overflow-visible" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
@@ -342,16 +345,18 @@ export function EliasExperience() {
   const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
-    const sources = [eliasRose, eliasBowing];
-    const images = sources.map((source) => {
+    // Warm every heavy visual (character art + botanical frame layers) as soon
+    // as the experience mounts so opening the profile never waits on decoding.
+    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud];
+    sources.forEach((source) => {
       const image = new Image();
       image.decoding = "async";
       image.src = source;
       void image.decode().catch(() => undefined);
-      return image;
+      warmedImages.push(image);
     });
-    return () => images.forEach((image) => { image.src = ""; });
   }, []);
+
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
@@ -596,15 +601,16 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-        <div className="laurel-hover pointer-events-none absolute inset-[18%] z-20"><LaurelWreath /></div>
+        <div className="group relative grid h-52 w-52 place-items-center md:h-64 md:w-64">
+        <div className="laurel-hover pointer-events-none absolute inset-[-4%] z-20 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.075]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
         <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-52 w-52 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-64 md:w-64">
           <span className="absolute inset-2 rounded-full border border-primary/30" />
           <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
-          <span className="elias-title-drift flex w-full flex-col items-center justify-center px-5 text-center">
+          <span className="elias-title-drift flex w-full -translate-y-2 flex-col items-center justify-center px-5 text-center">
             <span className="block text-[7px] uppercase tracking-[.48em] text-primary md:text-[8px]">Central file</span>
-            <span className="mx-auto my-3 block h-px w-16 bg-primary/60 md:my-4 md:w-20" />
+            <span className="mx-auto my-2.5 block h-px w-16 bg-primary/60 md:my-3 md:w-20" />
             <span className="elias-signature grid w-full place-items-center font-display font-normal text-brass-soft">
               <span className="block w-full text-center text-[1.25rem] uppercase leading-none md:text-[1.65rem]">Elias</span>
               <span className="relative my-1 block h-3 w-full md:my-2">
@@ -613,9 +619,11 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
               </span>
               <span className="block w-full text-center text-[1.2rem] uppercase leading-none italic md:text-[1.58rem]">Archer</span>
             </span>
-            <span className="mx-auto mt-4 block h-px w-14 bg-primary/55 md:mt-5 md:w-16" />
+            <span className="mx-auto mt-3 block h-px w-14 bg-primary/55 md:mt-4 md:w-16" />
           </span>
         </Button>
+        </div>
+
         </div>
       </div>
       {profileOpen && <ProfilePanel onClose={() => setProfileOpen(false)} onExpand={() => { tone(420, .16, .02); setViewerOpen(true); }} />}
@@ -651,7 +659,7 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
   };
   return (
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
-      <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-5 py-5 shadow-2xl backdrop-blur-xl">
+      <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl">
         <ProfileBotanicalFrame />
         <div className="pointer-events-none absolute inset-0 z-[1] bg-card/95 backdrop-blur-xl" />
         <div className="pointer-events-none absolute inset-2 z-[2] border border-primary/25" />
@@ -659,8 +667,8 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
           <div><p className="text-[7px] uppercase tracking-[.35em] text-primary md:text-[8px]">Central profile</p><span className="mt-2 block h-px w-14 bg-primary" /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
         </div>
-        <p className="relative z-10 mt-3 font-display text-xl text-brass-soft">Elias Archer</p>
-        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative z-10 mt-3 flex h-36 w-full items-end justify-center overflow-hidden border border-primary/60 bg-background/50 md:h-40">
+        <p className="relative z-10 mt-2 font-display text-lg text-brass-soft">Elias Archer</p>
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="group relative z-10 mt-3 flex h-32 w-full items-end justify-center overflow-hidden border border-primary/60 bg-background/50 md:h-36">
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
           <img src={eliasRose} alt="Elias Archer holding a rose" loading="eager" fetchPriority="high" decoding="sync" className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.025]" />
           <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-3.5 w-3.5" /></span>
