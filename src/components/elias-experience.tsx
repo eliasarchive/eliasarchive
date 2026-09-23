@@ -526,7 +526,7 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
     { id: "backstory", label: "Backstory", numeral: "03" },
   ];
   return (
-    <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-transparent text-foreground animate-in fade-in duration-700">
+    <section className="archive-grid relative min-h-dvh overflow-hidden bg-transparent text-foreground animate-in fade-in duration-700">
       <DriftingNotes />
       <header className="relative z-30 grid border-b border-border bg-background/85 px-5 pt-4 backdrop-blur-xl md:min-h-20 md:grid-cols-[1fr_auto_1fr] md:items-center md:px-10 md:pt-0">
         <div className="pb-3 md:pb-0">
