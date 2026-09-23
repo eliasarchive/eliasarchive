@@ -261,6 +261,18 @@ export function EliasExperience() {
   const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
+    const sources = [eliasRose, eliasBowing];
+    const images = sources.map((source) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = source;
+      void image.decode().catch(() => undefined);
+      return image;
+    });
+    return () => images.forEach((image) => { image.src = ""; });
+  }, []);
+
+  useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
     let active = true;
     // Schedule the entrance sound while the context is suspended. GitHub Pages
@@ -424,17 +436,6 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
     { id: "appearance", label: "Appearance", numeral: "02" },
     { id: "backstory", label: "Backstory", numeral: "03" },
   ];
-  useEffect(() => {
-    const sources = [eliasRose, eliasBowing];
-    const images = sources.map((source) => {
-      const image = new Image();
-      image.decoding = "async";
-      image.src = source;
-      void image.decode().catch(() => undefined);
-      return image;
-    });
-    return () => images.forEach((image) => { image.src = ""; });
-  }, []);
   return (
     <section className="archive-grid grain relative min-h-dvh overflow-hidden bg-background text-foreground animate-in fade-in duration-700">
       <DriftingNotes />
