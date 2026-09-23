@@ -337,9 +337,9 @@ export function EliasExperience() {
   const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
-    // Warm every heavy visual (character art + botanical frame layers) as soon
+    // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud, nanasePortrait];
+    const sources = [eliasRose, eliasBowing, eliasBotanicalFrame, nanasePortrait];
     sources.forEach((source) => {
       const image = new Image();
       image.decoding = "async";
@@ -643,7 +643,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
            </Button>
          </div>
 
-          {profileOpen && <ProfilePanel character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />}
+          {profileOpen && <div className="profile-scale" style={{ "--profile-counter-scale": 1 / zoom } as React.CSSProperties}><ProfilePanel character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
 
         </div>
       </div>

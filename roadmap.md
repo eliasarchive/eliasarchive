@@ -62,3 +62,4 @@
 - [x] Anchor each character profile box close to the circle it belongs to
 - [x] Replace Elias’s layered frame with one newly created, correctly proportioned rose-and-vine artwork
 - [x] Add a directional animated gold glow through Elias Archer’s profile name
+- [ ] Keep character profile boxes visually proportional while the relationship chart is zoomed
