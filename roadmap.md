@@ -44,3 +44,5 @@
 - [x] Hide the right-side like meter while the mobile profile is open and tighten the card further.
 - [x] Reframe the profile with outside vines and individually unfolding roses that never overlap its text.
 - [x] Bring the relationship laurel in front of the central circle instead of hiding it behind.
+- [x] Smaller profile card, better rose placement, preload frame art
+- [x] Laurel expands on emblem hover; title raised in circle
