@@ -22,7 +22,7 @@ export const ashley = {
   name: "Ashley Archer",
   status: "Student",
   quote: "I always had immense respect for Sister, she's the one that inculpted me with the depiction of hate for people of lower estime..",
-  spoiler: "( I'm saying this so she doesn't scold me.. )",
+  spoiler: "( I'm saying this so she doesn't scold me.. ).",
 } as const;
 
 export const directionalRelationships = [

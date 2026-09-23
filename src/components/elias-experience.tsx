@@ -776,7 +776,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
     const rect = target.getBoundingClientRect();
     const panelWidth = window.innerWidth < 768 ? 172 : 240;
     const preferredRight = rect.right + 12;
-    const side = preferredRight + panelWidth <= window.innerWidth - 8 ? "right" : "left";
+    const side = character === "ashley" ? "left" : preferredRight + panelWidth <= window.innerWidth - 8 ? "right" : "left";
     profileTargetRef.current = target;
     profileSideRef.current = side;
     positionProfile(target, side, true);
