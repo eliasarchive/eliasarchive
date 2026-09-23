@@ -227,7 +227,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .profile-vine-glint { animation: vine-shimmer 13s ease-in-out 2.5s infinite; }
 .grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .12; mix-blend-mode: soft-light; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"); }
 .vignette { box-shadow: inset 0 0 16vw 5vw var(--ink); }
-.manor-entrance-foreground { filter: drop-shadow(0 10px 15px color-mix(in oklab,var(--ink) 78%,transparent)); }
+.manor-entrance-foreground { filter: drop-shadow(0 2px 1px color-mix(in oklab,var(--ink) 92%,transparent)); }
 .archive-grid { background-image: linear-gradient(color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--brass) 8%, transparent) 1px, transparent 1px); background-size: 48px 48px; }
 .relationship-line { height: 1px; background: currentColor; position: relative; overflow: hidden; }
 .relationship-line::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 7px, var(--background) 7px 11px); }
