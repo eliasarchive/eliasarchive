@@ -77,3 +77,4 @@
 - [x] Profile box stays fixed while dragging; smoother drag
 - [x] Keep profile boxes attached to their character while dragging, while preserving a constant on-screen box size at every zoom
 - [x] Replace every AI-generated opening manor image with a credited real Harlaxton Manor photo set, retain rain as an overlay, and move terminal access onto the final room's desk
+- [ ] Replace the manor scenes after the user provides their chosen images; final room image must visibly include a PC. Blocked: awaiting user images.
