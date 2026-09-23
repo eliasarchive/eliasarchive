@@ -84,5 +84,5 @@
 - [x] Replace synthesized indoor rain with real online roof/window recordings and make final-room rain clearly visible only behind the window.
 - [x] Replace outdoor-sounding ambience with true indoor recordings and composite the room rain behind cut-out window panes.
 
-- [ ] Put the room rain visually behind preserved window glass and use the user-selected YouTube room audio.
-- [ ] Start the selected room rain recording at 10 seconds so rain is immediate.
+- [x] Put the room rain visually behind preserved window glass and use the user-selected YouTube room audio.
+- [x] Start the selected room rain recording at 10 seconds so rain is immediate.
