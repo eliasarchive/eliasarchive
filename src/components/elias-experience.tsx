@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
@@ -554,6 +555,7 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
 function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: number, volume?: number) => void }) {
   const [profileOpen, setProfileOpenRaw] = useState<"elias" | "nanase" | null>(null);
   const [profileLeaving, setProfileLeaving] = useState(false);
+  const [profileAnchor, setProfileAnchor] = useState({ x: 0, y: 0 });
   const profileTimer = useRef<number | undefined>(undefined);
   const setProfileOpen = (next: "elias" | "nanase" | null | ((open: "elias" | "nanase" | null) => "elias" | "nanase" | null)) => {
     const value = typeof next === "function" ? next(profileOpen) : next;
@@ -564,6 +566,22 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
       profileTimer.current = window.setTimeout(() => { setProfileOpenRaw(null); setProfileLeaving(false); }, 240);
     } else { setProfileLeaving(false); setProfileOpenRaw(value); }
   };
+  const toggleProfile = (character: "elias" | "nanase", target: HTMLElement) => {
+    if (profileOpen === character) {
+      setProfileOpen(null);
+      return;
+    }
+    const rect = target.getBoundingClientRect();
+    const panelWidth = window.innerWidth < 768 ? 172 : 240;
+    const panelHalfHeight = window.innerWidth < 768 ? 145 : 178;
+    const preferredRight = rect.right + 12;
+    const x = preferredRight + panelWidth <= window.innerWidth - 8
+      ? preferredRight
+      : Math.max(8, rect.left - panelWidth - 12);
+    const y = Math.min(window.innerHeight - panelHalfHeight - 8, Math.max(panelHalfHeight + 8, rect.top + rect.height / 2));
+    setProfileAnchor({ x, y });
+    setProfileOpen(character);
+  };
   const [viewerOpen, setViewerOpen] = useState<"elias" | "nanase" | null>(null);
   const [hoveredNode, setHoveredNode] = useState<"elias" | "nanase" | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -572,8 +590,6 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const viewRef = useRef({ offset, zoom });
   const orbitRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
-  const anchorRef = useRef<{ key: string; x: number; y: number } | null>(null);
-  if (!profileOpen && anchorRef.current) anchorRef.current = null;
   const rafRef = useRef<number | null>(null);
   const pendingRef = useRef<{ x: number; y: number } | null>(null);
   const onDragMove = (clientX: number, clientY: number) => {
@@ -632,7 +648,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
       <div className="mx-auto flex max-w-7xl items-start justify-between gap-8">
         <div><p className="text-[9px] uppercase tracking-[.35em] text-primary">Network index</p><h2 className="mt-2 font-display text-4xl md:text-6xl">Relationship Chart</h2></div>
       </div>
-       <div ref={viewportRef} className="relative mx-auto h-[50vh] min-h-[420px] max-w-5xl touch-none cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { if ((event.target as HTMLElement).closest("button, [role='dialog']")) return; drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => onDragMove(event.clientX, event.clientY)} onPointerUp={endDrag} onPointerCancel={endDrag}>
+       <div ref={viewportRef} className="relative mx-auto h-[50vh] min-h-[420px] max-w-5xl touch-none select-none cursor-grab overflow-hidden border-y border-border active:cursor-grabbing" onPointerDown={(event) => { if ((event.target as HTMLElement).closest("button, [role='dialog']")) return; drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => onDragMove(event.clientX, event.clientY)} onPointerUp={endDrag} onPointerCancel={endDrag}>
         <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 text-[8px] uppercase tracking-[.22em] text-muted-foreground"><Move className="h-3 w-3" /> Drag · scroll to zoom</div>
         <div className="absolute right-4 top-4 z-40 flex gap-1" onPointerDown={(event) => event.stopPropagation()}>
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
@@ -655,7 +671,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
            <div onPointerEnter={() => setHoveredNode("elias")} onPointerLeave={() => setHoveredNode(null)} className="elias-node group absolute left-1/2 top-1/2 z-30 grid h-40 w-40 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-52 md:w-52">
         <div className="laurel-hover pointer-events-none absolute inset-[-4%] z-20 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.075]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
-         <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => open === "elias" ? null : "elias"); }} className="relationship-emblem group relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-52 md:w-52">
+          <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(330, .18, .025); toggleProfile("elias", event.currentTarget); }} className="relationship-emblem group relative z-10 grid h-40 w-40 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-52 md:w-52">
           <span className="absolute inset-2 rounded-full border border-primary/30" />
           <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
@@ -677,7 +693,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
 
           <div onPointerEnter={() => setHoveredNode("nanase")} onPointerLeave={() => setHoveredNode(null)} className="nanase-node group absolute left-[77%] top-[22%] z-30 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-28 md:w-28">
             <div className="nanase-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
-             <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-24 w-24 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-28 md:w-28">
+             <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(265, .2, .025); toggleProfile("nanase", event.currentTarget); }} className="nanase-emblem relative z-10 grid h-24 w-24 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-28 md:w-28">
              <span className="absolute inset-2 rounded-full border border-chart-red/30" />
              <span className="nanase-crosshair" aria-hidden="true" />
                <img src={nanaseClawLogo} alt="" className="nanase-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[78%] w-[66%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-55" />
@@ -690,19 +706,12 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
 
 
         </div>
-        {profileOpen && (() => {
-          if (!anchorRef.current || anchorRef.current.key !== profileOpen) {
-            const orbit = orbitRef.current;
-            const w = orbit?.offsetWidth ?? 768, h = orbit?.offsetHeight ?? 480;
-            const cx = (orbit?.offsetLeft ?? 0), cy = (orbit?.offsetTop ?? 0);
-            const isN = profileOpen === "nanase";
-            const md = w > 800;
-            const ax = cx + (isN ? .27 * w : 0) * zoom, ay = cy + (isN ? -.28 * h : 0) * zoom;
-            const r = (isN ? (md ? 56 : 48) + 12 : (md ? 104 : 80) + 16) * zoom;
-            anchorRef.current = { key: profileOpen, x: ax + r, y: ay };
-          }
-          return <div className="profile-anchor" style={{ "--ax": `${anchorRef.current.x}px`, "--ay": `${anchorRef.current.y}px` } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>;
-        })()}
+         {profileOpen && typeof document !== "undefined" && createPortal(
+           <div className="profile-anchor" style={{ "--ax": `${profileAnchor.x}px`, "--ay": `${profileAnchor.y}px` } as React.CSSProperties}>
+             <ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} />
+           </div>,
+           document.body,
+         )}
       </div>
       <RelationshipLegend />
       {!profileOpen && <LikeMeter tone={tone} />}

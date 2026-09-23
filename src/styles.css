@@ -247,7 +247,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes nanase-title-drift-anim { 0%,100% { transform: translate3d(0,-20px,0); } 50% { transform: translate3d(.7px,-22px,0); } }
 .profile-scale { position: absolute; inset: 0; z-index: 60; pointer-events: none; transform: scale(var(--profile-counter-scale)); transform-origin: center; }
 .profile-scale-nanase { transform-origin: 77% 22%; }
-.profile-anchor { position: absolute; inset: 0; z-index: 60; pointer-events: none; }
+.profile-anchor { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 .profile-anchor .profile-popover { pointer-events: auto; left: var(--ax); top: var(--ay); }
 .nanase-title-drift { text-shadow: 0 0 18px color-mix(in oklab,var(--chart-red) 58%,transparent); animation: nanase-title-drift-anim 11s ease-in-out infinite; }
 .nanase-profile-name { color: transparent; background-image: linear-gradient(100deg,var(--chart-red),color-mix(in oklab,var(--chart-red) 62%,#1b0205),color-mix(in oklab,var(--chart-red) 45%,var(--foreground)),color-mix(in oklab,var(--chart-red) 62%,#1b0205),var(--chart-red)); background-size: 260% 100%; background-clip: text; -webkit-background-clip: text; animation: nanase-text-glow 3.1s ease-in-out infinite; }
@@ -279,7 +279,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .view-badge { animation: badge-reveal .7s cubic-bezier(.16,1,.3,1) both; }
 
 @media (max-width: 767px) {
-  .profile-anchor .profile-popover { left: auto; right: .35rem; top: calc(8rem + 25vh); width: 10.75rem; }
+  .profile-anchor .profile-popover { width: 10.75rem; }
   .chart-orbit-profile-open { margin-left: -5.25rem; }
   .chart-orbit-profile-nanase { margin-left: -7rem; }
 }
