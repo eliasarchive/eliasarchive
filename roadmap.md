@@ -42,3 +42,5 @@
 - [x] Move the compact profile beside the emblem, raise and recenter its title, and replace the copied outline with an original realistic animated botanical frame.
 - [x] Anchor the profile beside the chart rather than the viewport, keep the emblem visible on mobile, and prevent the gold animation from obscuring its content.
 - [x] Hide the right-side like meter while the mobile profile is open and tighten the card further.
+- [ ] Reframe the profile with outside vines and individually unfolding roses that never overlap its text.
+- [ ] Bring the relationship laurel in front of the central circle instead of hiding it behind.
