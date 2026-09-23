@@ -71,3 +71,5 @@
 - [x] Use a real photo from the internet (not AI generated) for the welcome rose field
 - [x] Keep opened profile boxes the same visible size at every chart zoom level
 - [x] Replace the generated welcome rose emblem and favicon with a real internet photograph
+- [x] Replace the archive rose field background with the user's uploaded dark red field photo (faint like before)
+- [ ] Fix profile box moving with the chart when dragging on mobile
