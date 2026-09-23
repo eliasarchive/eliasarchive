@@ -91,3 +91,4 @@
 - [x] Rebuild only the last-room window with heavy pane-masked outside rain and separate pane-masked glass droplets, beneath every frame and room object.
 - [x] Keep the photographed glass partly transparent so rain shows through its tint, with frames fully opaque.
 - [x] Rebuild the final-room exterior rain as optically softened depth layers and replace circular glass bubbles with organic water beads and trails.
+- [x] Remove reconstructed window/exterior layers and composite rain only through the exact pane mask over the untouched uploaded room photograph.

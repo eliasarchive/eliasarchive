@@ -10,11 +10,10 @@ import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntrance from "@/assets/manor-rain-clear.jpg";
 import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
 import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
-import manorStudyAsset from "@/assets/manor-final-room.png.asset.json";
-import manorRoomInteriorAsset from "@/assets/manor-room-interior-layer.png.asset.json";
-import manorRoomGlassAsset from "@/assets/manor-room-glass-reflection.png.asset.json";
-import manorRoomExteriorAsset from "@/assets/manor-room-exterior-layer.png.asset.json";
-import manorRoomPaneMaskAsset from "@/assets/manor-room-pane-mask.png.asset.json";
+import manorStudy from "@/assets/manor-room-original.png";
+import manorRoomInterior from "@/assets/manor-room-original-foreground.png";
+import manorRoomGlass from "@/assets/manor-room-original-glass.png";
+import manorRoomPaneMask from "@/assets/manor-room-original-pane-mask.png";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -30,11 +29,6 @@ type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
 const manorStair = manorStairAsset.url;
 const manorGallery = manorGalleryAsset.url;
-const manorStudy = manorStudyAsset.url;
-const manorRoomInterior = manorRoomInteriorAsset.url;
-const manorRoomGlass = manorRoomGlassAsset.url;
-const manorRoomExterior = manorRoomExteriorAsset.url;
-const manorRoomPaneMask = manorRoomPaneMaskAsset.url;
 const roomRainVideoId = "c1XOgrBz6sU";
 
 const manorScenes = [
@@ -423,7 +417,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomExterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
+    const sources = [manorEntrance, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -540,9 +534,8 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
             <img src={current.image} alt={scene === manorScenes.length - 1 ? "The manor study with a MacBook centered on the desk" : "An empty manor hall"} width={scene === manorScenes.length - 1 ? 2692 : 1200} height={scene === manorScenes.length - 1 ? 1408 : 675} className={`${scene === manorScenes.length - 1 ? "cinematic-bedroom absolute inset-0 z-0" : "cinematic-image"} h-full w-full object-cover`} />
             {scene === manorScenes.length - 1 && (
               <>
-                <img src={manorRoomExterior} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-0 h-full w-full object-cover" aria-hidden="true" />
                 <WindowRainCanvas maskSrc={manorRoomPaneMask} className="cinematic-bedroom" layer="rain" zIndex={1} />
-                <img src={manorRoomGlass} alt="" width={2692} height={1408} className="cinematic-bedroom window-optical-glass pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
+                <img src={manorRoomGlass} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
                 <WindowRainCanvas maskSrc={manorRoomPaneMask} className="cinematic-bedroom" layer="droplets" zIndex={3} />
                 <img src={manorRoomInterior} alt="" width={2692} height={1408} className="cinematic-bedroom pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover" aria-hidden="true" />
               </>
@@ -571,9 +564,8 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
   return (
     <section className="desk-scene-enter relative h-dvh overflow-hidden bg-ink">
       <img src={manorStudy} alt="A real room in Harlaxton Manor with a writing desk" width={2692} height={1408} className={`bedroom-terminal-view absolute inset-0 z-0 h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} />
-      <img src={manorRoomExterior} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="rain" zIndex={1} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
-      <img src={manorRoomGlass} alt="" width={2692} height={1408} className={`bedroom-terminal-view window-optical-glass pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
+      <img src={manorRoomGlass} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <WindowRainCanvas maskSrc={manorRoomPaneMask} layer="droplets" zIndex={3} className={`bedroom-terminal-view ${entering ? "terminal-zoom" : ""}`} />
       <img src={manorRoomInterior} alt="" width={2692} height={1408} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <div className="vignette absolute inset-0 z-[5] bg-background/10" />
