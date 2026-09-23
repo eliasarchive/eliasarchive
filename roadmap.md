@@ -66,3 +66,5 @@
 - [x] Make profile box shrink further as chart zoom increases so it stays small when zoomed in
 - [x] Italicize and raise Elias quote, symmetric frame reveal, smoother uneven pulsing, welcome-screen rose frame
 - [x] Center Nanase Koji name within his circle (raise it)
+- [ ] Keep Nanase's profile box anchored to his circle while zooming, freeze Elias's rose frame animation, raise Nanase's name over the logo, add dark red to his name pulse
+- [ ] Add a faint, nearly full-screen rose field behind the welcome back screen
