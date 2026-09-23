@@ -40,13 +40,13 @@ function LaurelWreath() {
         <path d="M180 331C91 301 42 228 54 143 61 91 91 49 137 23" fill="none" strokeWidth="2.2" opacity=".86" />
         <path d="M180 331c89-30 138-103 126-188-7-52-37-94-83-120" fill="none" strokeWidth="2.2" opacity=".86" />
         {branchAngles.map((angle, index) => (
-          <g key={`left-${index}`} transform={`rotate(${-angle} 180 180) scale(${index < 2 ? .86 : 1})`} transformOrigin="180 180">
+          <g key={`left-${index}`} transform={`rotate(${-angle} 180 180)`}>
             <use href="#laurel-leaf-out" />
             <use href="#laurel-leaf-in" opacity=".92" />
           </g>
         ))}
         {branchAngles.map((angle, index) => (
-          <g key={`right-${index}`} transform={`translate(360 0) scale(-1 1) rotate(${-angle} 180 180) scale(${index < 2 ? .86 : 1})`} transformOrigin="180 180">
+          <g key={`right-${index}`} transform={`translate(360 0) scale(-1 1) rotate(${-angle} 180 180)`}>
             <use href="#laurel-leaf-out" />
             <use href="#laurel-leaf-in" opacity=".92" />
           </g>
