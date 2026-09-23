@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Crown, Leaf, Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
+import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
@@ -16,6 +16,7 @@ import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
+import roseEmblem from "@/assets/rose-emblem.png";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
