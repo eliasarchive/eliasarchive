@@ -525,17 +525,24 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-        <div className="laurel-hover pointer-events-none absolute inset-[1.5%]"><LaurelWreath /></div>
+        <div className="laurel-hover pointer-events-none absolute inset-[7%]"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
         <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-52 w-52 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-64 md:w-64">
           <span className="absolute inset-2 rounded-full border border-primary/30" />
           <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
-          <span className="elias-title-drift px-4 text-center">
-            <span className="block text-[7px] uppercase tracking-[.5em] text-primary md:text-[8px]">Central file</span>
-            <span className="mx-auto my-3 block h-px w-16 bg-primary/60" />
-            <span className="elias-signature block font-display text-3xl font-normal uppercase leading-[.82] text-brass-soft md:text-4xl"><span className="text-5xl md:text-6xl">E</span>lias<br /><span className="text-5xl md:text-6xl">A</span>rcher</span>
-            <span className="mx-auto mt-4 block h-px w-12 bg-primary/55" />
+          <span className="elias-title-drift flex w-full flex-col items-center px-3 text-center">
+            <span className="block text-[7px] uppercase tracking-[.48em] text-primary md:text-[8px]">Central file</span>
+            <span className="mx-auto my-3 block h-px w-16 bg-primary/60 md:my-4 md:w-20" />
+            <span className="elias-signature block w-full font-display font-normal text-brass-soft">
+              <span className="block text-[2.6rem] uppercase leading-[.9] md:text-[3.45rem]"><span className="text-[1.42em]">E</span><span className="align-[.08em]">lias</span></span>
+              <span className="relative my-1 block h-3 w-full md:my-2">
+                <span className="absolute left-1/2 top-1/2 h-px w-[74%] -translate-x-1/2 -translate-y-1/2 bg-primary/60" />
+                <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-primary bg-card" />
+              </span>
+              <span className="block text-[2.45rem] uppercase leading-[.9] md:text-[3.25rem]"><span className="text-[1.42em] italic">A</span><span className="align-[.08em]">rcher</span></span>
+            </span>
+            <span className="mx-auto mt-4 block h-px w-14 bg-primary/55 md:mt-5 md:w-16" />
           </span>
         </Button>
         </div>
