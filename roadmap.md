@@ -97,3 +97,5 @@
 - [x] Synchronize a bundled deep thunder rumble with every entrance lightning strike, including GitHub Pages.
 - [x] Refine the last-room glass droplets into a hyper-realistic photographic water effect without changing the uploaded room.
 - [x] Make last-room droplets clearly visible, individually varied, and gravity-driven with realistic sliding and trails.
+- [x] Replace the black switch after “Enter the room” with a seamless camera transition into the interactive desk view.
+- [x] Add faint, realistic floating dust to the last room without changing the uploaded photograph.
