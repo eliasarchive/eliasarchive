@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Crown, Leaf, Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
+import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { appearanceFeatures, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
@@ -16,6 +16,7 @@ import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
+import roseEmblem from "@/assets/rose-emblem.png";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -341,7 +342,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo];
+    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -503,8 +504,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
         <div className="welcome-botanical-frame" aria-hidden="true" style={{ borderImageSource: `url(${welcomeFrameSquare})` }} />
         <div className="welcome-crest relative z-10 mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
-          <Leaf className="absolute -left-4 top-9 h-8 w-8 -rotate-45 text-primary/70" /><Leaf className="absolute -right-4 top-9 h-8 w-8 rotate-45 scale-x-[-1] text-primary/70" />
-          <Crown className="h-9 w-9 text-brass-soft" strokeWidth={1.15} />
+          <img src={roseEmblem} alt="" width={816} height={816} className="welcome-rose-emblem h-16 w-16 object-contain" />
         </div>
         <p className="mb-4 text-[9px] uppercase tracking-[.45em] text-primary">Private archive</p>
         <h1 className="font-display text-5xl font-medium md:text-7xl">Welcome Back</h1>
