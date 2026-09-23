@@ -691,14 +691,17 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
 
         </div>
         {profileOpen && (() => {
-          const orbit = orbitRef.current;
-          const w = orbit?.offsetWidth ?? 768, h = orbit?.offsetHeight ?? 480;
-          const cx = (orbit?.offsetLeft ?? 0), cy = (orbit?.offsetTop ?? 0);
-          const isN = profileOpen === "nanase";
-          const md = w > 800;
-          const ax = cx + (isN ? .27 * w : 0) * zoom, ay = cy + (isN ? -.28 * h : 0) * zoom;
-          const r = (isN ? (md ? 56 : 48) + 12 : (md ? 104 : 80) + 16) * zoom;
-          return <div className="profile-anchor" style={{ "--ax": `${ax + r}px`, "--ay": `${ay}px` } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>;
+          if (!anchorRef.current || anchorRef.current.key !== profileOpen) {
+            const orbit = orbitRef.current;
+            const w = orbit?.offsetWidth ?? 768, h = orbit?.offsetHeight ?? 480;
+            const cx = (orbit?.offsetLeft ?? 0), cy = (orbit?.offsetTop ?? 0);
+            const isN = profileOpen === "nanase";
+            const md = w > 800;
+            const ax = cx + (isN ? .27 * w : 0) * zoom, ay = cy + (isN ? -.28 * h : 0) * zoom;
+            const r = (isN ? (md ? 56 : 48) + 12 : (md ? 104 : 80) + 16) * zoom;
+            anchorRef.current = { key: profileOpen, x: ax + r, y: ay };
+          }
+          return <div className="profile-anchor" style={{ "--ax": `${anchorRef.current.x}px`, "--ay": `${anchorRef.current.y}px` } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>;
         })()}
       </div>
       <RelationshipLegend />
