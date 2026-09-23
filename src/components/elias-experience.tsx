@@ -976,6 +976,7 @@ function ProfilePanel({ character, panelRef, anchor, leaving, onClose, onExpand 
   const [spoilerOpen, setSpoilerOpen] = useState(false);
   const record = isElias ? elias : isAshley ? ashley : nanase;
   const portrait = isElias ? eliasRose : isAshley ? ashleyPortrait : nanasePortrait;
+  const quote = isElias ? "This is me, what the fuck do you want me to add onto that" : isAshley ? ashley.quote : nanase.quote;
   const accentClass = isElias ? "profile-accent-elias" : isAshley ? "profile-accent-ashley" : "profile-accent-nanase";
   const closeAnimated = () => { if (!leaving) onClose(); };
   return (
@@ -1003,7 +1004,7 @@ function ProfilePanel({ character, panelRef, anchor, leaving, onClose, onExpand 
           <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-3.5 w-3.5" /></span>
         </button>
         <blockquote className="profile-quote relative z-[6] mb-2 mt-3 border-l pl-3 font-display text-sm italic leading-relaxed text-foreground">
-          “{isElias ? "This is me, what the fuck do you want me to add onto that" : record.quote}
+          “{quote}
           {isAshley && <Button variant="ghost" onClick={() => setSpoilerOpen((open) => !open)} aria-expanded={spoilerOpen} aria-label={spoilerOpen ? "Hide Ashley's concealed remark" : "Reveal Ashley's concealed remark"} className={`ashley-spoiler ml-1 inline h-auto min-h-0 rounded-none px-1 py-0 align-baseline font-display text-sm italic ${spoilerOpen ? "ashley-spoiler-open" : ""}`}>{ashley.spoiler}</Button>}”
         </blockquote>
       </div>
