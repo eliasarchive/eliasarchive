@@ -55,3 +55,4 @@
 - [x] Align thinner relationship lines between circle edges, remove arrows, and raise hover labels
 - [x] Smoothly widen each relationship line on hover
 - [x] Close line gaps, animate endpoints with circle hover, and bring Elias's frame in front
+- [ ] Improve relationship chart dragging and animate Nanase's profile name with a red inner glow
