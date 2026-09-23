@@ -74,7 +74,7 @@ function LaurelWreath() {
 
 function NanaseMark() {
   return (
-    <svg viewBox="0 0 120 112" className="nanase-mark h-20 w-20 shrink-0 md:h-24 md:w-24" aria-hidden="true">
+    <svg viewBox="0 0 120 112" className="nanase-mark h-[88%] w-[88%] shrink-0" aria-hidden="true">
       <path d="M30 92C20 70 23 39 42 11c-6 32-2 57 9 76L60 40l9 47c11-19 15-44 9-76 19 28 22 59 12 81L60 104Z" fill="none" stroke="currentColor" strokeWidth="3" />
       <path d="M42 82 31 59m20 28-5-34m23 34 5-34m4 29 11-23" fill="none" stroke="currentColor" strokeWidth="2" opacity=".72" />
     </svg>
@@ -139,15 +139,12 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
 
   return (
-    <div className="profile-botanical-frame pointer-events-none absolute -inset-2 z-[3] overflow-visible" aria-hidden="true">
+    <div className="profile-botanical-frame pointer-events-none absolute inset-0 z-[3] overflow-hidden" aria-hidden="true">
       <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
       <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
-      <div className="profile-bloom profile-bloom-lm"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bloom profile-bloom-br"><img src={profileRoseBloom} alt="" /></div>
-      <div className="profile-bloom profile-bloom-rb"><img src={profileRoseBloom} alt="" /></div>
       <div className="profile-bud profile-bud-tr"><img src={profileRoseBud} alt="" /></div>
-      <div className="profile-bud profile-bud-rm"><img src={profileRoseBud} alt="" /></div>
     </div>
   );
 }
@@ -616,8 +613,10 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
           <div className="relationship-connection absolute left-1/2 top-1/2 z-20 w-[31%] origin-left -rotate-[28deg] md:w-[33%] md:-rotate-[24deg]">
            {directionalRelationships.map((relationship, index) => (
-             <button key={relationship.id} className={`directional-link absolute inset-x-0 h-8 ${index === 0 ? "-translate-y-7" : "translate-y-5"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
-               <span className="directional-track" style={{ background: `linear-gradient(to right, ${relationship.portions[0].color} 0 ${relationship.portions[0].value}%, ${relationship.portions[1].color} ${relationship.portions[0].value}% 100%)` }} />
+              <button key={relationship.id} className={`directional-link absolute inset-x-0 h-8 ${index === 0 ? "-translate-y-7" : "translate-y-5"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
+                <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
+                  {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
+                </span>
                <span className={`direction-arrow direction-arrow-${relationship.direction}`} aria-hidden="true" />
                <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span>{relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(" · ")}</span></span>
              </button>
@@ -646,15 +645,15 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         </Button>
         </div>
 
-          <div className="group absolute left-[77%] top-[22%] z-30 grid h-32 w-32 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-40 md:w-40">
-           <div className="nanase-rings pointer-events-none absolute -inset-5 rounded-full" aria-hidden="true" />
-            <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-32 w-32 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-40 md:w-40">
+          <div className="group absolute left-[77%] top-[22%] z-30 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center md:h-28 md:w-28">
+            <div className="nanase-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
+             <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(265, .2, .025); setProfileOpen((open) => open === "nanase" ? null : "nanase"); }} className="nanase-emblem relative z-10 grid h-24 w-24 place-items-center overflow-hidden whitespace-normal rounded-full border border-chart-red/70 bg-card p-0 transition duration-500 hover:scale-[1.025] md:h-28 md:w-28">
              <span className="absolute inset-2 rounded-full border border-chart-red/30" />
              <span className="nanase-crosshair" aria-hidden="true" />
-             <span className="nanase-title-drift relative z-10 flex -translate-y-1 flex-col items-center justify-center">
-               <NanaseMark />
-                <span className="font-display text-base uppercase leading-none md:text-xl">Nanase</span>
-                <span className="mt-1 font-display text-sm uppercase leading-none md:text-lg">Koji</span>
+              <span className="pointer-events-none absolute inset-2 z-0 grid place-items-center opacity-55"><NanaseMark /></span>
+              <span className="nanase-title-drift relative z-10 flex flex-col items-center justify-center">
+                 <span className="font-display text-xs uppercase leading-none md:text-sm">Nanase</span>
+                 <span className="mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Koji</span>
              </span>
            </Button>
          </div>
