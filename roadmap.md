@@ -73,3 +73,4 @@
 - [x] Replace the generated welcome rose emblem and favicon with a real internet photograph
 - [x] Replace the archive rose field background with the user's uploaded dark red field photo (faint like before)
 - [x] Fix profile box moving with the chart when dragging on mobile — box stays fixed (0px movement) on desktop and mobile, verified in browser
+[x] Moved every image out of CDN pointers into real files in the repo so GitHub shows them all
