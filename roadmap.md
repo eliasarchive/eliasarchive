@@ -88,3 +88,4 @@
 - [x] Start the selected room rain recording at 10 seconds so rain is immediate.
 - [x] Rebuild the final-room window as exact pane-masked layers with rain behind the glass and room.
 - [x] Make the manor entrance rain denser and faster.
+- [ ] Rebuild only the last-room window with heavy pane-masked outside rain and separate pane-masked glass droplets, beneath every frame and room object.
