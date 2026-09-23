@@ -342,16 +342,18 @@ export function EliasExperience() {
   const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
-    const sources = [eliasRose, eliasBowing];
-    const images = sources.map((source) => {
+    // Warm every heavy visual (character art + botanical frame layers) as soon
+    // as the experience mounts so opening the profile never waits on decoding.
+    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud];
+    sources.forEach((source) => {
       const image = new Image();
       image.decoding = "async";
       image.src = source;
       void image.decode().catch(() => undefined);
-      return image;
+      warmedImages.push(image);
     });
-    return () => images.forEach((image) => { image.src = ""; });
   }, []);
+
 
   useEffect(() => {
     if (stage !== "manor" || scene !== 0) return;
