@@ -11,7 +11,9 @@ import manorTurn from "@/assets/manor-turn.jpg";
 import eliasBedroom from "@/assets/elias-bedroom.jpg";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
-import profileBotanicalFrame from "@/assets/profile-botanical-frame.png";
+import profileGoldVines from "@/assets/profile-gold-vines.png";
+import profileRoseBloom from "@/assets/profile-rose-bloom.png";
+import profileRoseBud from "@/assets/profile-rose-bud.png";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
@@ -119,6 +121,21 @@ function ProfileVines() {
       </g>
       <rect className="profile-vine-glint" x="-180" y="-100" width="110" height="900" fill="url(#vine-gold)" opacity=".18" transform="rotate(15 280 330)" />
     </svg>
+  );
+}
+
+function ProfileBotanicalFrame() {
+  return (
+    <div className="profile-botanical-frame pointer-events-none absolute -inset-x-9 -inset-y-8 z-20 overflow-visible" aria-hidden="true">
+      <img src={profileGoldVines} alt="" className="profile-gold-vines absolute inset-0 h-full w-full object-fill" />
+      <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
+      <div className="profile-bloom profile-bloom-lm"><img src={profileRoseBloom} alt="" /></div>
+      <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
+      <div className="profile-bloom profile-bloom-br"><img src={profileRoseBloom} alt="" /></div>
+      <div className="profile-bloom profile-bloom-rb"><img src={profileRoseBloom} alt="" /></div>
+      <div className="profile-bud profile-bud-tr"><img src={profileRoseBud} alt="" /></div>
+      <div className="profile-bud profile-bud-rm"><img src={profileRoseBud} alt="" /></div>
+    </div>
   );
 }
 
@@ -579,7 +596,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-        <div className="laurel-hover pointer-events-none absolute inset-[18%]"><LaurelWreath /></div>
+        <div className="laurel-hover pointer-events-none absolute inset-[18%] z-20"><LaurelWreath /></div>
         <div className="crest-glint pointer-events-none absolute inset-0 rounded-full" aria-hidden="true" />
         <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={() => { tone(330, .18, .025); setProfileOpen((open) => !open); }} className="relationship-emblem group relative z-10 grid h-52 w-52 place-items-center overflow-hidden whitespace-normal rounded-full border border-primary/70 bg-card p-0 text-brass-soft transition duration-500 hover:scale-[1.025] hover:border-primary hover:bg-primary/10 hover:text-brass-soft md:h-64 md:w-64">
           <span className="absolute inset-2 rounded-full border border-primary/30" />
@@ -635,9 +652,7 @@ function ProfilePanel({ onClose, onExpand }: { onClose: () => void; onExpand: ()
   return (
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label="Elias Archer profile">
       <div className="profile-card-shell relative border border-primary/75 bg-card/95 px-5 py-5 shadow-2xl backdrop-blur-xl">
-        <div className="profile-frame-growth pointer-events-none absolute -inset-10 z-20" aria-hidden="true">
-          <img src={profileBotanicalFrame} alt="" width={1024} height={1024} loading="eager" className="profile-rose-frame h-full w-full object-fill" />
-        </div>
+        <ProfileBotanicalFrame />
         <div className="pointer-events-none absolute inset-2 border border-primary/25" />
         <div className="relative z-10 flex items-start justify-between">
           <div><p className="text-[7px] uppercase tracking-[.35em] text-primary md:text-[8px]">Central profile</p><span className="mt-2 block h-px w-14 bg-primary" /></div>
