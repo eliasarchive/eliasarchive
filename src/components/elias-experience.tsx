@@ -11,9 +11,7 @@ import manorTurn from "@/assets/manor-turn.jpg";
 import eliasBedroom from "@/assets/elias-bedroom.jpg";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
-import profileGoldVines from "@/assets/profile-gold-vines.png";
-import profileRoseBloom from "@/assets/profile-rose-bloom.png";
-import profileRoseBud from "@/assets/profile-rose-bud.png";
+import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 
@@ -131,15 +129,7 @@ const warmedImages: HTMLImageElement[] = [];
 function ProfileBotanicalFrame() {
   return (
     <div className="profile-botanical-frame pointer-events-none absolute z-[7] overflow-visible" aria-hidden="true">
-      <span className="profile-frame-line absolute inset-0" />
-      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-tl" />
-      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-tr" />
-      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-bl" />
-      <img src={profileGoldVines} alt="" className="profile-corner-vine profile-corner-vine-br" />
-      <div className="profile-bloom profile-bloom-tl"><img src={profileRoseBloom} alt="" /></div>
-      <div className="profile-bloom profile-bloom-bl"><img src={profileRoseBloom} alt="" /></div>
-      <div className="profile-bloom profile-bloom-br"><img src={profileRoseBloom} alt="" /></div>
-      <div className="profile-bud profile-bud-tr"><img src={profileRoseBud} alt="" /></div>
+      <img src={eliasBotanicalFrame} alt="" width={1024} height={1408} className="profile-botanical-art h-full w-full" />
     </div>
   );
 }
@@ -347,9 +337,9 @@ export function EliasExperience() {
   const { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
-    // Warm every heavy visual (character art + botanical frame layers) as soon
+    // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [eliasRose, eliasBowing, profileGoldVines, profileRoseBloom, profileRoseBud, nanasePortrait];
+    const sources = [eliasRose, eliasBowing, eliasBotanicalFrame, nanasePortrait];
     sources.forEach((source) => {
       const image = new Image();
       image.decoding = "async";
@@ -700,7 +690,7 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
           <div><p className={`text-[7px] uppercase md:text-[8px] ${isElias ? "text-primary" : "text-chart-red"}`}>Central profile</p><span className={`mt-2 block h-px w-14 ${isElias ? "bg-primary" : "bg-chart-red"}`} /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
         </div>
-        <p className={`relative z-10 mt-2 font-display text-lg ${isElias ? "text-brass-soft" : "nanase-profile-name text-chart-red"}`}>{record.name}</p>
+        <p className={`relative z-10 mt-2 font-display text-lg ${isElias ? "elias-profile-name" : "nanase-profile-name text-chart-red"}`}>{record.name}</p>
         <p className={`status-shimmer relative z-10 mt-1 text-[8px] uppercase ${isElias ? "status-silver" : "status-gold"}`}>Status: {record.status}</p>
         <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className={`group relative z-10 mt-3 flex h-32 w-full items-end justify-center overflow-hidden border bg-background/50 md:h-36 ${isElias ? "border-primary/60" : "border-chart-red/60"}`}>
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
