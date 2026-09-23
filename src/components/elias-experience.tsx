@@ -341,14 +341,19 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [eliasRose, eliasBowing, eliasBotanicalFrame, nanasePortrait];
+    const sources = [manorEntrance, manorCorridor, manorTurn, eliasBedroom, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo];
     sources.forEach((source) => {
+      const link = document.createElement("link");
+      link.rel = "preload"; link.as = "image"; link.href = source;
+      link.setAttribute("fetchpriority", "high");
+      document.head.appendChild(link);
       const image = new Image();
       image.decoding = "async";
       image.src = source;
       void image.decode().catch(() => undefined);
       warmedImages.push(image);
     });
+    void fetch(manorEntranceRain).catch(() => undefined);
   }, []);
 
 
