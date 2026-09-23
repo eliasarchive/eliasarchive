@@ -124,8 +124,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes botanical-grow { 0% { clip-path: inset(0 48% 94% 48%); opacity: 0; transform: scale(.97); } 42% { clip-path: inset(0 0 48% 0); opacity: 1; } 100% { clip-path: inset(0); opacity: 1; transform: scale(1); } }
 @keyframes botanical-glint { 0%,78%,100% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } 84% { filter: drop-shadow(0 5px 13px color-mix(in oklab,var(--brass-soft) 32%,transparent)) brightness(1.16); } 90% { filter: drop-shadow(0 5px 10px color-mix(in oklab,var(--ink) 82%,transparent)) brightness(1); } }
 @keyframes frame-fit-reveal { from { opacity: 0; transform: scale(.94); filter: blur(3px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
-@keyframes frame-line-draw { from { clip-path: inset(0 50% 100% 50%); opacity: 0; } 48% { clip-path: inset(0 0 52% 0); opacity: 1; } to { clip-path: inset(0); opacity: 1; } }
-@keyframes corner-vine-grow { from { opacity: 0; transform: scale(.78); } to { opacity: 1; transform: scale(1); } }
+@keyframes botanical-art-reveal { 0% { clip-path: inset(0 50% 96% 50%); opacity: 0; transform: scale(.96); filter: blur(4px) brightness(.65); } 45% { clip-path: inset(0 0 48% 0); opacity: 1; } 100% { clip-path: inset(0); opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } }
+@keyframes elias-name-glow { 0%,100% { background-position: 120% 50%; text-shadow: 0 0 4px color-mix(in oklab,var(--brass) 28%,transparent); filter: brightness(.9); } 50% { background-position: -20% 50%; text-shadow: 0 0 7px var(--brass-soft),0 0 17px color-mix(in oklab,var(--brass-soft) 58%,transparent); filter: brightness(1.42); } }
 @keyframes nanase-pulse { 0%,100% { opacity: .42; transform: scale(1) rotate(0); } 50% { opacity: .78; transform: scale(1.025) rotate(.5deg); } }
 @keyframes status-shine { 0%,72%,100% { background-position: 140% 0; } 82% { background-position: -40% 0; } }
 
@@ -200,21 +200,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .profile-card-shell { box-shadow: 0 24px 80px color-mix(in oklab,var(--ink) 78%,transparent), inset 0 0 50px color-mix(in oklab,var(--brass) 5%,transparent); }
 .profile-frame-growth { animation: botanical-grow 1.65s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 1.65s infinite; }
 .profile-rose-frame { animation: botanical-glint 13s ease-in-out 2s infinite; }
-.profile-botanical-frame { inset: -.55rem; animation: frame-fit-reveal 1.15s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 2.6s infinite; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
-.profile-frame-line { border: 1px solid color-mix(in oklab,var(--brass-soft) 82%,transparent); box-shadow: inset 0 0 0 3px color-mix(in oklab,var(--brass) 12%,transparent),0 0 12px color-mix(in oklab,var(--brass) 12%,transparent); animation: frame-line-draw 1.15s cubic-bezier(.16,1,.3,1) both; }
-.profile-corner-vine { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: fill; opacity: 0; filter: drop-shadow(0 5px 7px color-mix(in oklab,var(--ink) 72%,transparent)); animation: corner-vine-grow 1.55s cubic-bezier(.16,1,.3,1) forwards, botanical-glint 13s ease-in-out 2.2s infinite; }
-.profile-corner-vine-tl { clip-path: polygon(0 0,32% 0,22% 7%,14% 15%,8% 25%,0 32%); animation-delay: .08s,2.2s; }
-.profile-corner-vine-tr { clip-path: polygon(68% 0,100% 0,100% 32%,92% 25%,86% 15%,78% 7%); animation-delay: .22s,2.2s; }
-.profile-corner-vine-bl { clip-path: polygon(0 68%,8% 75%,14% 85%,22% 93%,32% 100%,0 100%); animation-delay: .38s,2.2s; }
-.profile-corner-vine-br { clip-path: polygon(100% 68%,100% 100%,68% 100%,78% 93%,86% 85%,92% 75%); animation-delay: .5s,2.2s; }
-.profile-bloom,.profile-bud { position: absolute; z-index: 2; transform-origin: 50% 65%; }
-.profile-bloom img,.profile-bud img { display: block; height: 100%; width: 100%; object-fit: contain; }
-.profile-bloom { height: 3.8rem; width: 3.8rem; opacity: 0; animation: rose-bloom 1.35s cubic-bezier(.16,1,.3,1) forwards; }
-.profile-bud { height: 2.35rem; width: 1.8rem; opacity: 0; animation: rose-bud-open 1.1s cubic-bezier(.16,1,.3,1) forwards; }
-.profile-bloom-tl { left: -1.8rem; top: -1.65rem; animation-delay: .35s; }
-.profile-bloom-bl { bottom: -1.7rem; left: -1.65rem; height: 3.45rem; width: 3.45rem; animation-delay: .85s; }
-.profile-bloom-br { bottom: -1.9rem; right: -1.75rem; height: 4rem; width: 4rem; animation-delay: 1s; }
-.profile-bud-tr { right: -.5rem; top: -.65rem; animation-delay: .75s; }
+.profile-botanical-frame { inset: -.7rem; animation: frame-fit-reveal 1.15s cubic-bezier(.16,1,.3,1) both, vine-settle 10s ease-in-out 2.6s infinite; filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--ink) 78%,transparent)); }
+.profile-botanical-art { display: block; object-fit: fill; animation: botanical-art-reveal 1.8s cubic-bezier(.16,1,.3,1) both, botanical-glint 13s ease-in-out 2.2s infinite; }
+.elias-profile-name { color: transparent; background-image: linear-gradient(100deg,var(--brass),var(--brass-soft),color-mix(in oklab,var(--foreground) 72%,var(--brass-soft)),var(--brass-soft),var(--brass)); background-size: 240% 100%; background-clip: text; -webkit-background-clip: text; animation: elias-name-glow 2.8s ease-in-out infinite; }
 
 .profile-vines { pointer-events: none; animation: vine-settle 9s ease-in-out 2.6s infinite; filter: drop-shadow(0 4px 8px color-mix(in oklab,var(--ink) 68%,transparent)); }
 .profile-vine-stems path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: vine-grow 2.4s cubic-bezier(.2,.75,.2,1) forwards; }
