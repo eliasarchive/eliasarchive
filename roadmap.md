@@ -75,3 +75,4 @@
 - [x] Fix profile box moving with the chart when dragging on mobile — box stays fixed (0px movement) on desktop and mobile, verified in browser
 [x] Moved every image out of CDN pointers into real files in the repo so GitHub shows them all
 - [x] Profile box stays fixed while dragging; smoother drag
+- [x] Remove the last inherited positioning from profile boxes and verify zero movement during chart dragging on desktop and mobile
