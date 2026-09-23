@@ -6,16 +6,16 @@ import { appearanceFeatures, directionalRelationships, elias, nanase, relationsh
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { ManorRainCanvas } from "@/components/manor-rain-canvas";
 import { LightningCanvas } from "@/components/lightning-canvas";
-import manorEntranceForeground from "@/assets/manor-entrance-foreground.png.asset.json";
+import manorEntranceForeground from "@/assets/manor-entrance-foreground.png";
 import { WindowRainCanvas } from "@/components/window-rain-canvas";
 import { fetchViews, registerView } from "@/lib/archive-social";
 import manorEntrance from "@/assets/manor-rain-clear.jpg";
-import manorStairAsset from "@/assets/manor-hall-1.jpg.asset.json";
-import manorGalleryAsset from "@/assets/manor-hall-2.jpg.asset.json";
-import manorStudyAsset from "@/assets/elias-room-original.png.asset.json";
-import manorRoomInteriorAsset from "@/assets/elias-room-original-foreground-v2.png.asset.json";
-import manorRoomGlassAsset from "@/assets/elias-room-original-glass-v2.png.asset.json";
-import manorRoomPaneMaskAsset from "@/assets/elias-room-original-pane-mask-v2.png.asset.json";
+import manorStair from "@/assets/manor-hall-1.jpg";
+import manorGallery from "@/assets/manor-hall-2.jpg";
+import manorStudy from "@/assets/elias-room-original.png";
+import manorRoomInterior from "@/assets/elias-room-original-foreground-v2.png";
+import manorRoomGlass from "@/assets/elias-room-original-glass-v2.png";
+import manorRoomPaneMask from "@/assets/elias-room-original-pane-mask-v2.png";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
@@ -25,17 +25,11 @@ import archiveRoseField from "@/assets/archive-red-field.png";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
-import roofRainAsset from "@/assets/indoor-roof-rain.ogg.asset.json";
+import roofRain from "@/assets/indoor-roof-rain.ogg";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 
-const manorStair = manorStairAsset.url;
-const manorGallery = manorGalleryAsset.url;
 const roomRainVideoId = "c1XOgrBz6sU";
-const manorStudy = manorStudyAsset.url;
-const manorRoomInterior = manorRoomInteriorAsset.url;
-const manorRoomGlass = manorRoomGlassAsset.url;
-const manorRoomPaneMask = manorRoomPaneMaskAsset.url;
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
@@ -219,11 +213,11 @@ function useSound(enabled: boolean) {
     const ctx = ensure();
     if (!ctx || rainRef.current) return;
     if (!roofRainRef.current) {
-      const roofRain = new Audio(roofRainAsset.url);
-      roofRain.loop = true;
-      roofRain.preload = "auto";
-      roofRain.load();
-      roofRainRef.current = roofRain;
+      const roofRainAudio = new Audio(roofRain);
+      roofRainAudio.loop = true;
+      roofRainAudio.preload = "auto";
+      roofRainAudio.load();
+      roofRainRef.current = roofRainAudio;
     }
     if (!windowRainRef.current) {
       const windowRain = document.createElement("iframe");
@@ -423,7 +417,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorEntranceForeground.url, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
+    const sources = [manorEntrance, manorEntranceForeground, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -534,7 +528,7 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
           <>
             <img src={manorEntrance} alt="The manor in heavy rain" width={1376} height={768} className="h-full w-full object-cover" />
             <LightningCanvas />
-            <img src={manorEntranceForeground.url} alt="" width={1376} height={768} className="pointer-events-none absolute inset-0 h-full w-full object-cover" aria-hidden="true" />
+            <img src={manorEntranceForeground} alt="" width={1376} height={768} className="manor-entrance-foreground pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
             <ManorRainCanvas />
           </>
         ) : (
