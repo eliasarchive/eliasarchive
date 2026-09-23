@@ -133,6 +133,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .cinematic-image { animation: slow-drift 7s ease-in-out both; }
 .cinematic-bedroom { object-position: right center; transform: scale(1.01); }
 .manor-rain-video { display: block; transform: translateZ(0) scale(1.012); backface-visibility: hidden; will-change: transform; }
+.appearance-glow { background: linear-gradient(to top, color-mix(in oklab, #6b0f14 40%, transparent), color-mix(in oklab, #6b0f14 16%, transparent) 45%, transparent); }
 .appearance-enter { animation: enter-right 1s cubic-bezier(.2,.8,.2,1) both; }
 .bedroom-terminal-view { transform-origin: 74% 46%; }
 .terminal-zoom { animation: terminal-zoom 1.45s cubic-bezier(.75,0,.2,1) both; }
