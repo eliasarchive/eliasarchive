@@ -684,7 +684,7 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
   };
   return (
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover profile-popover-${character} absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label={`${record.name} profile`}>
-      <div className={`profile-card-shell relative border bg-card/95 px-4 py-4 shadow-2xl backdrop-blur-xl ${isElias ? "border-primary/75" : "border-chart-red/75"}`}>
+      <div className={`profile-card-shell relative border bg-card/95 px-5 pb-7 pt-5 shadow-2xl backdrop-blur-xl ${isElias ? "border-primary/75" : "border-chart-red/75"}`}>
         {isElias && <ProfileBotanicalFrame />}
         <div className="pointer-events-none absolute inset-0 z-[4] bg-card/95 backdrop-blur-xl" />
         <div className="pointer-events-none absolute inset-2 z-[5] border border-primary/25" />
