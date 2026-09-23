@@ -16,7 +16,7 @@ function bolt(x: number, y: number, len: number, w: number, depth = 0): Seg[] {
   return out;
 }
 
-export function LightningCanvas() {
+export function LightningCanvas({ onStrike }: { onStrike?: () => void }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current; if (!canvas) return;
@@ -26,7 +26,12 @@ export function LightningCanvas() {
     resize(); addEventListener("resize", resize);
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
-      if (t > next) { start = t; next = t + 4500 + Math.random() * 6000; segs = bolt(w * (0.15 + Math.random() * 0.7), -10, h * (0.32 + Math.random() * 0.12), 2.4); }
+      if (t > next) {
+        start = t;
+        next = t + 4500 + Math.random() * 6000;
+        segs = bolt(w * (0.15 + Math.random() * 0.7), -10, h * (0.32 + Math.random() * 0.12), 2.4);
+        onStrike?.();
+      }
       const age = t - start;
       if (age < 700) {
         const flicker = age < 90 ? 1 : age < 160 ? 0.25 : age < 260 ? 0.85 : Math.max(0, 1 - (age - 260) / 440);
@@ -39,6 +44,6 @@ export function LightningCanvas() {
     };
     raf = requestAnimationFrame(draw);
     return () => { cancelAnimationFrame(raf); removeEventListener("resize", resize); };
-  }, []);
+  }, [onStrike]);
   return <canvas ref={ref} className="pointer-events-none absolute inset-0 z-[1] h-full w-full" aria-hidden="true" />;
 }

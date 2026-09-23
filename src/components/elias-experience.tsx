@@ -195,6 +195,51 @@ function useSound(enabled: boolean) {
     oscillator.stop(ctx.currentTime + duration + 0.02);
   }, [ensure]);
 
+  const thunder = useCallback(() => {
+    const ctx = ensure();
+    if (!ctx || ctx.state !== "running" || !enabledRef.current) return;
+    const start = ctx.currentTime + 0.06;
+    const duration = 4.4;
+    const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * duration), ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let lowNoise = 0;
+    for (let index = 0; index < data.length; index += 1) {
+      const time = index / ctx.sampleRate;
+      lowNoise = lowNoise * 0.985 + (Math.random() * 2 - 1) * 0.015;
+      const crack = time < 0.18 ? (Math.random() * 2 - 1) * Math.exp(-time * 18) : 0;
+      data[index] = lowNoise * Math.exp(-time * 0.72) * 3.2 + crack * 0.32;
+    }
+    const noise = ctx.createBufferSource();
+    const lowpass = ctx.createBiquadFilter();
+    const body = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    noise.buffer = buffer;
+    lowpass.type = "lowpass";
+    lowpass.frequency.setValueAtTime(310, start);
+    lowpass.frequency.exponentialRampToValueAtTime(95, start + duration);
+    body.type = "peaking";
+    body.frequency.value = 72;
+    body.Q.value = 0.75;
+    body.gain.value = 11;
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.34, start + 0.045);
+    gain.gain.exponentialRampToValueAtTime(0.12, start + 0.65);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    noise.connect(lowpass).connect(body).connect(gain).connect(ctx.destination);
+
+    const rumble = ctx.createOscillator();
+    const rumbleGain = ctx.createGain();
+    rumble.type = "sine";
+    rumble.frequency.setValueAtTime(48 + Math.random() * 8, start);
+    rumble.frequency.exponentialRampToValueAtTime(31, start + 2.7);
+    rumbleGain.gain.setValueAtTime(0.0001, start);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.11, start + 0.16);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.0001, start + 3.5);
+    rumble.connect(rumbleGain).connect(ctx.destination);
+    noise.start(start); noise.stop(start + duration);
+    rumble.start(start); rumble.stop(start + 3.6);
+  }, [ensure]);
+
   const beginAmbience = useCallback(() => {
     const ctx = ensure();
     if (!ctx || droneRef.current) return;
@@ -401,7 +446,7 @@ function useSound(enabled: boolean) {
     }
   }, [enabled]);
 
-  return { tone, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
+  return { tone, thunder, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
 }
 
 export function EliasExperience() {
@@ -412,7 +457,7 @@ export function EliasExperience() {
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
   const [views, setViews] = useState<number | null>(null);
-  const { tone, beginAmbience, beginJazz, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume } = useSound(!muted);
+  const { tone, thunder, beginAmbience, beginJazz, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
@@ -497,7 +542,7 @@ export function EliasExperience() {
     <main className="min-h-dvh bg-background text-foreground selection:bg-primary/30">
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
       <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
-       {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onAdvance={advanceManor} onSkip={() => { setRainScene(3); setStage("desk"); }} />}
+       {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onThunder={thunder} onAdvance={advanceManor} onSkip={() => { setRainScene(3); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
       {stage === "archive" && <div className="archive-rose-field" aria-hidden="true"><img src={archiveRoseField} alt="" className="h-full w-full object-cover" /></div>}
@@ -518,7 +563,7 @@ function SoundControl({ muted, stage, onToggle }: { muted: boolean; stage: Exper
 }
 
 
-function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: number; enteringRoom: boolean; onAdvance: () => void; onSkip: () => void }) {
+function ManorSequence({ scene, enteringRoom, onThunder, onAdvance, onSkip }: { scene: number; enteringRoom: boolean; onThunder: () => void; onAdvance: () => void; onSkip: () => void }) {
   const current = manorScenes[scene];
   if (!current) return null;
   return (
@@ -527,7 +572,7 @@ function ManorSequence({ scene, enteringRoom, onAdvance, onSkip }: { scene: numb
         {scene === 0 ? (
           <>
             <img src={manorEntrance} alt="The manor in heavy rain" width={1376} height={768} className="h-full w-full object-cover" />
-            <LightningCanvas />
+            <LightningCanvas onStrike={onThunder} />
             <img src={manorEntranceForeground} alt="" width={1376} height={768} className="manor-entrance-foreground pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover" aria-hidden="true" />
             <ManorRainCanvas />
           </>
