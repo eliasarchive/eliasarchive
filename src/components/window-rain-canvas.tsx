@@ -63,7 +63,7 @@ export function WindowRainCanvas({ maskSrc, className = "", layer = "rain", zInd
         y: initial ? box.top + Math.random() * box.h : box.top - Math.random() * box.h * 0.25,
         speed: (220 + depth * 580) * scale,
         length: (2.5 + depth * 8 + Math.random() * 5) * scale,
-        alpha: 0.035 + depth * 0.12,
+        alpha: 0.12 + depth * 0.33,
         width: (0.45 + depth * 0.9) * scale,
         drift: -0.055 - Math.random() * 0.035,
         depth,
