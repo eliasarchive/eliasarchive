@@ -12,7 +12,7 @@ import eliasBedroom from "@/assets/elias-bedroom.jpg";
 import eliasRose from "@/assets/elias-rose-cutout.png";
 import eliasBowing from "@/assets/elias-bowing-cutout.png";
 import eliasBotanicalFrame from "@/assets/elias-botanical-frame.png";
-import welcomeBotanicalFrame from "@/assets/welcome-botanical-frame.png";
+import welcomeFrameSquare from "@/assets/welcome-frame-square.png";
 import welcomeRoseField from "@/assets/welcome-rose-field.jpg";
 import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
@@ -495,7 +495,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
       <div className="absolute inset-3 border border-primary/20 md:inset-8" />
       <div className="absolute inset-x-3 top-3 flex h-9 items-center justify-between border-b border-primary/20 bg-background/60 px-4 text-[7px] uppercase tracking-[.25em] text-muted-foreground backdrop-blur-md md:inset-x-8 md:top-8"><span>Archer OS</span><span>Private computer · Secure session</span></div>
       <div className="relative flex min-h-[28rem] w-[min(90vw,38rem)] flex-col items-center justify-center border border-primary/25 bg-background/65 px-5 py-10 shadow-2xl backdrop-blur-xl" style={{ transform: `translate(${position.x * 10}px, ${position.y * 8}px)` }}>
-        <div className="welcome-botanical-frame" aria-hidden="true"><img src={welcomeBotanicalFrame} alt="" width={1536} height={1024} className="h-full w-full" /></div>
+        <div className="welcome-botanical-frame" aria-hidden="true" style={{ borderImageSource: `url(${welcomeFrameSquare})` }} />
         <div className="welcome-crest relative z-10 mb-8 grid h-28 w-28 place-items-center rounded-full border border-primary/50" aria-hidden="true">
           <div className="crest-rotate absolute inset-[-9px] rounded-full border border-dashed border-primary/35" />
           <Leaf className="absolute -left-4 top-9 h-8 w-8 -rotate-45 text-primary/70" /><Leaf className="absolute -right-4 top-9 h-8 w-8 rotate-45 scale-x-[-1] text-primary/70" />
@@ -545,7 +545,18 @@ function Archive({ section, onSection, tone, views }: { section: ArchiveSection;
 }
 
 function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: number, volume?: number) => void }) {
-  const [profileOpen, setProfileOpen] = useState<"elias" | "nanase" | null>(null);
+  const [profileOpen, setProfileOpenRaw] = useState<"elias" | "nanase" | null>(null);
+  const [profileLeaving, setProfileLeaving] = useState(false);
+  const profileTimer = useRef<number | undefined>(undefined);
+  const setProfileOpen = (next: "elias" | "nanase" | null | ((open: "elias" | "nanase" | null) => "elias" | "nanase" | null)) => {
+    const value = typeof next === "function" ? next(profileOpen) : next;
+    window.clearTimeout(profileTimer.current);
+    if (value === null) {
+      if (!profileOpen) return;
+      setProfileLeaving(true);
+      profileTimer.current = window.setTimeout(() => { setProfileOpenRaw(null); setProfileLeaving(false); }, 240);
+    } else { setProfileLeaving(false); setProfileOpenRaw(value); }
+  };
   const [viewerOpen, setViewerOpen] = useState<"elias" | "nanase" | null>(null);
   const [hoveredNode, setHoveredNode] = useState<"elias" | "nanase" | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -647,7 +658,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
            </Button>
          </div>
 
-          {profileOpen && <div className={`profile-scale profile-scale-${profileOpen}`} style={{ "--profile-counter-scale": Math.pow(1 / zoom, 1.7) } as React.CSSProperties}><ProfilePanel character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
+          {profileOpen && <div className={`profile-scale profile-scale-${profileOpen}`} style={{ "--profile-counter-scale": Math.pow(1 / zoom, 1.7) } as React.CSSProperties}><ProfilePanel key={profileOpen} leaving={profileLeaving} character={profileOpen} onClose={() => setProfileOpen(null)} onExpand={() => { tone(420, .16, .02); setViewerOpen(profileOpen); }} /></div>}
 
         </div>
       </div>
@@ -674,34 +685,29 @@ function RelationshipLegend() {
   );
 }
 
-function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "nanase"; onClose: () => void; onExpand: () => void }) {
-  const [leaving, setLeaving] = useState(false);
+function ProfilePanel({ character, leaving, onClose, onExpand }: { character: "elias" | "nanase"; leaving: boolean; onClose: () => void; onExpand: () => void }) {
   const isElias = character === "elias";
   const record = isElias ? elias : nanase;
   const portrait = isElias ? eliasRose : nanasePortrait;
-  const closeAnimated = () => {
-    if (leaving) return;
-    setLeaving(true);
-    window.setTimeout(onClose, 240);
-  };
+  const closeAnimated = () => { if (!leaving) onClose(); };
   return (
     <div onPointerDown={(event) => event.stopPropagation()} className={`profile-popover profile-popover-${character} absolute z-[60] ${leaving ? "profile-popover-out" : "profile-popover-in"}`} role="dialog" aria-label={`${record.name} profile`}>
       <div className={`profile-card-shell relative border bg-card/95 px-5 pb-7 pt-5 shadow-2xl backdrop-blur-xl ${isElias ? "border-primary/75" : "border-chart-red/75"}`}>
         {isElias && <ProfileBotanicalFrame />}
         <div className="pointer-events-none absolute inset-0 z-[4] bg-card/95 backdrop-blur-xl" />
         <div className="pointer-events-none absolute inset-2 z-[5] border border-primary/25" />
-        <div className="relative z-10 flex items-start justify-between">
+        <div className="relative z-[6] flex items-start justify-between">
           <div><p className={`text-[7px] uppercase md:text-[8px] ${isElias ? "text-primary" : "text-chart-red"}`}>Central profile</p><span className={`mt-2 block h-px w-14 ${isElias ? "bg-primary" : "bg-chart-red"}`} /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
         </div>
-        <p className={`relative z-10 mt-2 font-display text-lg ${isElias ? "elias-profile-name" : "nanase-profile-name text-chart-red"}`}>{record.name}</p>
-        <p className={`status-shimmer relative z-10 mt-1 text-[8px] uppercase ${isElias ? "status-silver" : "status-gold"}`}>Status: {record.status}</p>
-        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className={`group relative z-10 mt-3 flex h-32 w-full items-end justify-center overflow-hidden border bg-background/50 md:h-36 ${isElias ? "border-primary/60" : "border-chart-red/60"}`}>
+        <p className={`relative z-[6] mt-2 font-display text-lg ${isElias ? "elias-profile-name" : "nanase-profile-name text-chart-red"}`}>{record.name}</p>
+        <p className={`status-shimmer relative z-[6] mt-1 text-[8px] uppercase ${isElias ? "status-silver" : "status-gold"}`}>Status: {record.status}</p>
+        <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className={`group relative z-[6] mt-3 flex h-32 w-full items-end justify-center overflow-hidden border bg-background/50 md:h-36 ${isElias ? "border-primary/60" : "border-chart-red/60"}`}>
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
           <img src={portrait} alt={isElias ? "Elias Archer holding a rose" : "Nanase Koji"} loading="eager" fetchPriority="high" decoding="sync" className={`h-full w-full transition duration-700 group-hover:scale-[1.025] ${isElias ? "object-contain" : "object-cover"}`} />
           <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-3.5 w-3.5" /></span>
         </button>
-        <blockquote className={`relative z-10 mb-2 mt-3 border-l pl-3 font-display text-sm italic leading-relaxed text-foreground ${isElias ? "border-primary" : "border-chart-red"}`}>“{isElias ? "This is me, what the fuck do you want me to add onto that" : nanase.quote}”</blockquote>
+        <blockquote className={`relative z-[6] mb-2 mt-3 border-l pl-3 font-display text-sm italic leading-relaxed text-foreground ${isElias ? "border-primary" : "border-chart-red"}`}>“{isElias ? "This is me, what the fuck do you want me to add onto that" : nanase.quote}”</blockquote>
       </div>
     </div>
   );
