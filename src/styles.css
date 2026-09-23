@@ -191,7 +191,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .emblem-crosshair::before { left: 50%; top: .5rem; bottom: .5rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 10%,transparent 10% 90%,#000 90%); }
 .emblem-crosshair::after { left: .5rem; right: .5rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 10%,transparent 10% 90%,#000 90%); }
 .profile-popover { position: absolute; left: calc(50% + 8rem); top: calc(8rem + 25vh); width: min(15rem,calc(100% - 2rem)); transform: translateY(-50%); }
-.profile-popover-nanase { left: auto; right: max(1rem,calc(50% - 26rem)); }
+.profile-popover-nanase { left: auto; right: max(1rem,calc(50% - 38rem)); }
 .profile-popover-in { animation: profile-popover-in .38s cubic-bezier(.16,1,.3,1) both; }
 .profile-popover-out { animation: profile-popover-out .24s ease-in both; pointer-events: none; }
 .profile-card-shell { box-shadow: 0 24px 80px color-mix(in oklab,var(--ink) 78%,transparent), inset 0 0 50px color-mix(in oklab,var(--brass) 5%,transparent); }
@@ -272,4 +272,5 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @media (max-width: 767px) {
   .profile-popover { left: auto; right: .35rem; top: calc(8rem + 25vh); width: 10.75rem; }
   .chart-orbit-profile-open { margin-left: -5.25rem; }
+  .chart-orbit-profile-nanase { margin-left: -10rem; }
 }

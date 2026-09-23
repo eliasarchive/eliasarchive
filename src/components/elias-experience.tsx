@@ -566,6 +566,9 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef({ offset, zoom });
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  useEffect(() => {
+    if (window.innerWidth < 768) setZoom(.68);
+  }, []);
   useEffect(() => { viewRef.current = { offset, zoom }; }, [offset, zoom]);
   const changeZoom = useCallback((nextZoom: number, clientX?: number, clientY?: number) => {
     const viewport = viewportRef.current;
@@ -607,7 +610,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <Button variant="outline" size="icon" aria-label="Zoom out relationship chart" onClick={() => { tone(185, .08, .012); changeZoom(viewRef.current.zoom / 1.2); }}><ZoomOut className="h-4 w-4" /></Button>
           <Button variant="outline" size="icon" aria-label="Zoom in relationship chart" onClick={() => { tone(245, .08, .012); changeZoom(viewRef.current.zoom * 1.2); }}><ZoomIn className="h-4 w-4" /></Button>
         </div>
-         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[22rem] w-[42rem] transition-transform duration-500 md:h-[27rem] md:w-[52rem] ${profileOpen ? "chart-orbit-profile-open" : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
+         <div className={`chart-orbit absolute left-1/2 top-1/2 h-[22rem] w-[42rem] transition-transform duration-500 md:h-[27rem] md:w-[52rem] ${profileOpen ? `chart-orbit-profile-open chart-orbit-profile-${profileOpen}` : ""}`} style={{ transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})` }}>
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
@@ -718,7 +721,7 @@ function ProfilePanel({ character, onClose, onExpand }: { character: "elias" | "
 function ImageViewer({ character, onClose }: { character: "elias" | "nanase"; onClose: () => void }) {
   const isElias = character === "elias";
   return (
-    <div className="fixed inset-0 z-[80] grid place-items-center bg-background/90 p-4 backdrop-blur-xl" role="dialog" aria-modal="true" aria-label="Enlarged image of Elias Archer" onClick={onClose}>
+    <div className="fixed inset-0 z-[80] grid place-items-center bg-background/90 p-4 backdrop-blur-xl" role="dialog" aria-modal="true" aria-label={`Enlarged image of ${isElias ? "Elias Archer" : "Nanase Koji"}`} onClick={onClose}>
       <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close image" className="absolute right-5 top-5 z-10"><X /></Button>
       <img onClick={(event) => event.stopPropagation()} src={isElias ? eliasRose : nanasePortraitAsset.url} alt={isElias ? "Elias Archer holding a rose, enlarged" : "Nanase Koji, enlarged"} className="animate-in zoom-in-95 max-h-[92dvh] max-w-[92vw] object-contain duration-500" />
     </div>
