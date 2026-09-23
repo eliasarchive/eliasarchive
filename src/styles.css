@@ -95,7 +95,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes terminal-zoom { 0% { transform: scale(1); filter: brightness(1); } 65% { transform: scale(2.4); filter: brightness(.75); } 100% { transform: scale(8); filter: brightness(2) blur(3px); opacity: 0; } }
 @keyframes archive-enter { from { opacity: 0; transform: translateY(18px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes detail-reveal { 0% { opacity: 0; transform: translateX(18px); clip-path: inset(0 100% 0 0); } 100% { opacity: 1; transform: none; clip-path: inset(0); } }
-@keyframes terminal-glow { 0%,100% { box-shadow: 0 0 0 1px color-mix(in oklab,var(--brass) 45%,transparent), 0 0 25px color-mix(in oklab,var(--brass) 12%,transparent); } 50% { box-shadow: 0 0 0 1px var(--brass), 0 0 45px color-mix(in oklab,var(--brass) 28%,transparent); } }
+@keyframes terminal-glow { 0%,100% { box-shadow: 0 0 0 1px color-mix(in oklab,var(--foreground) 40%,transparent), 0 0 13px color-mix(in oklab,var(--foreground) 8%,transparent); } 50% { box-shadow: 0 0 0 1px color-mix(in oklab,var(--foreground) 72%,transparent), 0 0 22px color-mix(in oklab,var(--foreground) 15%,transparent); } }
 @keyframes rain-fall { from { background-position: 0 -180px; } to { background-position: -38px 420px; } }
 @keyframes rain-mist { 0%,100% { opacity: .08; transform: translateX(-2%); } 50% { opacity: .18; transform: translateX(2%); } }
 @keyframes crest-spin { to { transform: rotate(360deg); } }
@@ -143,8 +143,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .welcome-transition-out { animation: welcome-transition-out .65s cubic-bezier(.65,0,.2,1) both; pointer-events: none; }
 .archive-enter { animation: archive-enter .55s cubic-bezier(.2,.8,.2,1) backwards; }
 .detail-reveal { animation: detail-reveal .35s cubic-bezier(.2,.8,.2,1) both; }
-.terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; }
-.terminal-monitor { left: 45.4%; top: 64.1%; width: 8.6%; aspect-ratio: 1.7 / 1; height: auto; transform-origin: center; }
+.terminal-hotspot { animation: terminal-glow 2.4s ease-in-out infinite; border-color: color-mix(in oklab,var(--foreground) 58%,transparent); background: transparent; color: var(--foreground); }
+.terminal-hotspot:hover { border-color: color-mix(in oklab,var(--foreground) 84%,transparent); background: color-mix(in oklab,var(--foreground) 3%,transparent); }
+.terminal-monitor { left: 40.55%; top: 61.1%; width: 13.65%; aspect-ratio: 1.53 / 1; height: auto; transform-origin: center; }
 .manor-rain-canvas { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
 .window-rain-canvas { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 .terminal-screen-lines { opacity: .45; background-image: repeating-linear-gradient(to bottom,transparent 0 4px,color-mix(in oklab,var(--primary) 12%,transparent) 4px 5px); }
@@ -175,7 +176,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .crest-rotate-reverse { animation: crest-spin 40s linear infinite reverse; }
 .feature-swift { animation: feature-swift .5s cubic-bezier(.2,.9,.2,1) both; }
 .terminal-target-open { animation: terminal-target-open .7s cubic-bezier(.16,1,.3,1) both; }
-.terminal-corner { position: absolute; z-index: 2; width: 18px; height: 18px; border-color: var(--primary); transition: width .35s ease, height .35s ease; }
+.terminal-corner { position: absolute; z-index: 2; width: 18px; height: 18px; border-color: color-mix(in oklab,var(--foreground) 72%,transparent); transition: width .35s ease, height .35s ease; }
 .terminal-hotspot:hover .terminal-corner { width: 28px; height: 28px; }
 .terminal-corner-tl { left: -2px; top: -2px; border-left-width: 2px; border-top-width: 2px; }
 .terminal-corner-tr { right: -2px; top: -2px; border-right-width: 2px; border-top-width: 2px; }
