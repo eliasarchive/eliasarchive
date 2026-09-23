@@ -103,3 +103,4 @@
 - [x] Increase dust visibility and distribute moving particles across the entire room.
 - [x] Prevent the browser scrollbar from flashing during the room-to-desk transition.
 - [x] Add Ashley Archer to the relationship chart with directional relationships, profile, spoiler quote, and pastel-pink/gold emblem.
+- [x] Reposition Ashley's hat as headwear, center her name, and realign both Ashley relationship lines between circle edges.
