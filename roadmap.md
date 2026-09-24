@@ -107,3 +107,4 @@
 
 - [ ] Add Rowan Archer to the relationship chart with directional relationships, portrait, gold-brown emblem, animated title, and overflow-safe tooltips.
 - [ ] Add the supplied pink emblem behind Ashley’s name and the supplied gold emblem behind Rowan’s name using GitHub-safe assets.
+- [ ] Place Rowan directly below Ashley and shift Ashley’s hat slightly farther right.
