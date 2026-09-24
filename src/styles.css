@@ -231,6 +231,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .crest-glint { overflow: hidden; mask-image: radial-gradient(circle,transparent 0 42%,#000 43% 52%,transparent 53%); }
 .crest-glint::after { content: ""; position: absolute; inset: -35%; background: linear-gradient(105deg,transparent 43%,color-mix(in oklab,var(--brass-soft) 52%,transparent) 49%,transparent 55%); animation: gold-glint 14s ease-in-out infinite; }
 .elias-title-drift { position: relative; z-index: 2; animation: title-drift 10s ease-in-out infinite; }
+.elias-name-rose { opacity: .38; filter: saturate(1.08) contrast(1.06) drop-shadow(0 0 10px color-mix(in oklab,var(--chart-red) 34%,transparent)); }
 .emblem-crosshair::before, .emblem-crosshair::after { content: ""; position: absolute; background: var(--primary); opacity: .55; }
 .emblem-crosshair::before { left: 50%; top: .5rem; bottom: .5rem; width: 1px; transform: translateX(-50%); mask-image: linear-gradient(to bottom,#000 0 10%,transparent 10% 90%,#000 90%); }
 .emblem-crosshair::after { left: .5rem; right: .5rem; top: 50%; height: 1px; transform: translateY(-50%); mask-image: linear-gradient(to right,#000 0 10%,transparent 10% 90%,#000 90%); }
