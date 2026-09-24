@@ -35,6 +35,8 @@
   --color-chart-gold: var(--chart-gold);
   --color-ashley-pink: var(--ashley-pink);
   --color-ashley-gold: var(--ashley-gold);
+  --color-rowan-gold: var(--rowan-gold);
+  --color-rowan-brown: var(--rowan-brown);
   --font-crest: "Cormorant Garamond", serif;
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
@@ -70,6 +72,8 @@
   --chart-gold: oklch(0.8 0.16 92);
   --ashley-pink: oklch(0.82 0.105 354);
   --ashley-gold: oklch(0.8 0.12 83);
+  --rowan-gold: oklch(0.79 0.14 82);
+  --rowan-brown: oklch(0.25 0.055 58);
   --legend-1: oklch(0.65 0.21 25);
   --legend-2: oklch(0.72 0.17 55);
   --legend-3: oklch(0.82 0.16 92);
@@ -139,6 +143,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 @keyframes ashley-orbit-glint { 0%,100% { opacity: .55; transform: rotate(0deg); } 50% { opacity: .95; transform: rotate(180deg); } }
 @keyframes ashley-name-shine { 0%,100% { background-position: 135% 50%; filter: brightness(.9); text-shadow: 0 0 5px color-mix(in oklab,var(--ashley-pink) 34%,transparent); } 42% { filter: brightness(1.24); } 58% { background-position: -35% 50%; filter: brightness(1.65); text-shadow: 0 0 6px var(--ashley-gold),0 0 17px color-mix(in oklab,var(--ashley-pink) 72%,transparent); } }
 @keyframes ashley-diamond-spark { 0%,78%,100% { opacity: .5; transform: rotate(45deg) scale(.72); } 84% { opacity: 1; transform: rotate(45deg) scale(1.25); } 90% { opacity: .72; transform: rotate(45deg) scale(.9); } }
+@keyframes rowan-name-procession { 0%,100% { transform: perspective(180px) rotateY(-3deg) translateY(1px); background-position: 130% 50%; filter: brightness(.88); } 40% { transform: perspective(180px) rotateY(2deg) translateY(-2px); filter: brightness(1.2); } 64% { transform: perspective(180px) rotateY(0) translateY(-1px); background-position: -35% 50%; filter: brightness(1.58); } }
+@keyframes rowan-ring-breathe { 0%,100% { transform: scale(1); opacity: .48; } 42% { transform: scale(1.045); opacity: .9; } 72% { transform: scale(.985); opacity: .64; } }
 @keyframes status-shine { 0%,72%,100% { background-position: 140% 0; } 82% { background-position: -40% 0; } }
 
 .cinematic-frame { animation: cinematic-in 1.6s cubic-bezier(.2,.75,.2,1) both; }
@@ -259,10 +265,13 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .relationship-line::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 7px, var(--background) 7px 11px); }
 .relationship-connection { --connection-angle: -32deg; left: calc(50% + 3.9rem); top: calc(50% - 2.43rem); width: 8.55rem; transform: rotate(var(--connection-angle)); transform-origin: left center; transition: left .35s cubic-bezier(.16,1,.3,1), top .35s cubic-bezier(.16,1,.3,1), width .35s cubic-bezier(.16,1,.3,1); }
 .relationship-connection-ashley-pair { --connection-angle: 212.94deg; left: calc(50% - 4.2rem); top: calc(50% - 2.72rem); width: 6.95rem; }
+.relationship-connection-rowan-pair { --connection-angle: 147.06deg; left: calc(50% - 4.2rem); top: calc(50% + 2.72rem); width: 7.74rem; }
 .relationship-connection-elias { left: calc(50% + 4.15rem); top: calc(50% - 2.58rem); width: 8.3rem; }
 .relationship-connection-nanase { width: 8.4rem; }
 .relationship-connection-ashley-pair.relationship-connection-elias { left: calc(50% - 4.35rem); top: calc(50% - 2.81rem); width: 6.76rem; }
 .relationship-connection-ashley-pair.relationship-connection-ashley { width: 6.76rem; }
+.relationship-connection-rowan-pair.relationship-connection-elias { left: calc(50% - 4.35rem); top: calc(50% + 2.81rem); width: 7.55rem; }
+.relationship-connection-rowan-pair.relationship-connection-rowan { width: 7.55rem; }
 .directional-link { color: var(--foreground); cursor: help; }
 .directional-track { position: absolute; left: 0; right: 0; top: 50%; display: flex; height: 3px; overflow: hidden; transform: translateY(-50%); border: 1px solid color-mix(in oklab,var(--foreground) 35%,transparent); transition: height .28s cubic-bezier(.16,1,.3,1), filter .28s ease, box-shadow .28s ease; }
 .directional-segment { display: block; height: 100%; flex: none; }
@@ -271,6 +280,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .direction-tooltip strong { color: var(--brass-soft); }
 .direction-tooltip span { margin-top: .2rem; color: var(--muted-foreground); }
 .direction-tooltip .direction-breakdown { display: flex; gap: .6rem; }
+.direction-tooltip-expanded { min-width: 20rem; max-width: min(23rem,80vw); }
+.direction-tooltip-expanded .direction-breakdown { flex-wrap: wrap; justify-content: center; row-gap: .3rem; }
 .direction-tooltip .direction-breakdown span { display: flex; align-items: center; gap: .25rem; margin: 0; white-space: nowrap; }
 .direction-tooltip i { display: inline-block; width: 1.1rem; height: 3px; }
 .directional-link:hover .directional-track,.directional-link:focus-visible .directional-track { height: 6px; filter: saturate(1.15) brightness(1.12); box-shadow: 0 0 12px color-mix(in oklab,var(--foreground) 24%,transparent); }
@@ -294,24 +305,39 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .ashley-inner-ring { border-color: color-mix(in oklab,var(--ashley-gold) 45%,transparent); }
 .ashley-rings { border: 1px solid color-mix(in oklab,var(--ashley-pink) 52%,transparent); box-shadow: inset 0 0 0 7px var(--background),inset 0 0 0 8px color-mix(in oklab,var(--ashley-gold) 42%,transparent); animation: ashley-orbit-glint 12s linear infinite; }
 .ashley-hat { filter: drop-shadow(0 0 7px color-mix(in oklab,var(--ashley-gold) 52%,transparent)); opacity: .96; transform-origin: 50% 72%; }
+.ashley-name-mark { opacity: .26; filter: drop-shadow(0 0 8px color-mix(in oklab,var(--ashley-pink) 55%,transparent)); }
 .ashley-name,.ashley-profile-name { color: transparent; background-image: linear-gradient(105deg,var(--ashley-pink),var(--ashley-gold),var(--foreground),var(--ashley-gold),var(--ashley-pink)); background-size: 270% 100%; background-clip: text; -webkit-background-clip: text; animation: ashley-name-shine 3.8s ease-in-out infinite; }
 .ashley-diamond { pointer-events: none; position: absolute; z-index: 20; width: .55rem; height: .55rem; rotate: 45deg; border: 1px solid var(--ashley-gold); background: color-mix(in oklab,var(--ashley-pink) 48%,var(--card)); box-shadow: 0 0 10px color-mix(in oklab,var(--ashley-gold) 64%,transparent); animation: ashley-diamond-spark 4.8s ease-in-out infinite; }
 .ashley-diamond-top { left: 50%; top: -.95rem; margin-left: -.275rem; }
 .ashley-diamond-right { right: -.95rem; top: 50%; margin-top: -.275rem; animation-delay: 1.2s; }
 .ashley-diamond-bottom { bottom: -.95rem; left: 50%; margin-left: -.275rem; animation-delay: 2.4s; }
 .ashley-diamond-left { left: -.95rem; top: 50%; margin-top: -.275rem; animation-delay: 3.6s; }
+.rowan-emblem { color: var(--rowan-gold); border-color: color-mix(in oklab,var(--rowan-gold) 78%,transparent); background: radial-gradient(circle at 50% 34%,color-mix(in oklab,var(--rowan-gold) 14%,var(--card)),color-mix(in oklab,var(--rowan-brown) 72%,var(--card)) 75%); box-shadow: inset 0 0 32px color-mix(in oklab,var(--rowan-gold) 14%,transparent),0 0 38px color-mix(in oklab,var(--rowan-gold) 18%,transparent); }
+.rowan-emblem:hover { border-color: var(--rowan-gold); background-color: color-mix(in oklab,var(--rowan-gold) 7%,var(--card)); }
+.rowan-inner-ring { border-color: color-mix(in oklab,var(--rowan-gold) 42%,transparent); }
+.rowan-rings { border: 1px solid color-mix(in oklab,var(--rowan-gold) 52%,transparent); box-shadow: inset 0 0 0 7px var(--background),inset 0 0 0 8px color-mix(in oklab,var(--rowan-brown) 82%,transparent); animation: rowan-ring-breathe 7.4s ease-in-out infinite; }
+.rowan-name-mark { opacity: .31; filter: sepia(.22) saturate(.84) drop-shadow(0 0 8px color-mix(in oklab,var(--rowan-gold) 44%,transparent)); }
+.rowan-title { font-family: Georgia,"Times New Roman",serif; }
+.rowan-text-art { color: color-mix(in oklab,var(--rowan-gold) 76%,var(--rowan-brown)); font-family: Georgia,"Times New Roman",serif; font-size: 7px; line-height: 1; letter-spacing: .08em; opacity: .78; text-shadow: 0 0 6px color-mix(in oklab,var(--rowan-gold) 45%,transparent); }
+.rowan-text-art-top { margin-bottom: 4px; }
+.rowan-text-art-bottom { margin-top: 4px; }
+.rowan-name,.rowan-profile-name { color: transparent; background-image: linear-gradient(104deg,var(--rowan-brown),var(--rowan-gold),var(--brass-soft),var(--rowan-gold),var(--rowan-brown)); background-size: 280% 100%; background-clip: text; -webkit-background-clip: text; text-shadow: 0 0 8px color-mix(in oklab,var(--rowan-gold) 24%,transparent); animation: rowan-name-procession 4.6s cubic-bezier(.37,0,.63,1) infinite; }
 .profile-accent-elias { border-color: color-mix(in oklab,var(--primary) 75%,transparent); }
 .profile-accent-nanase { border-color: color-mix(in oklab,var(--chart-red) 75%,transparent); }
 .profile-accent-ashley { border-color: color-mix(in oklab,var(--ashley-pink) 70%,var(--ashley-gold)); box-shadow: 0 18px 55px color-mix(in oklab,var(--ashley-pink) 16%,var(--ink)); }
+.profile-accent-rowan { border-color: color-mix(in oklab,var(--rowan-gold) 72%,var(--rowan-brown)); box-shadow: 0 18px 55px color-mix(in oklab,var(--rowan-brown) 28%,var(--ink)); }
 .profile-accent-elias .profile-accent-text { color: var(--primary); }
 .profile-accent-nanase .profile-accent-text { color: var(--chart-red); }
 .profile-accent-ashley .profile-accent-text { color: var(--ashley-pink); }
+.profile-accent-rowan .profile-accent-text { color: var(--rowan-gold); }
 .profile-accent-elias .profile-accent-bg { background: var(--primary); }
 .profile-accent-nanase .profile-accent-bg { background: var(--chart-red); }
 .profile-accent-ashley .profile-accent-bg { background: linear-gradient(90deg,var(--ashley-pink),var(--ashley-gold)); }
+.profile-accent-rowan .profile-accent-bg { background: linear-gradient(90deg,var(--rowan-brown),var(--rowan-gold)); }
 .profile-accent-elias .profile-image-button,.profile-accent-elias .profile-quote { border-color: var(--primary); }
 .profile-accent-nanase .profile-image-button,.profile-accent-nanase .profile-quote { border-color: var(--chart-red); }
 .profile-accent-ashley .profile-image-button,.profile-accent-ashley .profile-quote { border-color: var(--ashley-pink); }
+.profile-accent-rowan .profile-image-button,.profile-accent-rowan .profile-quote { border-color: var(--rowan-gold); }
 .status-ashley { background-image: linear-gradient(105deg,var(--ashley-pink),var(--ashley-gold),var(--foreground),var(--ashley-gold),var(--ashley-pink)); }
 .ashley-spoiler { display: inline; white-space: normal; line-height: inherit; background: var(--foreground); color: transparent; text-shadow: none; transition: color .25s ease,background .25s ease; }
 .ashley-spoiler:hover,.ashley-spoiler:focus-visible { background: color-mix(in oklab,var(--foreground) 88%,var(--ashley-pink)); color: transparent; }
@@ -334,6 +360,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
   .relationship-connection-ashley-pair { --connection-angle: 211.3deg; left: calc(50% - 5.56rem); top: calc(50% - 3.38rem); width: 7.83rem; }
   .relationship-connection-ashley-pair.relationship-connection-elias { left: calc(50% - 5.78rem); top: calc(50% - 3.52rem); width: 7.56rem; }
   .relationship-connection-ashley-pair.relationship-connection-ashley { width: 7.56rem; }
+  .relationship-connection-rowan-pair { --connection-angle: 150.58deg; left: calc(50% - 5.65rem); top: calc(50% + 3.19rem); width: 7.08rem; }
+  .relationship-connection-rowan-pair.relationship-connection-elias { left: calc(50% - 5.86rem); top: calc(50% + 3.31rem); width: 6.84rem; }
+  .relationship-connection-rowan-pair.relationship-connection-rowan { width: 6.84rem; }
 }
 @keyframes drift-note-lr { from { transform: translateX(-30vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(105vw); opacity: 0; } }
 @keyframes drift-note-rl { from { transform: translateX(105vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(-30vw); opacity: 0; } }
@@ -351,6 +380,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
   .chart-orbit-profile-open { margin-left: -5.25rem; }
   .chart-orbit-profile-nanase { margin-left: -7rem; }
   .chart-orbit-profile-ashley { margin-left: 7rem; }
+  .chart-orbit-profile-rowan { margin-left: 7rem; }
 }
 
 .welcome-rose-field { pointer-events: none; position: absolute; inset: 5%; z-index: 0; opacity: .32; filter: saturate(.95) brightness(1.5) blur(.5px); mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, #000 42%, transparent 92%); -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, #000 42%, transparent 92%); animation: fade-in 1.6s ease-out both; }

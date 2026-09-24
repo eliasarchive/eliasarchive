@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties }
 import { createPortal } from "react-dom";
 import { Maximize2, Move, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { appearanceFeatures, ashley, directionalRelationships, elias, nanase, relationshipTypes, type ArchiveSection } from "@/lib/elias-data";
+import { appearanceFeatures, ashley, directionalRelationships, elias, nanase, relationshipTypes, rowan, type ArchiveSection } from "@/lib/elias-data";
 import { DriftingNotes, LikeMeter, ViewBadge } from "@/components/archive-social";
 import { ManorRainCanvas } from "@/components/manor-rain-canvas";
 import { LightningCanvas } from "@/components/lightning-canvas";
@@ -26,11 +26,14 @@ import nanasePortrait from "@/assets/nanase-koji.png";
 import nanaseClawLogo from "@/assets/nanase-claw-logo.png";
 import ashleyPortrait from "@/assets/ashley-archer.png";
 import ashleyHatEmblem from "@/assets/ashley-hat-emblem.png";
+import ashleyNameEmblem from "@/assets/ashley-name-emblem.png";
+import rowanPortrait from "@/assets/rowan-archer.png";
+import rowanNameEmblem from "@/assets/rowan-name-emblem.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
 import roofRain from "@/assets/indoor-roof-rain.ogg";
 
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
-type CharacterId = "elias" | "nanase" | "ashley";
+type CharacterId = "elias" | "nanase" | "ashley" | "rowan";
 
 const roomRainVideoId = "c1XOgrBz6sU";
 
@@ -465,7 +468,7 @@ export function EliasExperience() {
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
     // as the experience mounts so opening the profile never waits on decoding.
-    const sources = [manorEntrance, manorEntranceForeground, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, ashleyPortrait, ashleyHatEmblem, roseEmblem, archiveRoseField];
+    const sources = [manorEntrance, manorEntranceForeground, manorStair, manorGallery, manorStudy, manorRoomInterior, manorRoomGlass, manorRoomPaneMask, welcomeRoseField, welcomeFrameSquare, eliasBotanicalFrame, eliasRose, eliasBowing, nanasePortrait, nanaseClawLogo, ashleyPortrait, ashleyHatEmblem, ashleyNameEmblem, rowanPortrait, rowanNameEmblem, roseEmblem, archiveRoseField];
     sources.forEach((source) => {
       const link = document.createElement("link");
       link.rel = "preload"; link.as = "image"; link.href = source;
@@ -779,7 +782,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
     const rect = target.getBoundingClientRect();
     const panelWidth = window.innerWidth < 768 ? 172 : 240;
     const preferredRight = rect.right + 12;
-    const side = character === "ashley" ? "left" : preferredRight + panelWidth <= window.innerWidth - 8 ? "right" : "left";
+    const side = character === "ashley" || character === "rowan" ? "left" : preferredRight + panelWidth <= window.innerWidth - 8 ? "right" : "left";
     profileTargetRef.current = target;
     profileSideRef.current = side;
     positionProfile(target, side, true);
@@ -875,7 +878,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
                   {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
                 </span>
-                <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
+                <span className={`direction-tooltip ${relationship.portions.length >= 3 ? "direction-tooltip-expanded" : ""}`}><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
              </button>
            ))}
          </div>
@@ -885,7 +888,17 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
                   {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
                 </span>
-                <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
+                <span className={`direction-tooltip ${relationship.portions.length >= 3 ? "direction-tooltip-expanded" : ""}`}><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
+              </button>
+            ))}
+          </div>
+          <div className={`relationship-connection relationship-connection-rowan-pair absolute z-40 ${hoveredNode ? `relationship-connection-${hoveredNode}` : ""}`}>
+            {directionalRelationships.filter((relationship) => relationship.pair === "rowan").map((relationship, index) => (
+              <button key={relationship.id} className={`directional-link absolute inset-x-0 h-5 ${index === 0 ? "-translate-y-3" : "translate-y-1"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
+                <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
+                  {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
+                </span>
+                <span className={`direction-tooltip ${relationship.portions.length >= 3 ? "direction-tooltip-expanded" : ""}`}><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
               </button>
             ))}
           </div>
@@ -933,13 +946,28 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
             <span className="ashley-diamond ashley-diamond-left" aria-hidden="true" />
              <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(590, .2, .02); toggleProfile("ashley", event.currentTarget); }} className="ashley-emblem relative z-10 grid h-28 w-28 place-items-center overflow-visible whitespace-normal rounded-full border p-0 transition duration-500 hover:scale-[1.025] md:h-32 md:w-32">
               <span className="ashley-inner-ring absolute inset-2 rounded-full border" />
-               <img src={ashleyHatEmblem} alt="" className="ashley-hat pointer-events-none absolute left-[55%] top-[10%] z-20 w-[200%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain" />
+                <img src={ashleyHatEmblem} alt="" className="ashley-hat pointer-events-none absolute left-[58%] top-[10%] z-20 w-[200%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain" />
+                <img src={ashleyNameEmblem} alt="" className="ashley-name-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[90%] w-[90%] -translate-x-1/2 -translate-y-1/2 object-contain" />
                <span className="ashley-title relative z-10 flex flex-col items-center justify-center">
                 <span className="ashley-name font-display text-[12px] uppercase leading-none md:text-sm">Ashley</span>
                 <span className="ashley-name mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Archer</span>
               </span>
             </Button>
           </div>
+
+           <div onPointerEnter={() => setHoveredNode("rowan")} onPointerLeave={() => setHoveredNode(null)} className="rowan-node group absolute left-[23%] top-[78%] z-30 grid h-[6.5rem] w-[6.5rem] -translate-x-1/2 -translate-y-1/2 place-items-center md:h-[7.5rem] md:w-[7.5rem]">
+             <div className="rowan-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
+             <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(410, .22, .022); toggleProfile("rowan", event.currentTarget); }} className="rowan-emblem relative z-10 grid h-[6.5rem] w-[6.5rem] place-items-center overflow-hidden whitespace-normal rounded-full border p-0 transition duration-500 hover:scale-[1.025] md:h-[7.5rem] md:w-[7.5rem]">
+               <span className="rowan-inner-ring absolute inset-2 rounded-full border" />
+               <img src={rowanNameEmblem} alt="" className="rowan-name-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[96%] w-[96%] -translate-x-1/2 -translate-y-1/2 object-contain" />
+               <span className="rowan-title relative z-10 flex flex-col items-center justify-center">
+                 <span className="rowan-text-art rowan-text-art-top" aria-hidden="true">◆ ── ◇ ── ◆</span>
+                 <span className="rowan-name text-[11px] uppercase leading-none md:text-[13px]">Rowan</span>
+                 <span className="rowan-name mt-1 text-[10px] uppercase leading-none md:text-xs">Archer</span>
+                 <span className="rowan-text-art rowan-text-art-bottom" aria-hidden="true">✦ ︵ ✦</span>
+               </span>
+             </Button>
+           </div>
 
 
         </div>
@@ -976,11 +1004,12 @@ function RelationshipLegend() {
 function ProfilePanel({ character, panelRef, anchor, leaving, onClose, onExpand }: { character: CharacterId; panelRef: React.RefObject<HTMLDivElement | null>; anchor: { x: number; y: number }; leaving: boolean; onClose: () => void; onExpand: () => void }) {
   const isElias = character === "elias";
   const isAshley = character === "ashley";
+  const isRowan = character === "rowan";
   const [spoilerOpen, setSpoilerOpen] = useState(false);
-  const record = isElias ? elias : isAshley ? ashley : nanase;
-  const portrait = isElias ? eliasRose : isAshley ? ashleyPortrait : nanasePortrait;
-  const quote = isElias ? "This is me, what the fuck do you want me to add onto that" : isAshley ? ashley.quote : nanase.quote;
-  const accentClass = isElias ? "profile-accent-elias" : isAshley ? "profile-accent-ashley" : "profile-accent-nanase";
+  const record = isElias ? elias : isAshley ? ashley : isRowan ? rowan : nanase;
+  const portrait = isElias ? eliasRose : isAshley ? ashleyPortrait : isRowan ? rowanPortrait : nanasePortrait;
+  const quote = isElias ? "This is me, what the fuck do you want me to add onto that" : isAshley ? ashley.quote : isRowan ? rowan.quote : nanase.quote;
+  const accentClass = isElias ? "profile-accent-elias" : isAshley ? "profile-accent-ashley" : isRowan ? "profile-accent-rowan" : "profile-accent-nanase";
   const closeAnimated = () => { if (!leaving) onClose(); };
   return (
     <div
@@ -999,11 +1028,11 @@ function ProfilePanel({ character, panelRef, anchor, leaving, onClose, onExpand 
           <div><p className="profile-accent-text text-[7px] uppercase md:text-[8px]">Central profile</p><span className="profile-accent-bg mt-2 block h-px w-14" /></div>
           <Button variant="ghost" size="icon" onClick={(event) => { event.stopPropagation(); closeAnimated(); }} aria-label="Close profile" className="h-8 w-8 text-primary hover:bg-primary/10"><X className="h-4 w-4" /></Button>
         </div>
-        <p className={`relative z-[6] mt-2 font-display text-lg ${isElias ? "elias-profile-name" : isAshley ? "ashley-profile-name" : "nanase-profile-name"}`}>{record.name}</p>
+        <p className={`relative z-[6] mt-2 font-display text-lg ${isElias ? "elias-profile-name" : isAshley ? "ashley-profile-name" : isRowan ? "rowan-profile-name" : "nanase-profile-name"}`}>{record.name}</p>
         <p className={`status-shimmer relative z-[6] mt-1 text-[8px] uppercase ${isElias ? "status-silver" : isAshley ? "status-ashley" : "status-gold"}`}>Status: {record.status}</p>
         <button onClick={(event) => { event.stopPropagation(); onExpand(); }} className="profile-image-button group relative z-[6] mt-3 flex h-32 w-full items-end justify-center overflow-hidden border bg-background/50 md:h-36">
           <span className="pointer-events-none absolute inset-1 border border-primary/20" />
-          <img src={portrait} alt={isElias ? "Elias Archer holding a rose" : isAshley ? "Ashley Archer" : "Nanase Koji"} loading="eager" fetchPriority="high" decoding="sync" className={`h-full w-full transition duration-700 group-hover:scale-[1.025] ${isElias ? "object-contain" : "object-cover"}`} />
+          <img src={portrait} alt={isElias ? "Elias Archer holding a rose" : isAshley ? "Ashley Archer" : isRowan ? "Rowan Archer" : "Nanase Koji"} loading="eager" fetchPriority="high" decoding="sync" className={`h-full w-full transition duration-700 group-hover:scale-[1.025] ${isElias ? "object-contain" : "object-cover"}`} />
           <span className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center border border-primary/60 bg-background/75 text-primary backdrop-blur-md"><Maximize2 className="h-3.5 w-3.5" /></span>
         </button>
         <blockquote className="profile-quote relative z-[6] mb-2 mt-3 border-l pl-3 font-display text-sm italic leading-relaxed text-foreground">
@@ -1018,11 +1047,12 @@ function ProfilePanel({ character, panelRef, anchor, leaving, onClose, onExpand 
 function ImageViewer({ character, onClose }: { character: CharacterId; onClose: () => void }) {
   const isElias = character === "elias";
   const isAshley = character === "ashley";
-  const name = isElias ? "Elias Archer" : isAshley ? "Ashley Archer" : "Nanase Koji";
+  const isRowan = character === "rowan";
+  const name = isElias ? "Elias Archer" : isAshley ? "Ashley Archer" : isRowan ? "Rowan Archer" : "Nanase Koji";
   return (
     <div className="fixed inset-0 z-[80] grid place-items-center bg-background/90 p-4 backdrop-blur-xl" role="dialog" aria-modal="true" aria-label={`Enlarged image of ${name}`} onClick={onClose}>
       <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close image" className="absolute right-5 top-5 z-10"><X /></Button>
-      <img onClick={(event) => event.stopPropagation()} src={isElias ? eliasRose : isAshley ? ashleyPortrait : nanasePortrait} alt={`${name}, enlarged`} className="animate-in zoom-in-95 max-h-[92dvh] max-w-[92vw] object-contain duration-500" />
+      <img onClick={(event) => event.stopPropagation()} src={isElias ? eliasRose : isAshley ? ashleyPortrait : isRowan ? rowanPortrait : nanasePortrait} alt={`${name}, enlarged`} className="animate-in zoom-in-95 max-h-[92dvh] max-w-[92vw] object-contain duration-500" />
     </div>
   );
 }

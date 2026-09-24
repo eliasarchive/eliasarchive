@@ -25,6 +25,13 @@ export const ashley = {
   spoiler: "( I'm saying this so she doesn't scold me.. ).",
 } as const;
 
+export const rowan = {
+  id: "rowan",
+  name: "Rowan Archer",
+  status: "Student",
+  quote: "One, if not, the person I'm the closest to, even if he wasn't my brother of blood, I would have became best friends with him, I have great admiration for my older brother...",
+} as const;
+
 export const directionalRelationships = [
   {
     id: "nanase-to-elias",
@@ -70,6 +77,30 @@ export const directionalRelationships = [
       { label: "Family", value: 70, color: "var(--legend-7)" },
       { label: "Respect / Admiration", value: 20, color: "var(--legend-6)" },
       { label: "Rivalry", value: 10, color: "var(--legend-10)" },
+    ],
+  },
+  {
+    id: "rowan-to-elias",
+    pair: "rowan",
+    from: "Rowan Archer",
+    to: "Elias Archer",
+    direction: "right",
+    portions: [
+      { label: "Family", value: 10, color: "var(--legend-7)" },
+      { label: "Rivalry", value: 60, color: "var(--legend-10)" },
+      { label: "Hatred", value: 30, color: "var(--legend-1)" },
+    ],
+  },
+  {
+    id: "elias-to-rowan",
+    pair: "rowan",
+    from: "Elias Archer",
+    to: "Rowan Archer",
+    direction: "left",
+    portions: [
+      { label: "Friendship", value: 65, color: "var(--legend-2)" },
+      { label: "Trust", value: 15, color: "var(--legend-4)" },
+      { label: "Family", value: 20, color: "var(--legend-7)" },
     ],
   },
 ] as const;
