@@ -888,7 +888,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
                   {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
                 </span>
-                <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
+                <span className={`direction-tooltip ${relationship.portions.length >= 3 ? "direction-tooltip-expanded" : ""}`}><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
               </button>
             ))}
           </div>
@@ -947,7 +947,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(590, .2, .02); toggleProfile("ashley", event.currentTarget); }} className="ashley-emblem relative z-10 grid h-28 w-28 place-items-center overflow-visible whitespace-normal rounded-full border p-0 transition duration-500 hover:scale-[1.025] md:h-32 md:w-32">
               <span className="ashley-inner-ring absolute inset-2 rounded-full border" />
                 <img src={ashleyHatEmblem} alt="" className="ashley-hat pointer-events-none absolute left-[58%] top-[10%] z-20 w-[200%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain" />
-                <img src={ashleyNameEmblem} alt="" className="ashley-name-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 object-contain" />
+                <img src={ashleyNameEmblem} alt="" className="ashley-name-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[90%] w-[90%] -translate-x-1/2 -translate-y-1/2 object-contain" />
                <span className="ashley-title relative z-10 flex flex-col items-center justify-center">
                 <span className="ashley-name font-display text-[12px] uppercase leading-none md:text-sm">Ashley</span>
                 <span className="ashley-name mt-1 font-display text-[11px] uppercase leading-none md:text-xs">Archer</span>
@@ -959,10 +959,12 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              <div className="rowan-rings pointer-events-none absolute -inset-3 rounded-full" aria-hidden="true" />
              <Button variant="ghost" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { tone(410, .22, .022); toggleProfile("rowan", event.currentTarget); }} className="rowan-emblem relative z-10 grid h-[6.5rem] w-[6.5rem] place-items-center overflow-hidden whitespace-normal rounded-full border p-0 transition duration-500 hover:scale-[1.025] md:h-[7.5rem] md:w-[7.5rem]">
                <span className="rowan-inner-ring absolute inset-2 rounded-full border" />
-               <img src={rowanNameEmblem} alt="" className="rowan-name-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[82%] w-[82%] -translate-x-1/2 -translate-y-1/2 object-contain" />
+               <img src={rowanNameEmblem} alt="" className="rowan-name-mark pointer-events-none absolute left-1/2 top-1/2 z-0 h-[96%] w-[96%] -translate-x-1/2 -translate-y-1/2 object-contain" />
                <span className="rowan-title relative z-10 flex flex-col items-center justify-center">
+                 <span className="rowan-text-art rowan-text-art-top" aria-hidden="true">◆ ── ◇ ── ◆</span>
                  <span className="rowan-name text-[11px] uppercase leading-none md:text-[13px]">Rowan</span>
                  <span className="rowan-name mt-1 text-[10px] uppercase leading-none md:text-xs">Archer</span>
+                 <span className="rowan-text-art rowan-text-art-bottom" aria-hidden="true">✦ ︵ ✦</span>
                </span>
              </Button>
            </div>

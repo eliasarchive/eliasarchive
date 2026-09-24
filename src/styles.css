@@ -318,6 +318,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
 .rowan-rings { border: 1px solid color-mix(in oklab,var(--rowan-gold) 52%,transparent); box-shadow: inset 0 0 0 7px var(--background),inset 0 0 0 8px color-mix(in oklab,var(--rowan-brown) 82%,transparent); animation: rowan-ring-breathe 7.4s ease-in-out infinite; }
 .rowan-name-mark { opacity: .31; filter: sepia(.22) saturate(.84) drop-shadow(0 0 8px color-mix(in oklab,var(--rowan-gold) 44%,transparent)); }
 .rowan-title { font-family: Georgia,"Times New Roman",serif; }
+.rowan-text-art { color: color-mix(in oklab,var(--rowan-gold) 76%,var(--rowan-brown)); font-family: Georgia,"Times New Roman",serif; font-size: 7px; line-height: 1; letter-spacing: .08em; opacity: .78; text-shadow: 0 0 6px color-mix(in oklab,var(--rowan-gold) 45%,transparent); }
+.rowan-text-art-top { margin-bottom: 4px; }
+.rowan-text-art-bottom { margin-top: 4px; }
 .rowan-name,.rowan-profile-name { color: transparent; background-image: linear-gradient(104deg,var(--rowan-brown),var(--rowan-gold),var(--brass-soft),var(--rowan-gold),var(--rowan-brown)); background-size: 280% 100%; background-clip: text; -webkit-background-clip: text; text-shadow: 0 0 8px color-mix(in oklab,var(--rowan-gold) 24%,transparent); animation: rowan-name-procession 4.6s cubic-bezier(.37,0,.63,1) infinite; }
 .profile-accent-elias { border-color: color-mix(in oklab,var(--primary) 75%,transparent); }
 .profile-accent-nanase { border-color: color-mix(in oklab,var(--chart-red) 75%,transparent); }
