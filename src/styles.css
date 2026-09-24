@@ -361,9 +361,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--ring); outline-
   .relationship-connection-ashley-pair { --connection-angle: 211.3deg; left: calc(50% - 5.56rem); top: calc(50% - 3.38rem); width: 7.83rem; }
   .relationship-connection-ashley-pair.relationship-connection-elias { left: calc(50% - 5.78rem); top: calc(50% - 3.52rem); width: 7.56rem; }
   .relationship-connection-ashley-pair.relationship-connection-ashley { width: 7.56rem; }
-  .relationship-connection-rowan-pair { --connection-angle: 150.58deg; left: calc(50% - 5.65rem); top: calc(50% + 3.19rem); width: 7.08rem; }
-  .relationship-connection-rowan-pair.relationship-connection-elias { left: calc(50% - 5.86rem); top: calc(50% + 3.31rem); width: 6.84rem; }
-  .relationship-connection-rowan-pair.relationship-connection-rowan { width: 6.84rem; }
+  .relationship-connection-rowan-pair { --connection-angle: 150.58deg; left: calc(50% - 5.65rem); top: calc(50% + 3.19rem); width: 8.08rem; }
+  .relationship-connection-rowan-pair.relationship-connection-elias { left: calc(50% - 5.86rem); top: calc(50% + 3.31rem); width: 7.85rem; }
+  .relationship-connection-rowan-pair.relationship-connection-rowan { width: 8.2rem; }
 }
 @keyframes drift-note-lr { from { transform: translateX(-30vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(105vw); opacity: 0; } }
 @keyframes drift-note-rl { from { transform: translateX(105vw); opacity: 0; } 12% { opacity: .18; } 88% { opacity: .18; } to { transform: translateX(-30vw); opacity: 0; } }
