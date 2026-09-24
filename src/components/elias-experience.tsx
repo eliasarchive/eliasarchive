@@ -878,7 +878,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
                   {relationship.portions.map((portion) => <span key={portion.label} className="directional-segment" style={{ width: `${portion.value}%`, backgroundColor: portion.color }} />)}
                 </span>
-                <span className="direction-tooltip"><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
+                <span className={`direction-tooltip ${relationship.portions.length >= 3 ? "direction-tooltip-expanded" : ""}`}><strong>{relationship.from} → {relationship.to}</strong><span className="direction-breakdown">{relationship.portions.map((portion) => <span key={portion.label}><i style={{ backgroundColor: portion.color }} />{portion.value}% {portion.label}</span>)}</span></span>
              </button>
            ))}
          </div>
