@@ -111,5 +111,5 @@
 - [x] Enlarge Ashley and Rowan circle emblems so they fill their circles better.
 - [x] Add subtle decorative text art around Rowan Archer's circle name.
 - [x] Extend Ashley ↔ Elias relationship boxes so all text stays contained.
-- [ ] Add the supplied dark-red rose behind Elias Archer’s chart name and keep the creator credit beneath opened profile boxes.
-- [ ] Prevent hovering one outer character from changing unrelated relationship lines.
+- [x] Add the supplied dark-red rose behind Elias Archer’s chart name and keep the creator credit beneath opened profile boxes.
+- [x] Prevent hovering one outer character from changing unrelated relationship lines.
