@@ -11,7 +11,8 @@
 - Make connection detail boxes grow or wrap safely whenever three or more relationship types are shown.
 
 ## Placement and behavior
-- Position Rowan in the lower orbit so all four characters remain readable and the new lines stop cleanly at both circle edges.
+- Position Rowan directly below Ashley so all four characters remain readable and the new lines stop cleanly at both circle edges.
+- Shift Ashley’s hat slightly farther right while preserving its current size.
 - Preserve chart dragging, zooming, profile anchoring, mobile behavior, and image enlargement.
 - Keep the uploaded portrait and emblems as real project image files so they work on GitHub Pages.
 
