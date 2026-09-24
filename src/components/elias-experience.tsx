@@ -910,7 +910,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <span className="absolute inset-2 rounded-full border border-primary/30" />
           <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
-          <img src={eliasNameRose} alt="" className="elias-name-rose pointer-events-none absolute left-1/2 top-1/2 z-[1] h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 object-contain" />
+          <img src={eliasNameRose} alt="" className="elias-name-rose pointer-events-none absolute left-1/2 top-1/2 z-[1] h-[62%] w-[62%] -translate-x-1/2 -translate-y-1/2 object-contain" />
           <span className="elias-title-drift flex w-full -translate-y-2 flex-col items-center justify-center px-5 text-center">
             <span className="block text-[7px] uppercase tracking-[.48em] text-primary md:text-[8px]">Central file</span>
             <span className="mx-auto my-2.5 block h-px w-16 bg-primary/60 md:my-3 md:w-20" />
