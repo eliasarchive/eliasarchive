@@ -29,6 +29,7 @@ import ashleyHatEmblem from "@/assets/ashley-hat-emblem.png";
 import ashleyNameEmblem from "@/assets/ashley-name-emblem.png";
 import rowanPortrait from "@/assets/rowan-archer.png";
 import rowanNameEmblem from "@/assets/rowan-name-emblem.png";
+import eliasNameRose from "@/assets/elias-name-rose.png";
 import roseEmblem from "@/assets/real-rose-emblem.jpg";
 import roofRain from "@/assets/indoor-roof-rain.ogg";
 
@@ -547,7 +548,7 @@ export function EliasExperience() {
   return (
     <main className={`${stage === "manor" || stage === "desk" ? "fixed inset-0 overflow-hidden" : "min-h-dvh"} w-full bg-background text-foreground selection:bg-primary/30`}>
       <SoundControl muted={muted} stage={stage} onToggle={() => setMuted((value) => !value)} />
-      <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-[90] text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
+      <footer className="pointer-events-none fixed inset-x-0 bottom-2 z-0 text-center text-[8px] uppercase tracking-[.2em] text-foreground/55 mix-blend-difference">Made by @safffffffr · All rights reserved</footer>
        {stage === "manor" && <ManorSequence scene={scene} enteringRoom={enteringRoom} onThunder={thunder} onAdvance={advanceManor} onSkip={() => { setRainScene(3); setStage("desk"); }} />}
        {stage === "desk" && <DeskScene onEnter={enterComputer} entering={computerZoom} />}
       {stage === "welcome" && <WelcomeScreen onEnter={() => { tone(360, .45, .035); setStage("archive"); }} />}
@@ -872,7 +873,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
         <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute inset-[9%] rounded-full border border-primary/35" />
         <div className="pointer-events-none absolute inset-[14%] rounded-full border border-primary/20" />
-          <div className={`relationship-connection relationship-connection-nanase-pair absolute z-40 ${hoveredNode ? `relationship-connection-${hoveredNode}` : ""}`}>
+          <div className={`relationship-connection relationship-connection-nanase-pair absolute z-40 ${hoveredNode === "elias" || hoveredNode === "nanase" ? `relationship-connection-${hoveredNode}` : ""}`}>
             {directionalRelationships.filter((relationship) => relationship.pair === "nanase").map((relationship, index) => (
                <button key={relationship.id} className={`directional-link absolute inset-x-0 h-5 ${index === 0 ? "-translate-y-3" : "translate-y-1"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
@@ -882,7 +883,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
              </button>
            ))}
          </div>
-          <div className={`relationship-connection relationship-connection-ashley-pair absolute z-40 ${hoveredNode ? `relationship-connection-${hoveredNode}` : ""}`}>
+          <div className={`relationship-connection relationship-connection-ashley-pair absolute z-40 ${hoveredNode === "elias" || hoveredNode === "ashley" ? `relationship-connection-${hoveredNode}` : ""}`}>
             {directionalRelationships.filter((relationship) => relationship.pair === "ashley").map((relationship, index) => (
               <button key={relationship.id} className={`directional-link absolute inset-x-0 h-5 ${index === 0 ? "-translate-y-3" : "translate-y-1"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
@@ -892,7 +893,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
               </button>
             ))}
           </div>
-          <div className={`relationship-connection relationship-connection-rowan-pair absolute z-40 ${hoveredNode ? `relationship-connection-${hoveredNode}` : ""}`}>
+          <div className={`relationship-connection relationship-connection-rowan-pair absolute z-40 ${hoveredNode === "elias" || hoveredNode === "rowan" ? `relationship-connection-${hoveredNode}` : ""}`}>
             {directionalRelationships.filter((relationship) => relationship.pair === "rowan").map((relationship, index) => (
               <button key={relationship.id} className={`directional-link absolute inset-x-0 h-5 ${index === 0 ? "-translate-y-3" : "translate-y-1"}`} aria-label={`${relationship.from} to ${relationship.to}: ${relationship.portions.map((portion) => `${portion.value}% ${portion.label}`).join(", ")}`}>
                 <span className={`directional-track ${relationship.direction === "left" ? "flex-row-reverse" : ""}`}>
@@ -909,6 +910,7 @@ function RelationshipChart({ tone }: { tone: (frequency?: number, duration?: num
           <span className="absolute inset-2 rounded-full border border-primary/30" />
           <span className="absolute inset-[-0.7rem] rounded-full border border-primary/30" />
           <span className="emblem-crosshair" aria-hidden="true" />
+          <img src={eliasNameRose} alt="" className="elias-name-rose pointer-events-none absolute left-1/2 top-1/2 z-[1] h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 object-contain" />
           <span className="elias-title-drift flex w-full -translate-y-2 flex-col items-center justify-center px-5 text-center">
             <span className="block text-[7px] uppercase tracking-[.48em] text-primary md:text-[8px]">Central file</span>
             <span className="mx-auto my-2.5 block h-px w-16 bg-primary/60 md:my-3 md:w-20" />
