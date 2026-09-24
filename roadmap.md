@@ -113,3 +113,5 @@
 - [x] Extend Ashley ↔ Elias relationship boxes so all text stays contained.
 - [x] Add the supplied dark-red rose behind Elias Archer’s chart name and keep the creator credit beneath opened profile boxes.
 - [x] Prevent hovering one outer character from changing unrelated relationship lines.
+- [x] Close the gap between Rowan's relationship lines and his circle (desktop and mobile), and stop mobile lines from crossing onto the circles.
+- [x] Sweep for GitHub Pages bugs (real asset binaries, no stale pointers, typecheck) and verify end-to-end.
