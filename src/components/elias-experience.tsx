@@ -220,7 +220,7 @@ function useSound(enabled: boolean) {
     boom.frequency.setValueAtTime(72, t); boom.frequency.exponentialRampToValueAtTime(38, t + 1.8);
     const bg = ctx.createGain(); bg.gain.setValueAtTime(0.0001, t); bg.gain.exponentialRampToValueAtTime(0.09, t + 0.9); bg.gain.exponentialRampToValueAtTime(0.0001, t + 2);
     boom.connect(bg).connect(ctx.destination); boom.start(t); boom.stop(t + 2.1);
-    [[1.38, 1320], [1.45, 1760]].forEach(([at, f]) => {
+    ([[1.38, 1320], [1.45, 1760]] as const).forEach(([at, f]) => {
       const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.setValueAtTime(f, t + at);
       const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t + at); g.gain.exponentialRampToValueAtTime(0.035, t + at + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + at + 0.28);
       o.connect(g).connect(ctx.destination); o.start(t + at); o.stop(t + at + 0.3);
