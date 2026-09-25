@@ -36,7 +36,7 @@ import roofRain from "@/assets/indoor-roof-rain.ogg";
 type ExperienceStage = "manor" | "desk" | "welcome" | "archive";
 type CharacterId = "elias" | "nanase" | "ashley" | "rowan";
 
-const roomRainVideoId = "c1XOgrBz6sU";
+import roomRainAudio from "@/assets/room-rain.mp3";
 
 const manorScenes = [
   { image: manorEntrance, chapter: "I", title: "The entrance", note: "Approach" },
@@ -166,7 +166,7 @@ function useSound(enabled: boolean) {
   const pianoRef = useRef<number | null>(null);
   const rainRef = useRef<{ source: AudioBufferSourceNode; gain: GainNode; highpass: BiquadFilterNode; lowpass: BiquadFilterNode } | null>(null);
   const roofRainRef = useRef<HTMLAudioElement | null>(null);
-  const windowRainRef = useRef<HTMLIFrameElement | null>(null);
+  const windowRainRef = useRef<HTMLAudioElement | null>(null);
   const rainSceneRef = useRef(0);
 
 
@@ -272,14 +272,10 @@ function useSound(enabled: boolean) {
       roofRainRef.current = roofRainAudio;
     }
     if (!windowRainRef.current) {
-      const windowRain = document.createElement("iframe");
-      windowRain.src = `https://www.youtube.com/embed/${roomRainVideoId}?enablejsapi=1&autoplay=0&controls=0&disablekb=1&loop=1&playlist=${roomRainVideoId}&playsinline=1&start=10`;
-      windowRain.title = "Gentle rain on window ambience";
-      windowRain.allow = "autoplay; encrypted-media";
-      windowRain.tabIndex = -1;
-      windowRain.setAttribute("aria-hidden", "true");
-      windowRain.style.cssText = "position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;border:0;pointer-events:none";
-      document.body.appendChild(windowRain);
+      const windowRain = new Audio(roomRainAudio);
+      windowRain.loop = true;
+      windowRain.preload = "auto";
+      windowRain.load();
       windowRainRef.current = windowRain;
     }
     const length = Math.floor(ctx.sampleRate * 5);
@@ -333,12 +329,10 @@ function useSound(enabled: boolean) {
       else roofRain.pause();
     }
     if (windowRain) {
-      const command = (func: string, args: number[] = []) => windowRain.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), "https://www.youtube.com");
       if (enabledRef.current && scene === 3) {
-        command("seekTo", [10, 1]);
-        command("setVolume", [44]);
-        command("playVideo");
-      } else command("pauseVideo");
+        windowRain.volume = .44;
+        void windowRain.play().catch(() => undefined);
+      } else windowRain.pause();
     }
   }, [prepareRain]);
 
@@ -350,7 +344,7 @@ function useSound(enabled: boolean) {
     if (!ctx || !rain) return;
     rain.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4);
     roofRainRef.current?.pause();
-    windowRainRef.current?.contentWindow?.postMessage(JSON.stringify({ event: "command", func: "pauseVideo", args: [] }), "https://www.youtube.com");
+    windowRainRef.current?.pause();
     window.setTimeout(() => { try { rain.source.stop(); } catch { /* already stopped */ } }, 1600);
     rainRef.current = null;
   }, []);
@@ -448,8 +442,8 @@ function useSound(enabled: boolean) {
     if (rainRef.current) rainRef.current.gain.gain.setTargetAtTime(enabled ? 0.11 : 0.0001, ctx.currentTime, 0.2);
     if (roofRainRef.current) roofRainRef.current.volume = enabled && rainSceneRef.current === 1 ? .34 : enabled && rainSceneRef.current === 2 ? .5 : 0;
     if (windowRainRef.current) {
-      const func = enabled && rainSceneRef.current === 3 ? "playVideo" : "pauseVideo";
-      windowRainRef.current.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args: [] }), "https://www.youtube.com");
+      if (enabled && rainSceneRef.current === 3) { windowRainRef.current.volume = .44; void windowRainRef.current.play().catch(() => undefined); }
+      else windowRainRef.current.pause();
     }
   }, [enabled]);
 
