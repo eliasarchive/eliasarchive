@@ -202,6 +202,31 @@ function useSound(enabled: boolean) {
     oscillator.stop(ctx.currentTime + duration + 0.02);
   }, [ensure]);
 
+  const roomEnter = useCallback(() => {
+    const ctx = ensure();
+    if (!ctx || !enabledRef.current) return;
+    const t = ctx.currentTime + 0.02;
+    const len = 2.2;
+    const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * len), ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let low = 0;
+    for (let i = 0; i < data.length; i += 1) { low = low * 0.92 + (Math.random() * 2 - 1) * 0.08; data[i] = low * 2.4 + (Math.random() * 2 - 1) * 0.12; }
+    const noise = ctx.createBufferSource(); noise.buffer = buffer;
+    const band = ctx.createBiquadFilter(); band.type = "bandpass"; band.Q.value = 1.4;
+    band.frequency.setValueAtTime(260, t); band.frequency.exponentialRampToValueAtTime(1900, t + 1.35); band.frequency.exponentialRampToValueAtTime(500, t + 1.9);
+    const ng = ctx.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(0.16, t + 1.2); ng.gain.exponentialRampToValueAtTime(0.0001, t + 2.1);
+    noise.connect(band).connect(ng).connect(ctx.destination); noise.start(t); noise.stop(t + len);
+    const boom = ctx.createOscillator(); boom.type = "sine";
+    boom.frequency.setValueAtTime(72, t); boom.frequency.exponentialRampToValueAtTime(38, t + 1.8);
+    const bg = ctx.createGain(); bg.gain.setValueAtTime(0.0001, t); bg.gain.exponentialRampToValueAtTime(0.09, t + 0.9); bg.gain.exponentialRampToValueAtTime(0.0001, t + 2);
+    boom.connect(bg).connect(ctx.destination); boom.start(t); boom.stop(t + 2.1);
+    [[1.38, 1320], [1.45, 1760]].forEach(([at, f]) => {
+      const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.setValueAtTime(f, t + at);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t + at); g.gain.exponentialRampToValueAtTime(0.035, t + at + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + at + 0.28);
+      o.connect(g).connect(ctx.destination); o.start(t + at); o.stop(t + at + 0.3);
+    });
+  }, [ensure]);
+
   const thunder = useCallback(() => {
     const ctx = ensure();
     if (!ctx || ctx.state !== "running" || !enabledRef.current) return;
@@ -447,7 +472,7 @@ function useSound(enabled: boolean) {
     }
   }, [enabled]);
 
-  return { tone, thunder, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
+  return { tone, roomEnter, thunder, beginAmbience, beginJazz, beginPiano, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume };
 }
 
 export function EliasExperience() {
