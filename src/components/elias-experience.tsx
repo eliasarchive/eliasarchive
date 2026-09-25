@@ -483,7 +483,7 @@ export function EliasExperience() {
   const [computerZoom, setComputerZoom] = useState(false);
   const [enteringRoom, setEnteringRoom] = useState(false);
   const [views, setViews] = useState<number | null>(null);
-  const { tone, thunder, beginAmbience, beginJazz, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume } = useSound(!muted);
+  const { tone, roomEnter, thunder, beginAmbience, beginJazz, stopPiano, beginRain, prepareRain, setRainScene, stopRain, resume } = useSound(!muted);
 
   useEffect(() => {
     // Warm every heavy visual (character art + botanical frame) as soon
@@ -550,6 +550,7 @@ export function EliasExperience() {
     }
     else {
       setEnteringRoom(true);
+      roomEnter();
       window.setTimeout(() => setStage("desk"), 1750);
     }
   };
