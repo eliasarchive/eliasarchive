@@ -525,7 +525,7 @@ export function EliasExperience() {
     }
     else {
       setEnteringRoom(true);
-      window.setTimeout(() => setStage("desk"), 1200);
+      window.setTimeout(() => setStage("desk"), 1750);
     }
   };
 
@@ -625,10 +625,12 @@ function ManorSequence({ scene, enteringRoom, onThunder, onAdvance, onSkip }: { 
       </div>
       {enteringRoom && (
         <div className="room-threshold-transition" aria-hidden="true">
-          <span className="room-focus-halo" />
-          <span className="room-focus-ring room-focus-ring-outer" />
-          <span className="room-focus-ring room-focus-ring-inner" />
-          <span className="room-focus-sweep" />
+          <span className="room-rack-focus" />
+          <span className="room-light-slats" />
+          <span className="room-iris" />
+          <span className="room-iris-corners"><i /><i /><i /><i /></span>
+          <span className="room-letterbox room-letterbox-top" />
+          <span className="room-letterbox room-letterbox-bottom" />
         </div>
       )}
       <div className="vignette absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
@@ -658,6 +660,7 @@ function DeskScene({ onEnter, entering }: { onEnter: () => void; entering: boole
       <img src={manorRoomInterior} alt="" width={1920} height={1004} className={`bedroom-terminal-view pointer-events-none absolute inset-0 z-[4] h-full w-full object-cover ${entering ? "terminal-zoom" : ""}`} aria-hidden="true" />
       <RoomDust />
       <div className="desk-arrival-glint pointer-events-none absolute inset-0 z-[7]" aria-hidden="true" />
+      <div className="desk-letterbox-exit pointer-events-none absolute inset-0 z-[8]" aria-hidden="true"><span /><span /></div>
       <div className="vignette absolute inset-0 z-[5] bg-background/10" />
       <div className={`terminal-image-frame pointer-events-none absolute left-1/2 top-1/2 z-10 ${entering ? "terminal-zoom" : ""}`}>
       <Button disabled={entering} aria-label="Enter Elias Archer's computer" onClick={onEnter} variant="ghost" className={`terminal-hotspot terminal-target-open terminal-monitor group pointer-events-auto absolute z-10 min-w-0 rounded-none border p-0 transition-colors duration-700 disabled:pointer-events-none ${entering ? "terminal-hotspot-entering" : ""}`}>
